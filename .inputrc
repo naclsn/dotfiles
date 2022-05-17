@@ -1,0 +1,3 @@
+set colored-stats On
+set bell-style visible
+set mark-symlinked-directories On

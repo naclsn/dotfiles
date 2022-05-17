@@ -1,0 +1,10 @@
+[editor]
+auto-pairs = false
+[editor.whitespace.render]
+space = "all"
+tab = "all"
+[keys.normal]
+C-c = ":q"
+C-s = ":w"
+C-y = "save_selection"
+'#' = "toggle_comments"

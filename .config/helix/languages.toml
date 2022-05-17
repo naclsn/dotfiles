@@ -1,0 +1,22 @@
+# TODO: remove when no longer needed
+[[language]]
+name = "nasm"
+scope = "source.nasm"
+file-types = ["asm", "nasm"]
+roots = []
+comment-token = ";"
+indent = { tab-width = 8, unit = "	" }
+[[grammar]]
+name = "nasm"
+source = { git = "https://github.com/PictElm/tree-sitter-nasm.git", rev = "e9e77beef745bb7557c1ee1115a652ce73da4d11" }
+# TODO: remove when no longer needed
+[[language]]
+name = "nmp"
+scope = "source.nmp"
+file-types = ["nmp", "nml"]
+roots = []
+comment-token = "//"
+indent = { tab-width = 4, unit = "	" }
+[[grammar]]
+name = "nmp"
+source = { git = "https://github.com/PictElm/tree-sitter-nmp.git", rev = "898dde824bee210be93065d121e3b1d9eac76c8c" }

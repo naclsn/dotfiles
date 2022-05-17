@@ -1,0 +1,7 @@
+[user]
+    name = Grenier Celestin
+    email = celestin.grenier@hotmail.com
+[alias]
+    sha = rev-parse HEAD
+[core]
+    editor = hx
