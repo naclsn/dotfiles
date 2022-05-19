@@ -1,6 +1,6 @@
-_ifbe() (type -t "$1" && echo ${2:-1} || echo $3)
+_ifbe() (type -t "$1">/dev/null && echo ${2:-$1} || echo $3)
 export PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ (\j)\n  "
-export EDITOR=$(_ifbe hx || _ifbe vim vim vi)
+export EDITOR=$(which hx || which vim || which vi)
 export HELIX_RUNTIME="$HOME/.config/helix/runtime/"
 if [ -x /usr/bin/dircolors ]
   then
