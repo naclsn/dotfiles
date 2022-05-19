@@ -1,3 +1,0 @@
-git_protocol: https
-aliases:
-    sha: api repos/$1/$2/git/refs/heads --jq '.[]|select("refs/heads/$3"==.ref).object.sha'
