@@ -1,5 +1,5 @@
 export PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ (\j)\n  "
-export EDITOR=$(command -v hx || command -v vim || vi)
+export EDITOR=$(command -v hx || command -v vim || echo vi)
 export HELIX_RUNTIME="$HOME/.config/helix/runtime/"
 if [ -x /usr/bin/dircolors ]
   then
