@@ -10,7 +10,7 @@ with(lvim, function(lvim)
   lvim.builtin.cmp.completion.keyword_length = 4
   -- TODO: comment ./.local/share/lunarvim/lvim/lua/lvim/core/nvimtree.lua:163
 end)
--- added language support
+-- added language support (REM/TODO: .config/lvim/queries)
 with(require "nvim-treesitter.parsers", function(parsers)
   local parser_config = parsers.get_parser_configs()
   local function setup(name, repo)

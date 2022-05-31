@@ -1,17 +1,18 @@
-export PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ (\j)\n  "
-export EDITOR=$(command -v hx || command -v nvim || command -v vim || echo vi)
-export HELIX_RUNTIME="$HOME/.config/helix/runtime/"
-if [ -x /usr/bin/dircolors ]
-  then
-    eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-fi
-alias l='ls -CF'
-alias la='ls -A'
-alias cd..='cd ..'
-alias py='python3'
-alias gti='git'
-alias s='git status'
-type -t python >/dev/null || alias python='python2'
+PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ $NEST(\j)$NOTE\n  "
+PATH=$PATH:$HOME/.local/bin
+export PS1
+export PATH
+EDITOR=$(command -v hx || command -v lvim || command -v nvim || command -v vim || echo vi)
+export EDITOR
+[ -x /usr/bin/dircolors ] && [ -z "$LS_COLORS" ] && eval "$(dircolors -b)"
+alias grep='grep --color=auto'
+alias   ls='ls -FXx --color=auto'
+alias    l='ls'
+alias   la='ls -A'
+alias   ll='ls -go'
+alias   py=$(command -v python3 || python2)
+alias  gti='git'
+alias    s='git status'
+alias  niw='env -i NEST="$NEST." $SHELL'
 bind -x '"\ez":fg'
+export HELIX_RUNTIME="$HOME/.config/helix/runtime/"
