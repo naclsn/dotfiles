@@ -1,3 +1,4 @@
+theme = "dark_plus"
 [editor]
 auto-pairs = false
 [editor.whitespace.render]
