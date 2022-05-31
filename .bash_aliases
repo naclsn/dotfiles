@@ -1,4 +1,4 @@
-PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ $NEST(\j)$NOTE\n  "
+PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ $NEST(\j)${NOTE:+ $NOTE}\n  "
 PATH=$PATH:$HOME/.local/bin
 export PS1
 export PATH
@@ -13,6 +13,6 @@ alias   ll='ls -go'
 alias   py=$(command -v python3 || python2)
 alias  gti='git'
 alias    s='git status'
-alias  niw='env -i NEST="$NEST." $SHELL'
+alias  niw='env NEST="$NEST." $SHELL'
 bind -x '"\ez":fg'
 export HELIX_RUNTIME="$HOME/.config/helix/runtime/"
