@@ -7,10 +7,11 @@ export EDITOR
 [ -x /usr/bin/dircolors ] && [ -z "$LS_COLORS" ] && eval "$(dircolors -b)"
 alias grep='grep --color=auto'
 alias   ls='ls -FXx --color=auto'
-alias    l='ls'
 alias   la='ls -A'
 alias   ll='ls -go'
-alias   py=$(command -v python3 || python2)
+alias    l='ls'
+alias info='info --vi-keys'
+alias   py=$(command -v python3 || echo python2)
 alias  gti='git'
 alias    s='git status'
 alias  niw='env NEST="$NEST." $SHELL'

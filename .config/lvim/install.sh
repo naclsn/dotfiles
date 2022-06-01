@@ -3,5 +3,6 @@ bash <(curl -s https://raw.githubusercontent.com/lunarvim/lunarvim/master/utils/
 cd .
 mv ../lvim.old/config.lua ../install.sh .
 chmod +x install.sh
-sed -i -e163d ../../.local/share/lunarvim/lvim/lua/lvim/core/nvimtree.lua # TODO: remove when fixed
+read -p 'TODO: remove next line when fixed (waiting)'
+sed -i -e163d ../../.local/share/lunarvim/lvim/lua/lvim/core/nvimtree.lua
 rm -ri ../lvim.old/
