@@ -7,5 +7,6 @@ tab = "all"
 [keys.normal]
 C-c = ":q"
 C-s = ":w"
+C-r = "redo"
 C-y = "save_selection"
 '#' = "toggle_comments"
