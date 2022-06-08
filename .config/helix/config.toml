@@ -1,12 +1,21 @@
-theme = "dark_plus"
-[editor]
-auto-pairs = false
-[editor.whitespace.render]
-space = "all"
-tab = "all"
+theme = "onedark"
 [keys.normal]
 C-c = ":q"
 C-s = ":w"
 C-r = "redo"
 C-y = "save_selection"
 '#' = "toggle_comments"
+# fails at :bc because the :w did not do anything (yet?)
+C-t = [":config-open", "goto_last_line", "toggle_comments", "move_line_up", "toggle_comments", ":w", ":bc", ":config-reload"]
+[editor]
+auto-info = false
+auto-pairs = false
+auto-format = false
+[editor.cursor-shape]
+insert = "bar"
+select = "underline"
+[editor.file-picker]
+git-ignore = false
+[editor.whitespace.render]
+#space = "all"
+#tab = "all"
