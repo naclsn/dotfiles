@@ -1,5 +1,3 @@
-[core]
-excludesFile = ~/.gitignore
 [user]
 name = Grenier Celestin
 email = celestin.grenier@hotmail.com
