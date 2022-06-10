@@ -3,4 +3,5 @@ name = Grenier Celestin
 email = celestin.grenier@hotmail.com
 [alias]
 sha = rev-parse HEAD
+ls = ls-files
 add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
