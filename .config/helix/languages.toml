@@ -19,4 +19,4 @@ comment-token = "//"
 indent = { tab-width = 4, unit = "	" }
 [[grammar]]
 name = "nmp"
-source = { git = "https://github.com/PictElm/tree-sitter-nmp.git", rev = "898dde824bee210be93065d121e3b1d9eac76c8c" }
+source = { git = "https://github.com/PictElm/tree-sitter-nmp.git", rev = "32a3f9d8505b7cd96173c3a7f9bb05ded33ebdfa" }
