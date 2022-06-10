@@ -5,10 +5,10 @@ C-s = ":w"
 C-r = "redo"
 C-y = "save_selection"
 '#' = "toggle_comments"
-# fails at :bc because the :w did not do anything (yet?)
+# TODO: debug this: fails at :bc because the :w did not do anything (yet?)
 C-t = [":config-open", "goto_last_line", "toggle_comments", "move_line_up", "toggle_comments", ":w", ":bc", ":config-reload"]
 [editor]
-#auto-info = false
+auto-info = false
 auto-pairs = false
 auto-format = false
 [editor.file-picker]
