@@ -9,7 +9,6 @@ indent = { tab-width = 8, unit = "	" }
 [[grammar]]
 name = "nasm"
 source = { git = "https://github.com/PictElm/tree-sitter-nasm.git", rev = "a0db15db6fcfb1bf2cc8702500e55e558825c48b" }
-# TODO: remove when no longer needed
 [[language]]
 name = "nmp"
 scope = "source.nmp"
