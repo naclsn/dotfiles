@@ -15,6 +15,6 @@ alias   gti='git'
 alias     s='git status'
 alias reset='stty sane -ixon'
 bind -x '"\ez":fg'
-command_not_found_handle()(m="$1: command not found   ";while :;do printf %s\\r "$m";m=${m%%${m#?}}${m#?};sleep .2;done)
+command_not_found_handle()(m="$1: command not found   ";while :;do printf %s\\r "$m";m=${m#?}${m%%${m#?}};sleep .2;done)
 which_include()(gcc -v -E - </dev/null 2>&1|awk '/^#include </{f=1;next}/^End/{f=0}f'|xargs -L1 -I{} find '{}' -name $1)
 reset
