@@ -9,7 +9,7 @@ alias    la='ls -A'
 alias    ll='ls -go'
 alias     l='ls'
 alias  info='info --vi-keys'
-alias    py='PAGER=more python3 -i -c "from functools import *; from itobject import it"'
+alias    py="PAGER=more PYTHONSTARTUP='$HOME/.pythonrc' $(command -v python3 || echo python2)"
 alias  maje='make'
 alias   gti='git'
 alias     s='git status'

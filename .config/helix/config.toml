@@ -9,6 +9,8 @@ C-y = "save_selection"
 auto-info = false
 auto-pairs = false
 auto-format = false
+[editor.cursor-shape]
+insert = "bar"
 [editor.whitespace.render]
 #space = "all"
 #tab = "all"
