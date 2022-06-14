@@ -3,5 +3,6 @@ name = Grenier Celestin
 email = celestin.grenier@hotmail.com
 [alias]
 sha = rev-parse HEAD
+url = remote get-url origin
 ls = ls-files
 add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
