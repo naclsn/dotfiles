@@ -13,6 +13,7 @@ alias    py="PAGER=more PYTHONSTARTUP='$HOME/.pythonrc' '$(command -v python3 ||
 alias  maje='make'
 alias   gti='git'
 alias     s='git status'
+alias     x='chmod +x'
 alias reset='stty sane -ixon'
 bind -x '"\ez":fg'
 command_not_found_handle()(m="$1: command not found   ";while :;do printf %s\\r "$m";m=${m#?}${m%%${m#?}};sleep .2;done)
