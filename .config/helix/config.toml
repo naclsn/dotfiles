@@ -5,12 +5,20 @@ C-s = ":w"
 A-c = ":bc"
 C-y = "save_selection"
 '#' = "toggle_comments"
+A-k = "expand_selection"
+A-j = "shrink_selection"
+A-h = "select_prev_sibling"
+A-l = "select_next_sibling"
 [keys.select]
 C-c = ":q"
 C-s = ":w"
 A-c = ":bc"
 C-y = "save_selection"
 '#' = "toggle_comments"
+A-k = "expand_selection"
+A-j = "shrink_selection"
+A-h = "select_prev_sibling"
+A-l = "select_next_sibling"
 [editor]
 auto-info = false
 auto-pairs = false
