@@ -5,7 +5,7 @@ scope = "source.nasm"
 file-types = ["asm", "nasm"]
 roots = []
 comment-token = ";"
-indent = { tab-width = 8, unit = "	" }
+indent = { tab-width = 8, unit = "\t" }
 [[grammar]]
 name = "nasm"
 source = { git = "https://github.com/PictElm/tree-sitter-nasm.git", rev = "a0db15db6fcfb1bf2cc8702500e55e558825c48b" }
@@ -15,7 +15,7 @@ scope = "source.nmp"
 file-types = ["nmp", "nml"]
 roots = []
 comment-token = "//"
-indent = { tab-width = 4, unit = "	" }
+indent = { tab-width = 4, unit = "\t" }
 [[grammar]]
 name = "nmp"
 source = { git = "https://github.com/PictElm/tree-sitter-nmp.git", rev = "32a3f9d8505b7cd96173c3a7f9bb05ded33ebdfa" }

@@ -2,7 +2,7 @@ PPS1=$PS1
 export    PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ $(printf %${SHLVL}s|tr \  \()\j)\n  "
 export   PATH=$PATH:$HOME/.local/bin
 export EDITOR=$(command -v hx || command -v vim || echo vi)
-export   LESS=iJR
+export   LESS=FiJR
 export HELIX_RUNTIME="$HOME/.local/share/helix/runtime/"
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors))"
 alias  grep='grep --color=auto'
