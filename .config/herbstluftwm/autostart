@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+readonly Mod=Mod4
+. 2>/dev/null /etc/xdg/herbstluftwm/autostart
+herbstclient keybind $Mod-m spawn dmenu_run
+herbstclient unlock
