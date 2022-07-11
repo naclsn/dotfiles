@@ -2,4 +2,8 @@
 readonly Mod=Mod4
 . 2>/dev/null /etc/xdg/herbstluftwm/autostart
 herbstclient keybind $Mod-m spawn dmenu_run
+herbstclient keybind $Mod-Shift-u set_layout vertial
+herbstclient keybind $Mod-Shift-o set_layout horizontal
 herbstclient unlock
+xset r rate 240 42
+#xsetroot -solid \#..

@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 [ -z "$1" ]&&echo Usage: $0 \<pattern\>>&2&&exit 2
-IFS= awk '{l=$0;gsub("%","%%",l)};b=match(l,/'$(echo "$*"|sed 's/\\/\\\\/g;s/\//\\\//g')'/){u=substr(l,1,b-1);sub(/\s*$/,"",u);d=o[c]=length(u)-gsub("%%","%%",u);if(m<d)m=d;l=u" %s"substr(l,b,RLENGTH)substr(l,b+RLENGTH)};{a[c++]=l};END{for(k=0;k<c;k++)printf a[k]"\n",sprintf(sprintf("%%%ds",z=m-o[k]),z?" ":"")}'
+IFS= awk 'BEGIN{c=0}{l=$0;gsub("%","%%",l)};b=match(l,/'$(echo "$*"|sed 's/\//\\\//g')'/){u=substr(l,1,b-1);sub(/\s*$/,"",u);d=o[c]=length(u)-gsub("%%","%%",u);if(m<d)m=d;l=u"%s"substr(l,b,RLENGTH)substr(l,b+RLENGTH)};{a[c++]=l};END{for(k=0;k<c;k++)printf a[k]"\n",sprintf(sprintf("%%%ds",z=m-o[k]),z?" ":"")}'

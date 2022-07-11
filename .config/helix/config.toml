@@ -1,4 +1,4 @@
-theme = "onedark"
+theme = "autumn"
 [keys.normal]
 C-c = ":q"
 C-s = ":w"
