@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -x
+if [ $# -eq 1 ]
+  then selected=$1
+  else selected=$( ( # list of providers here (TODO: work in progress)
+      tmux list-sessions -F '#{session_name}'
+      # cat recent_ws
+      # find ~/++ -mindepth 1 -maxdepth 1 -type d
+    ) 2>/dev/null | sed "s|^$HOME|~|" | dmenu | sed "s|^\s*~|$HOME|")
+fi
+path=$(realpath "$selected")
+[ -d "$path" ] || exit 1
+name=$(basename "$path" | tr . _)
+pids=$(pgrep tmux)
+# tmux running but not in tmux rn
+if [ -z "$TMUX" ] && [ -n "$pids" ]
+  then tmux attach-session -t "$name"
+fi
+# no tmux running or not an existing session
+if [ -z "$pids" ] || ! tmux has-session -t="$name" 2>/dev/null
+  then tmux new-session -${TMUX:+d}s "$name" -c "$path"
+fi
+# switch existing client to existing session
+tmux switch-client -t "$name" 2>/dev/null
