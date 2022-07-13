@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+exit 2 # TODO: remove
 set -x
 if [ $# -eq 1 ]
   then selected=$1

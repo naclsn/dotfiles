@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+set -x
+prog=hx #$(basename "${0%-envi}")
+echo $0 $@ >>~/.cache/$prog-envi.log
+[ -z "$TMUX" ] && exec $prog $*
+root=$(realpath "${TMUX_PWD:-$PWD}") # TODO: could get rid of this TMUX_PWD variable (with #{session_path} or) by looking up the list of parent from the file we are opening...
+info=/tmp/$prog-envi/$(echo ${root#/} | tr \' _)~
+(set -e # locate instance
+  [ -f "$info" ]
+  read session_id window_id pane_id <$info
+  tmux switch-client -t "$session_id"
+  tmux select-window -t "$window_id"
+  tmux select-pane -t "$pane_id"
+) 2>/dev/null
+if [ 0 -eq $? ]
+  then # existing instance
+    [ -- = "$1" ] && shift
+    for it in "$@"
+      do
+        tmux send-keys Escape
+        tmux send-keys -l ":o $(realpath "$it")"
+        tmux send-keys Enter
+    done
+    # TODO: cases such as -w (eg. `git commit` or `git config --global -e`)
+  else # new instance
+    mkdir -p "$(dirname "$info")"
+    tmux new-window -c "$root" -PF '#{session_id} #{window_id} #{pane_id}' >$info $prog $*
+fi
