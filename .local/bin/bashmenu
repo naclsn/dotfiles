@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-_np=/tmp/bmenu
+_np=/tmp/bashmenu
 rm -f "$_np"
 mkfifo "$_np" || exit 1
-${BMENUTERM:-xterm -title bmenu -g 80x1+0+0@g -e} env _np="$_np" bash --rcfile <(cat <<'BASHRC'
+${BASHMENUTERM:-xterm -title bashmenu -g 80x1+0+0@g -e} env _np="$_np" bash --rcfile <(cat <<'BASHRC'
   echo ok >"$_np"
   if [ -f /usr/share/bash-completion/bash_completion ]
     then . /usr/share/bash-completion/bash_completion
@@ -14,5 +14,5 @@ ${BMENUTERM:-xterm -title bmenu -g 80x1+0+0@g -e} env _np="$_np" bash --rcfile <
   PS1= #"$(clear)"
 BASHRC
 ) & read <"$_np"
-$(command -v xprop || echo :) -name bmenu -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS 0x2,0x0,0x0,0x0,0x0
+$(command -v xprop || echo :) -name bashmenu -f _MOTIF_WM_HINTS 32c -set _MOTIF_WM_HINTS 0x2,0x0,0x0,0x0,0x0
 exec cat "$_np"
