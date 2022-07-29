@@ -10,3 +10,5 @@ graph = log --oneline --graph --decorate --simplify-by-decoration
 add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
 [init]
 defaultBranch = main
+[credential]
+helper = store
