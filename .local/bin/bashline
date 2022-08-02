@@ -5,9 +5,9 @@ ${BASHLINE_PROMPTER:-xterm -title bashline$_np -g 80x1+0+0@g -xrm XTerm.fullscre
   echo ok >$_np
   [ -f /etc/bash.bashrc ] && . /etc/bash.bashrc
   [ -f ~/.bashrc ] && . ~/.bashrc
-  trap 'printf >$_np; rm -f $_np' EXIT
-  bind -x '"\C-m": ${READLINE_LINE:-printf \\r} &>$_np & exit $!'
-  bind -x '"\e\C-m": ${BASHLINE_TERMINAL:-xterm ${READLINE_LINE:+-e}} $READLINE_LINE & exit $!'
+  trap ': >$_np; rm -f $_np' EXIT
+  bind -x '"\C-m": ${READLINE_LINE:-printf \\r} &>$_np & exit'
+  bind -x '"\e\C-m": ${BASHLINE_TERMINAL:-xterm ${READLINE_LINE:+-e bash -ic}} $READLINE_LINE & exit'
   PS1= #"$(clear)"
 BASHRC
 ) & read <$_np
