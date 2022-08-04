@@ -2,7 +2,7 @@ PPS1=$PS1
 PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ $(printf %${SHLVL}s|tr \  \()\j)\n  "
 export          PATH=$PATH:$HOME/.local/bin
 export        EDITOR=hx
-export          LESS='FiJR --mouse --wheel-lines=3'
+export          LESS='FiJRS --mouse --wheel-lines=3'
 export HELIX_RUNTIME=$HOME/.local/share/helix/runtime
 export PYTHONSTARTUP=$HOME/.pythonrc
 alias           grep='grep --color=auto'
@@ -16,7 +16,8 @@ alias             py='python3'
 alias            gti='git'
 alias              s='git status'
 alias          reset='stty sane -ixon'
-bind -x '"\ez":fg&>/dev/null'
+bind -x       '"\er":stty sane -ixon'
+bind -x       '"\ez":fg&>/dev/null'
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge "$HOME/.Xdefaults"
 # TODO: make it useful

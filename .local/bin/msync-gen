@@ -1,6 +1,6 @@
 #!/bin/sh
 if [ -z "$1" ] || [ -h = "$1" ] || ! [ -d "$1" ]
-  then echo "Usage: $0 <dir> <dest.sh>"
+  then echo "Usage: $(basename "$0") <dir> <dest.sh>"
   else ( cd "$1"
     echo \#!/bin/sh
     find . | tail -n+2 | while read -r it
