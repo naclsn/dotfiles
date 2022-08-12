@@ -1,14 +1,14 @@
 [user]
-name = Grenier Celestin
-email = celestin.grenier@hotmail.com
+	name = Grenier Celestin
+	email = celestin.grenier@hotmail.com
 [alias]
-sha = rev-parse HEAD
-url = remote get-url origin
-ls = ls-files
-cd = checkout
-graph = log --oneline --graph --decorate --simplify-by-decoration
-add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
+	sha = rev-parse HEAD
+	url = remote get-url origin
+	ls = ls-files
+	cd = checkout
+	graph = log --oneline --graph --decorate --simplify-by-decoration
+	add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
 [init]
-defaultBranch = main
+	defaultBranch = main
 [credential]
-helper = store
+	helper = store

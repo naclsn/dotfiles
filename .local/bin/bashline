@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+set -e
+command -v xterm >/dev/null
 _np=$(mktemp -u)
-mkfifo $_np || exit -1
+mkfifo $_np
 ${BASHLINE_PROMPTER:-xterm -title bashline$_np -g 80x1+0+0@g -xrm XTerm.fullscreen:never -e} env _np=$_np bash --rcfile <(cat <<'BASHRC'
   echo ok >$_np
   [ -f /etc/bash.bashrc ] && . /etc/bash.bashrc
