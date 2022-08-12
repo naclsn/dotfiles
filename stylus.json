@@ -549,9 +549,22 @@
     "enabled": true,
     "sections": [
       {
-        "code": "body {\n    background: #111;\n    color: #d4d4d4;\n}\n\n#main,\n#content-wrapper,\n#main .callout {\n    background: #1e1e1e;\n    border-color: #727272;\n}\n\n@media (min-width: 940px) {\n    #documentation .inner,\n    #search .inner {\n        margin-left: calc(48vw - 570.5px);\n        margin-right: calc(52vw - 570.5px);\n    }\n}\n\n#front-content #front-navigation,\n#front-book,\n#companies-projects,\nfooter {\n    border-color: #727272;\n}\n\n.highlight {\n    background-color: #4d4b12;\n}\n\ndiv > pre, code {\n    color: #c49f82 !important;\n    background-color: #313131 !important;\n    border-color: #727272;\n}\n\n#masthead {\n    color: #4e443c;\n    margin-bottom: 0;\n    border-bottom: solid #1e1e1e 2em;\n}\n\nfooter a,\naside nav ul li a,\n#front-nav a {\n    color: #0052cc;\n}\n\nem {\n    color: #42a055 !important;\n}\n",
+        "code": "body {\n    background: #111;\n    color: #d4d4d4;\n}\n\n#main,\n#content-wrapper,\n#main .callout {\n    background: #1e1e1e;\n    border-color: #727272;\n}\n\n@media (min-width: 940px) {\n    #documentation .inner,\n    #search .inner,\n    #home .inner {\n        margin-left: calc(48vw - 570.5px);\n        margin-right: calc(52vw - 570.5px);\n    }\n}\n\n#front-content #front-navigation,\n#front-book,\n#companies-projects,\nfooter {\n    border-color: #727272;\n}\n\nspan.highlight {\n    background-color: #4d4b12;\n}\n\ndiv > pre, code {\n    color: #c49f82 !important;\n    background-color: #313131 !important;\n    border-color: #727272;\n}\n\n#masthead {\n    color: #4e443c;\n    margin-bottom: 0;\n    border-bottom: solid #1e1e1e 2em;\n}\n\nfooter a,\naside nav ul li a,\n#front-nav a {\n    color: #0052cc;\n}\n\nem {\n    color: #42a055 !important;\n}\n",
         "domains": [
-          "git-scm.com"
+          "git-scm.com",
+          "libgit2.org"
+        ]
+      },
+      {
+        "code": "p, h1, h2, h3, h4, h5, h6 {\n    color: #d4d4d4;\n}\n\n*:not(pre) > code, pre {\n    border: solid 1px #727272;\n    border-radius: 3px;\n}\n\npre {\n    overflow: auto;\n}\n\n#toc {\n    background: #1e1e1e;\n    border-color: #727272;\n}\n",
+        "domains": [
+          "libgit2.org"
+        ]
+      },
+      {
+        "code": ".content {\n    color: #d4d4d4;\n}\n\n#header-wrapper,\ndiv.sidebar-module ul ul,\ndiv.sidebar-module .spacer {\n    background: #1e1e1e;\n}\n\n#header ul.nav,\ndiv.sidebar-module > ul,\ndiv.sidebar-module > ul h3,\ndiv.sidebar-module > ul > li,\ndiv.sidebar-module ul ul li {\n    border-color: #727272;\n}\n\ndiv.sidebar-module ul ul li:hover,\ndiv.sidebar-module li.disable {\n    background: #313131;\n    border-color: #727272;\n}\n\n#header ul.nav,\ndiv.sidebar-module > ul h3 {\n    background: #313131;\n    text-shadow: 1px 1px 0px #000;\n}\n\n#wrapper,\ndiv.sidebar-module {\n    background: #111;\n    border-radius: 5px;\n}\n\ninput.search {\n    background: #727272;\n    border-color: #727272;\n}\n\n.example {\n    background-color: #384238;\n}\n.signatures a {\n    background: #414141;\n}\n.also {\n    background: #313131;\n    border-color: #727272;\n}\n",
+        "urlPrefixes": [
+          "https://libgit2.org/libgit2"
         ]
       }
     ]
