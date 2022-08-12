@@ -1,0 +1,572 @@
+[
+  {
+    "name": "a - eyesplease",
+    "id": 2,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background: #1e1e1e !important;\n}\n\n*:not(a):not(body):not(html) {\n    background: rgba(255, 255, 255, .00333) !important;\n    border-color: #727272 !important;\n    color: #d4d4d4 !important;\n}\n\na {\n    color: #1e73be !important;\n}\n"
+      }
+    ],
+    "exclusions": [
+      "https://www.linuxfromscratch.org/*",
+      "https://web.whatsapp.com/*",
+      "https://jisho.org/*",
+      "https://stackoverflow.com/*",
+      "https://pubs.opengroup.org/*",
+      "https://askubuntu.com/*",
+      "https://github.com/*",
+      "https://unix.stackexchange.com/*",
+      "https://superuser.com/*",
+      "https://rust-lang.github.io/*",
+      "https://doc.rust-lang.org/*",
+      "https://docs.microsoft.com/*",
+      "https://man7.org/*",
+      "https://fd7-tunnel-paiement.leclercdrive.fr/*",
+      "https://fd7-paiement.leclercdrive.fr/*",
+      "https://www.protectedtext.com/*",
+      "https://docs.rs/*",
+      "https://emacs.stackexchange.com/*",
+      "https://github.dev/*",
+      "https://en.wikipedia.org/*",
+      "https://vi.stackexchange.com/*",
+      "https://rust-cli.github.io/*",
+      "https://linux.die.net/*",
+      "https://holodex.net/*",
+      "https://calendar.google.com/*",
+      "https://serverfault.com/*",
+      "https://wali-m.isae.fr/*",
+      "https://outlook.live.com/*",
+      "https://myanimelist.net/*",
+      "https://twitter.com/*",
+      "https://www.man7.org/*",
+      "https://www.geeksforgeeks.org/*",
+      "https://linuxize.com/*",
+      "https://translate.google.com/*",
+      "https://codegolf.stackexchange.com/*",
+      "https://mail.google.com/*",
+      "https://gist.github.com/*",
+      "https://docs.helix-editor.com/*",
+      "https://helix-editor.com/*",
+      "https://fishshell.com/*",
+      "https://www.npmjs.com/*",
+      "https://www.w3schools.com/*",
+      "https://peps.python.org/*",
+      "https://quillbot.com/*",
+      "https://developer.mozilla.org/*",
+      "https://nodejs.org/*",
+      "https://regexr.com/*",
+      "https://keep.google.com/*",
+      "https://music.holodex.net/*",
+      "https://www.twitch.tv/*",
+      "https://trends.google.com/*",
+      "https://caniuse.com/*",
+      "https://docs.github.com/*",
+      "https://en.wiktionary.org/*",
+      "https://cli.github.com/*",
+      "https://pkg.go.dev/*",
+      "https://hololive.jetri.co/*",
+      "https://wasmtime.dev/*",
+      "https://wasi.dev/*",
+      "https://skyline.github.com/*",
+      "https://codepen.io/*",
+      "https://apple.stackexchange.com/*",
+      "https://orirando.com/*",
+      "https://ziglang.org/*",
+      "https://www.reddit.com/*",
+      "https://english.stackexchange.com/*",
+      "https://softwareengineering.stackexchange.com/*",
+      "https://www.spacemacs.org/*",
+      "https://gcc.godbolt.org/*",
+      "https://www.pixiv.net/*",
+      "https://www.protectedtext.com/*",
+      "https://tatoeba.org/*",
+      "https://japanese.stackexchange.com/*",
+      "https://ranger.github.io/*",
+      "https://wiki.orirando.com/*",
+      "https://www.gnu.org/*",
+      "https://guix.gnu.org/*",
+      "https://sharelatex.irit.fr/*",
+      "https://godbolt.org/*",
+      "https://www.google.com/*",
+      "https://neovim.io/*",
+      "https://www.lunarvim.org/*",
+      "https://discord.com/*",
+      "https://cloud.irit.fr/*",
+      "https://the.exa.website/*",
+      "https://docs.helix-editor.com/*",
+      "https://worldbuilding.stackexchange.com/*",
+      "https://softwarerecs.stackexchange.com/*",
+      "https://sw.kovidgoyal.net/*",
+      "https://alacritty.org/*",
+      "https://www.lexaloffle.com/*",
+      "https://myanimelist.net/*",
+      "https://systemd.io/*",
+      "https://i3wm.org/*",
+      "https://mega.nz/*",
+      "https://intranet.irit.fr/*",
+      "https://fr.wikipedia.org/*",
+      "https://www.overleaf.com/*",
+      "https://llvm.org/*",
+      "https://releases.llvm.org/*",
+      "https://tex.stackexchange.com/*",
+      "https://dwm.suckless.org/*",
+      "https://git.suckless.org/*",
+      "https://space.bilibili.com/*",
+      "https://www.bilibili.com/*",
+      "https://www.sync.opera.com/*",
+      "https://juliamono.netlify.app/*",
+      "https://devfonts.gafi.dev/*",
+      "https://pinboard.opera.com/*",
+      "https://draemm.li/*",
+      "https://ja.wikipedia.org/*",
+      "https://github.com/*",
+      "https://explainshell.com/*",
+      "https://mathoverflow.net/*",
+      "https://guide.elm-lang.org/*",
+      "https://bitbucket.org/*",
+      "https://jonas.github.io/*",
+      "https://www.reddit.com/*",
+      "https://www.enlightenment.org/*",
+      "https://www.textualize.io/*",
+      "https://invisible-island.net/*",
+      "https://webapps.stackexchange.com/*",
+      "https://stackapps.com/*",
+      "https://www.die.net/*",
+      "https://www.wikipedia.org/*",
+      "https://gitea.com/*",
+      "https://github1s.com/*",
+      "https://sr.ht/*",
+      "https://git.sr.ht/*",
+      "https://harelang.org/*",
+      "https://wezfurlong.org/*",
+      "https://todo.sr.ht/*",
+      "https://sporto.github.io/*",
+      "https://www.nushell.sh/*",
+      "https://www.amp-what.com/*",
+      "https://www.youtube.com/*",
+      "https://code.io/*",
+      "https://vscode.dev/*",
+      "https://himehina.jp/*",
+      "https://git-scm.com/*",
+      "moz-extension://6e6f68e5-9831-4125-8fd0-1ef52ff590aa/*",
+      "chrome-extension://kdinfjomkigjcjcbigolloleeiianaif/*",
+      "https://www.colorhexa.com/*",
+      "https://spritestack.io/*",
+      "https://gbdev.io/*",
+      "https://pico-8.github.io/*",
+      "http://amagoyasairuiu.web.fc2.com/*",
+      "https://www3.nhk.or.jp/*",
+      "moz-extension://f1db66cf-546d-498f-9ef5-92730a732aac/*"
+    ]
+  },
+  {
+    "name": "a - sizeplease",
+    "id": 3,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    padding: 0px;\n    margin: 0px;\n    min-height: 98vh;\n}\n\n@media only screen and (min-width: 780px) {\n    body {\n        padding: 1vh 20vw 1vh 5vw;\n    }\n}\n\n@media only screen and (min-width: 900px) {\n    body {\n        padding: 1vh 1vw 1vh 1vw;\n    }\n}\n\n@media only screen and (min-width: 1200px) {\n    body {\n        padding: 1vh 25vw 1vh 20vw;\n    }\n}\n"
+      }
+    ],
+    "exclusions": [
+      "https://web.whatsapp.com/*",
+      "https://jisho.org/*",
+      "https://stackoverflow.com/*",
+      "https://askubuntu.com/*",
+      "https://github.com/*",
+      "https://unix.stackexchange.com/*",
+      "https://superuser.com/*",
+      "https://rust-lang.github.io/*",
+      "https://www.reddit.com/*",
+      "https://doc.rust-lang.org/*",
+      "https://docs.microsoft.com/*",
+      "https://fd7-courses.leclercdrive.fr/*",
+      "https://fd7-tunnel-paiement.leclercdrive.fr/*",
+      "https://fd7-paiement.leclercdrive.fr/*",
+      "https://www.protectedtext.com/*",
+      "https://docs.rs/*",
+      "https://emacs.stackexchange.com/*",
+      "https://github.dev/*",
+      "https://chromium.googlesource.com/*",
+      "https://en.wikipedia.org/*",
+      "https://vi.stackexchange.com/*",
+      "https://rust-cli.github.io/*",
+      "https://linux.die.net/*",
+      "https://holodex.net/*",
+      "https://calendar.google.com/*",
+      "https://serverfault.com/*",
+      "https://wali-m.isae.fr/*",
+      "https://outlook.live.com/*",
+      "https://myanimelist.net/*",
+      "https://twitter.com/*",
+      "https://www.man7.org/*",
+      "https://www.geeksforgeeks.org/*",
+      "https://linuxize.com/*",
+      "https://drive.google.com/*",
+      "https://docs.google.com/*",
+      "https://translate.google.com/*",
+      "https://www.programcreek.com/*",
+      "https://codegolf.stackexchange.com/*",
+      "https://mail.google.com/*",
+      "https://gist.github.com/*",
+      "https://docs.helix-editor.com/*",
+      "https://helix-editor.com/*",
+      "https://fishshell.com/*",
+      "https://www.npmjs.com/*",
+      "https://www.w3schools.com/*",
+      "https://peps.python.org/*",
+      "https://quillbot.com/*",
+      "https://developer.mozilla.org/*",
+      "https://regexr.com/*",
+      "https://keep.google.com/*",
+      "https://music.holodex.net/*",
+      "https://www.twitch.tv/*",
+      "https://trends.google.com/*",
+      "https://live.nicovideo.jp/*",
+      "https://caniuse.com/*",
+      "https://docs.github.com/*",
+      "https://cli.github.com/*",
+      "https://pkg.go.dev/*",
+      "https://hololive.jetri.co/*",
+      "https://wasmtime.dev/*",
+      "https://wasi.dev/*",
+      "https://skyline.github.com/*",
+      "https://codepen.io/*",
+      "https://apple.stackexchange.com/*",
+      "https://orirando.com/*",
+      "https://ziglang.org/*",
+      "https://man7.org/*",
+      "https://english.stackexchange.com/*",
+      "https://softwareengineering.stackexchange.com/*",
+      "https://linux.die.net/*",
+      "https://www.spacemacs.org/*",
+      "https://gcc.godbolt.org/*",
+      "https://www.gnu.org/*",
+      "https://sharelatex.irit.fr/*",
+      "https://intranet.irit.fr/*",
+      "https://www.lunarvim.org/*",
+      "https://vim.fandom.com/*",
+      "https://discord.com/*",
+      "https://cmake.org/*",
+      "https://git-scm.com/*",
+      "https://www.google.fr/*",
+      "https://softwarerecs.stackexchange.com/*",
+      "https://explainshell.com/*",
+      "https://mathoverflow.net/*",
+      "https://gitea.com/*",
+      "https://github1s.com/*",
+      "https://harelang.org/*",
+      "https://wezfurlong.org/*",
+      "https://todo.sr.ht/*",
+      "https://sporto.github.io/*",
+      "https://www.nushell.sh/*",
+      "https://repology.org/*",
+      "https://www.amp-what.com/*",
+      "https://vscode.dev/*",
+      "https://godbolt.org/*",
+      "https://www.google.com/*",
+      "https://neovim.io/*",
+      "https://www.pixiv.net/*",
+      "https://www.protectedtext.com/*",
+      "https://tatoeba.org/*",
+      "https://japanese.stackexchange.com/*",
+      "https://www.farah.cl/*",
+      "https://ranger.github.io/*",
+      "https://wiki.orirando.com/*",
+      "https://guix.gnu.org/*",
+      "https://livescript.net/*",
+      "https://sw.kovidgoyal.net/*",
+      "https://alacritty.org/*",
+      "https://www.lexaloffle.com/*",
+      "https://systemd.io/*",
+      "https://i3wm.org/*",
+      "https://mega.nz/*",
+      "https://fr.wikipedia.org/*",
+      "https://www.overleaf.com/*",
+      "https://llvm.org/*",
+      "https://releases.llvm.org/*",
+      "https://www.labanquepostale.fr/*",
+      "https://tex.stackexchange.com/*",
+      "https://space.bilibili.com/*",
+      "https://www.bilibili.com/*",
+      "https://www.sync.opera.com/*",
+      "https://juliamono.netlify.app/*",
+      "https://devfonts.gafi.dev/*",
+      "https://pinboard.opera.com/*",
+      "https://draemm.li/*",
+      "https://ja.wikipedia.org/*",
+      "https://guide.elm-lang.org/*",
+      "https://bitbucket.org/*",
+      "https://jonas.github.io/*",
+      "https://refactoring.guru/*",
+      "https://www.textualize.io/*",
+      "https://www.gnu.org/*",
+      "https://webapps.stackexchange.com/*",
+      "https://stackapps.com/*",
+      "https://www.die.net/*",
+      "https://en.wiktionary.org/*",
+      "https://www.wikipedia.org/*",
+      "https://himehina.jp/*",
+      "https://www.gnu.org/*",
+      "https://git-scm.com/*",
+      "moz-extension://6e6f68e5-9831-4125-8fd0-1ef52ff590aa/*",
+      "chrome-extension://kdinfjomkigjcjcbigolloleeiianaif/*",
+      "https://spritestack.io/*",
+      "https://gbdev.io/*",
+      "https://pico-8.github.io/*",
+      "http://amagoyasairuiu.web.fc2.com/*",
+      "https://www3.nhk.or.jp/*",
+      "moz-extension://f1db66cf-546d-498f-9ef5-92730a732aac/*",
+      "https://holodex.net/*",
+      "https://en.wikipedia.org/*"
+    ]
+  },
+  {
+    "name": "mep - BitBucket",
+    "id": 19,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "*:not([role=img]):not(a):not(code):not(span):not(button):not(svg) {\n    background: #1e1e1e!important;\n    color: #d4d4d4!important;\n    border-color: #727272!important;\n}\n\nh1,\nh2,\nh3,\nh4,\nh5 {\n    color: #4C90FF!important;\n}\n\na {\n    color: #0052cc!important;\n}\n\ncode {\n    background: #11100d!important;\n}\n\nbutton[type=\"button\"], button {\n    background: #313131!important;\n    color: #8fa0bc!important;\n    border-color: #727272!important;\n}\n\nspan[role=\"presentation\"] > svg {\n    background: #0000\n}\n\n/*div[role=alert],\ndiv[role=alert] *,\n.sidebar-expander-panel-heading,\n.sidebar-expander-panel-heading *,\n.rah-static,\n.rah-static * {\n    background: #2a2a2a!important;\n}*/\n\n/*button[type=button],\nbutton[type=button] *,\ndiv[data-qa=\"create-pull-request-button\"] * {\n    background: #313131!important;\n    color: #a0a0a0!important;\n}*/\n\n.ak-navigation-resize-button {\n    visibility: hidden;\n}\n\ndiv[data-testid=\"ContextualNavigation\"] *:not([role=img]):not([style^=\"position: absolute\"]) {\n    background: #424242!important;\n}\n\ndiv[data-testid=\"GlobalNavigation\"] *:not([role=img]) {\n    background: #172B4D!important;\n}\n\ndiv[class$=container] div[class$=control] {\n    border-style: none;\n}\n\nspan[style^=\"position: absolute\"] {\n    background: #0000!important;\n}",
+        "domains": [
+          "bitbucket.org"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - Heroku",
+    "id": 20,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "* {\n    background: #1e1e1e!important;\n    color: #d4d4d4!important;\n    border-color: #727272!important;\n}\n\nh1,\nh2,\nh3,\nh4,\nh5,\n.section-title {\n    color: #C18EFF!important;\n}\n\n.purple-box * {\n    background: #2a2a2a!important;\n}\n\n.hk-button-sm--primary {\n    background: #79589f!important;\n}\n\n.hk-button-sm--secondary {\n    background: #313131!important;\n    border: 1px solid #79589f!important;\n    color: #C18EFF!important;\n}\n\n.top-nav,\n.top-nav * {\n    background: #333!important\n}\n\n.deploy-section .pipeline-status::before {\n    background: #1e1e1e!important;\n}\n\n#overview-page .app-overview-metrics timeseries-chart::after {\n    background-image: linear-gradient(to right, #1e1e1e, #0000)!important;\n}\n",
+        "domains": [
+          "heroku.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - Wikipedia",
+    "id": 36,
+    "enabled": true,
+    "sections": [
+      {
+        "code": ".mw-page-container {\n    background-color: #1e1e1e;\n    border-left: 1px solid #111;\n    border-right: 1px solid #111;\n}\n\n#mw-panel {\n    border-right: 1px solid #333;\n}\n\n#mw-page-base {\n    background: #151515;\n}\n\n.mw-body {\n    border-color: #54595d;\n    border-top: 1px solid #333;\n    color: #d4d4d4;\n    background-color: #1e1e1e;\n}\n\n.mw-footer li {\n    color: #93999f;\n}\n\n.mwe-popups {\n    background-color: #1e1e1e !important;\n    border-radius: 0px;\n}\n\n.mwe-popups .mwe-popups-container, .mwe-popups .mwe-popups-extract {\n    background-color: #252526 !important;\n    color: #d4d4d4;\n}\n\n.mwe-popups .mwe-popups-extract[dir='ltr']:after, .mwe-popups .mwe-popups-extract[dir='rtl']:after {\n    left: 0;\n    background-image: unset;\n}\n\n.mwe-popups .mwe-popups-settings-icon:hover {\n    background-color: #333;\n}\n\n.mwe-popups .mwe-popups-settings-icon:active {\n    background-color: #1e1e1e;\n}\n\n.rt-tooltip, .rt-tooltipTail::after, .rt-tooltipTail:after {\n    background-color: #252526;\n    border-color: #333;\n    color: #d4d4d4;\n}\n\n.rt-tooltipTail {\n    background: linear-gradient(to top right,#333 50%,rgba(0,0,0,0) 50%) !important;\n}\n\n.mw-sidebar, .sidebar, .toc, .toccolours, .sidebar-toc, .thumb, .thumbinner, .mp-bordered, table.fmbox, .bandeau-container, .catlinks {\n    background: #252526 !important;\n    border: 1px solid #333 !important;\n}\n\n.sidebar-toc:after {\n    background: revert;\n}\n\n.mw-prefs-buttons {\n    background-color: #1e1e1e !important;\n    border-color: #333 !important;\n}\n\n.mw-ui-button.mw-ui-quiet, .mw-ui-button.mw-ui-quiet.mw-ui-progressive, .mw-ui-button.mw-ui-quiet.mw-ui-destructive {\n    color: #54595d;\n}\n\n.mw-mmv-image img.gif, .mw-mmv-image img.png, .mw-mmv-image img.svg, .mw-mmv-image img.tiff, .mw-mmv-image img.tif { /* @thx https://www.magicpattern.design/tools/css-backgrounds */\n    background-color: #888;\n    background-image:  repeating-linear-gradient(45deg, #777 25%, transparent 25%, transparent 75%, #777 75%, #777), repeating-linear-gradient(45deg, #777 25%, #888 25%, #888 75%, #777 75%, #777);\n    background-position: 0 0, 10px 10px;\n    background-size: 20px 20px;\n}\n\n.mw-mmv-post-image, .mw-message-box {\n    background-color: #333;\n    border-color: #54595d;\n    color: #ccc;\n}\n\n.mw-mmv-image-metadata {\n    background-color: #1e1e1e\n}\n\n.oo-ui-panelLayout-framed {\n    border-color: #333 !important;\n}\n\n.oo-ui-tabSelectWidget-framed {\n    background-color: #2d2d2d;\n}\n\n.oo-ui-tabSelectWidget-framed .oo-ui-tabOptionWidget.oo-ui-optionWidget-selected {\n    background-color: #54595d;\n}\n\n.oo-ui-tabSelectWidget-framed .oo-ui-tabOptionWidget.oo-ui-optionWidget-selected .oo-ui-labelElement-label {\n    border-bottom-color: #54595d;\n}\n\n.oo-ui-tabOptionWidget > .oo-ui-labelElement-label {\n    color: #888;\n}\n\n.oo-ui-dropdownWidget.oo-ui-widget-enabled .oo-ui-dropdownWidget-handle, .oo-ui-dropdownWidget.oo-ui-widget-enabled.oo-ui-dropdownWidget-open .oo-ui-dropdownWidget-handle, .oo-ui-menuSelectWidget {\n    background-color: #54595d;\n    color: #000;\n}\n\n.thumbimage {\n    background-color: #888;\n    border: 1px solid #888;\n}\n\n.infobox, .infobox_v2, .wikitable, .metadata, .sistersitebox, .autres-projets, .mw-parser-output .quotebox {\n    background-color: #252526 !important;\n    border: 1px solid #333 !important;\n    color: #93999f;\n}\n\n.infobox-header, .wikitable > tr > th, .wikitable > * > tr > th {\n    background-color: #37373d !important;\n}\n\n.wikitable > tr > th, .wikitable > tr > td, .wikitable > * > tr > th, .wikitable > * > tr > td {\n    border: 1px solid #54595d;\n}\n\nbody {\n    color: #d4d4d4;\n    background-color: #151515;\n}\n\na, .sidebar-toc .sidebar-toc-list-item a {\n    color: #36c;\n}\n\na:visited, .sidebar-toc .sidebar-toc-list-item a {\n    color: #2a4b8d;\n}\n\nh1, h2 {\n    border-bottom: 1px solid #2d2d2d;\n}\n\nh1, h2, h3, h4, h5, h6 {\n    color: #fff;\n}\n\nhr {\n    border-bottom: 1px solid #333;\n}\n\nul {\n    list-style-image: unset;\n}\n\n.lang-list-border {\n    background-color: #93999f;\n}\n\n.lang-list-container {\n    background-color: #333;\n}\n\n.lang-list-button, .lang-list-active .lang-list-button, .lang-list-button:hover {\n    outline: #151515;\n    background-color: #ccc;\n}\n\n.lang-list-content, .bookshelf .text {\n    background-color: #333;\n}\n\n.uls-menu {\n    border-color: #333 !important;\n}\n\n.uls-menu div {\n    background-color: #252526 !important;\n    border-color: #333 !important;\n    border-radius: unset !important;\n}\n\n.uls-menu input {\n    background-color: #252526;\n    color: #d4d4d4;\n}\n\n.uls-language-block > ul > li:hover {\n    background-color: #1e1e1e !important;\n}\n\n.bookshelf {\n    border-top: 1px solid #3c3c3c;\n}\n\n.other-project-link:hover {\n    background-color: #37373d;\n}\n\n.app-badges .footer-sidebar-content {\n    background-color: #1e1e1e;\n}\n\n.cbnnr-main {\n    background-color: #333;\n}\n\n.cbnnr-message {\n    color: #93999f;\n}\n\n.vector-menu-tabs li {\n    background: #2d2d2d;\n}\n\n.vector-menu-tabs .selected {\n    background-color: #333;\n}\n\n.vector-menu-tabs, .vector-menu-tabs a, #mw-head .vector-menu-dropdown h3 {\n    background-image: linear-gradient(to bottom,#333 0,#1e1e1e 100%);\n}\n\n.vector-menu-tabs .selected a, .vector-menu-tabs .selected a:visited {\n    color: #93999f;\n}\n\n.vector-menu-portal h3 {\n    color: #93999f !important;\n    background-image: linear-gradient(to right,#252526 0,#858585 33%,#858585 66%,#252526 100%);\n}\n\n#vector-sticky-header {\n    background-color: #252526;\n    border-color: #333;\n}\n\n#searchInput, .wvui-typeahead-search, .wvui-input__input, .wvui-button--framed {\n    background-color: #3c3c3c !important;\n    border: 1px solid #333 !important;\n    color: #c4c4c4 !important;\n}\n\n.wvui-typeahead-search__suggestions, .suggestions-dropdown {\n    background-color: #252526;\n    border: 1px solid #333;\n}\n\n.wvui-typeahead-search__suggestions__footer, .suggestion-link {\n    border: 1px solid #333;\n    color: #ccc;\n}\n\n.wvui-typeahead-suggestion__title, .suggestion-title, .suggestion-link.active .suggestion-title {\n    color: #ccc;\n}\n\n.wvui-typeahead-suggestion__description, .suggestion-description {\n    color: #93999f !important;\n}\n\n.wvui-typeahead-suggestion--active, .wvui-typeahead-search__suggestions__footer--active, .suggestion-link.active {\n    background-color: #094771;\n    color: #fff;\n}\n\n.vector-user-links .vector-user-menu-more .vector-menu-content-list li a {\n    color: #93999f\n}\n\n.navbox {\n    background-color: #3c3c3c !important;\n    border-color: #54595d !important;\n}\n\n.navbox-even {\n    background-color: #333 !important;\n}\n\n.navbox-title {\n    background-color: #2a2a51 !important;\n}\n\n.navbox-group {\n    background-color: #353564 !important;\n}\n\n.navbox-list, .navbox-group {\n    border-color: #3c3c3c !important;\n}\n\nimg.mwe-math-fallback-image-inline {\n    filter: invert(.84);\n}\n\npre, code, .mw-code {\n    background-color: #272822; color: #f8f8f2;\n    border: 1px solid #37373d;\n}\n\n/* Monokai (@thx https://help.fandom.com/wiki/Extension:SyntaxHighlight/Styling) */\n.mw-highlight .hll { background-color: #49483e }\n.mw-highlight  { background: #272822; color: #f8f8f2 }\n.mw-highlight .c { color: #75715e }\n.mw-highlight .err { color: #960050; background-color: #1e0010 }\n.mw-highlight .k { color: #66d9ef }\n.mw-highlight .l { color: #ae81ff }\n.mw-highlight .n { color: #f8f8f2 }\n.mw-highlight .o { color: #f92672 }\n.mw-highlight .p { color: #f8f8f2 }\n.mw-highlight .ch { color: #75715e }\n.mw-highlight .cm { color: #75715e }\n.mw-highlight .cp { color: #75715e }\n.mw-highlight .cpf { color: #75715e }\n.mw-highlight .c1 { color: #75715e }\n.mw-highlight .cs { color: #75715e }\n.mw-highlight .gd { color: #f92672 }\n.mw-highlight .ge { font-style: italic }\n.mw-highlight .gi { color: #a6e22e }\n.mw-highlight .gs { font-weight: bold }\n.mw-highlight .gu { color: #75715e }\n.mw-highlight .kc { color: #66d9ef }\n.mw-highlight .kd { color: #66d9ef }\n.mw-highlight .kn { color: #f92672 }\n.mw-highlight .kp { color: #66d9ef }\n.mw-highlight .kr { color: #66d9ef }\n.mw-highlight .kt { color: #66d9ef }\n.mw-highlight .ld { color: #e6db74 }\n.mw-highlight .m { color: #ae81ff }\n.mw-highlight .s { color: #e6db74 }\n.mw-highlight .na { color: #a6e22e }\n.mw-highlight .nb { color: #f8f8f2 }\n.mw-highlight .nc { color: #a6e22e }\n.mw-highlight .no { color: #66d9ef }\n.mw-highlight .nd { color: #a6e22e }\n.mw-highlight .ni { color: #f8f8f2 }\n.mw-highlight .ne { color: #a6e22e }\n.mw-highlight .nf { color: #a6e22e }\n.mw-highlight .nl { color: #f8f8f2 }\n.mw-highlight .nn { color: #f8f8f2 }\n.mw-highlight .nx { color: #a6e22e }\n.mw-highlight .py { color: #f8f8f2 }\n.mw-highlight .nt { color: #f92672 }\n.mw-highlight .nv { color: #f8f8f2 }\n.mw-highlight .ow { color: #f92672 }\n.mw-highlight .w { color: #f8f8f2 }\n.mw-highlight .mb { color: #ae81ff }\n.mw-highlight .mf { color: #ae81ff }\n.mw-highlight .mh { color: #ae81ff }\n.mw-highlight .mi { color: #ae81ff }\n.mw-highlight .mo { color: #ae81ff }\n.mw-highlight .sa { color: #e6db74 }\n.mw-highlight .sb { color: #e6db74 }\n.mw-highlight .sc { color: #e6db74 }\n.mw-highlight .dl { color: #e6db74 }\n.mw-highlight .sd { color: #e6db74 }\n.mw-highlight .s2 { color: #e6db74 }\n.mw-highlight .se { color: #ae81ff }\n.mw-highlight .sh { color: #e6db74 }\n.mw-highlight .si { color: #e6db74 }\n.mw-highlight .sx { color: #e6db74 }\n.mw-highlight .sr { color: #e6db74 }\n.mw-highlight .s1 { color: #e6db74 }\n.mw-highlight .ss { color: #e6db74 }\n.mw-highlight .bp { color: #f8f8f2 }\n.mw-highlight .fm { color: #a6e22e }\n.mw-highlight .vc { color: #f8f8f2 }\n.mw-highlight .vg { color: #f8f8f2 }\n.mw-highlight .vi { color: #f8f8f2 }\n.mw-highlight .vm { color: #f8f8f2 }\n.mw-highlight .il { color: #ae81ff }\n",
+        "regexps": [
+          "https?://.*.(wikipedia|wiktionary).org/.*"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - MyAnimeList",
+    "id": 40,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body:not(.ownlist),\n.page-common #headerSmall, .page-common #contentWrapper {\n    background-color: #000 !important;\n    color: #CCCCCC !important;\n}\n\n.page-common #horiznav_nav ul li {\n    background-color: #222;\n}\n\n.page-common #horiznav_nav ul li a,\n.page-common .header-profile.link-bg {\n    background-color: #ffffff09;\n}\n\n.user-status-block .form-user-score,\n.user-status-block .form-user-episode,\n.user-status-block .form-user-episode input[type=text],\n.user-status-block .form-user-episode.completed input[type=text],\n.user-profile .user-compatability-graph .bar-outer,\n.user-profile .user-function .icon-user-function,\n.seasonal-anime-list .seasonal-anime,\n.seasonal-anime-list .seasonal-anime .prodsrc,\n.seasonal-anime-list .seasonal-anime .genres,\n.seasonal-anime-list .seasonal-anime .information {\n    background-color: #333 !important;\n    border-color: #444 !important;\n    color: #ccc;\n}\n\n.page-forum .forum_boardrow1 {\n    background-color: #222;\n    color: #ccc;\n}\n\n.page-forum .forum_boardrow2 {\n    background-color: #ffffff09;\n}\n\n.page-common .dark_text, .page-common .dark_text:hover, .page-common .dark_text:visited {\n    color: #888;\n}\n\n.page-common .h1 {\n    background-color: #19294d;\n    border-color: #444 !important;\n    color: #ccc;\n}\n\n.page-common h2 {\n    color: #ddd !important;\n}\n\n.detail-characters-list .left-column table:nth-of-type(even), .detail-characters-list .left-right table:nth-of-type(even) {\n    background-color: #ffffff09;\n}\n\n.anime-detail-header-stats .stats-block,\n.anime-detail-header-stats .user-status-block {\n    background-color: #ffffff09;\n    border: #444 1px solid !important;\n}\n\n.anime-detail-header-stats .stats-block .numbers,\n.anime-detail-header-stats .stats-block .score,\n.anime-detail-header-stats .stats-block .score:after,\n.btn-detail-recommendations-view-all .text {\n    color: #ffffffc8;\n}\n\n.anime-detail-header-stats .stats-block:before,\n.btn-detail-recommendations-view-all,\n.page-common .bg-color-base5 {\n    background-color: #444;\n}\n\n.oped-video-button, .oped-preview-button {\n    filter: invert(.6) !important;\n}\n\n.page-common #content {\n    background-color: #222 !important;\n    border: #444 1px solid !important;\n}\n\n.page-common h2, .page-common .border_top, .page-common .borderClass, .page-common .borderDark,\n.detail-characters-list .left-column.divider:after,\n.spaceit.textReadability.word-break.pt8.mt8,\n.page-forum .forum_boardrow1, .page-forum .forum_boardrow2 {\n    border-color: #444 !important;\n}\n\n.page-common div.picSurround img {\n    background-color: #000;\n    border: 1px solid #444;\n}\n\n.page-common .bgColor1,\n.user-profile .user-status li,\n.profile .user-comments .comment,\n.seasonal-anime-list .seasonal-anime .properties .property,\n.seasonal-anime-list .seasonal-anime .properties .property:nth-child(even) {\n    background-color: #282828;\n}\n\n.page-common .bgColor2,\n.user-profile .user-status li:nth-of-type(even),\n.profile .user-comments .comment:nth-of-type(odd) {\n    background-color: #303030;\n}\n\n.page-common textarea.textarea {\n    background-color: #333;\n    border-color: #444;\n}\n\n.page-common #footer-block {\n    background-color: #15264c;\n}\n\n.review-element {\n    background-color: #222;\n}\n.review-element .thumbbody .body .text {\n    color: #ddd;\n}\n\n.js-truncate-outer .btn-truncate {\n    filter: invert(.867);\n}\n\n#fancybox-outer {\n    background-color: #555;\n}\n#dialog {\n    border-color: #666;\n}\n\na {\n    color: #608dff !important;\n    text-decoration: none;\n}\n\na:hover {\n    color: #637ab5 !important;\n    text-decoration: underline;\n}\n\na:visited {\n    color: #637ab5 !important;\n}\n",
+        "domains": [
+          "myanimelist.net"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - protectedText",
+    "id": 41,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "#main-content-outter {\n    background-color: #151515;\n}\n\n.textarea-contents {\n    color: #d4d4d4 !important;\n    background-color: #252526;\n    border-color: #333 !important;\n}\n\n.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {\n    color: #0645ad;\n}\n\n#tabs li, #add_tab {\n    background: #2d2d2d;\n    border-color: #1e1e1e;\n}\n\n#tabs .ui-icon.ui-icon-close {\n    filter: brightness(1.33);\n}\n\n#tabs li.ui-tabs-active, #tabs li.ui-state-active {\n    color: #93999f;\n    background-color: #333;\n    border-color: #111;\n}\n\n#tabs li.ui-tabs-active a, #add_tab .ui-button-text {\n    color: #93999f;\n}\n\nbutton.ui-state-default {\n    filter: brightness(0.7);\n}\n\n.homepage-hline-darker {\n    background-color: hsl(218, 53%, 32%)\n}\n\n.homepage-hline-lighter {\n    background-color: hsl(218, 53%, 23%);\n}\n\nbody, #homepage-second-div {\n    color: #d4d4d4;\n    background-color: #252526;\n}\n\n#homepage-second-div h2, #homepage-second-div h3, #content-holder h2, #content-holder h3 {\n    color: hsl(207, 93%, 46%);\n}\n\n#content-holder {\n    color: revert;\n}\n\n#content-holder b {\n    color: hsl(207, 93%, 38%);\n}\n",
+        "domains": [
+          "protectedtext.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - npm",
+    "id": 42,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body, :root {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n}\n\nheader>div {\n    background-color: #333 !important;\n}\nheader div>a>svg>path {\n    fill: #ccc;\n}\nheader>div>div>span {\n    color: #ccc !important;\n}\nheader nav a {\n    color: #ccc !important;\n}\nheader #search>div>div:last-of-type {\n    background-color: #3c3c3c !important;\n}\nheader #search>div>ul * {\n    background-color: #3c3c3c !important;\n    border-color: #54595d !important;\n    color: #d4d4d4 !important;\n}\nheader #search>div {\n    border-color: #54595d;\n}\nheader #search>button, header #search input {\n    color: #ccc\n}\nheader div>nav>button {\n    background-color: #333 !important;\n}\nheader div>nav>span>div {\n    background-color: #2d2d2d !important;\n    border-color: #54595d !important;\n}\nheader div>nav>span>div::before {\n    border-bottom-color: #54595d !important;\n}\nheader div>nav>span>div>h2>span {\n    color: #fff !important;\n}\nheader div>nav>span>div::after {\n    border-bottom-color: #2d2d2d !important;\n}\nheader {\n    border-color: #54595d !important;\n}\n\nmain {\n    background-color: #1e1e1e !important;\n    color: #d4d4d4 !important;\n}\nmain h2>span {\n    color: #fff;\n}\nmain>div>div>span:first-of-type, main>div>div>span:last-of-type {\n    color: #93999f;\n}\nmain article p, main article li, main article strong {\n    color: #d4d4d4 !important;\n}\nmain article h1, main article h2, main article h3, main article h4, main article h5, main article h6 {\n    color: #fff !important;\n    border-color: #54595d !important;\n}\nmain section>div>h2 {\n    color: #fff !important;\n}\nmain article code, main article pre {\n    background-color: #2d2d2d !important;\n    color: #f8f8f2;\n    border-color: #37373d;\n}\nmain article blockquote {\n    background-color: #37373d !important;\n    border-color: #85857F !important;\n}\n\nmain div>div>p, main div>div>p>a, main div>div>p>a>span>svg>g {\n    color: #d4d4d4 !important;\n    fill: #d4d4d4;\n}\n/*main div>div>p:has(code):hover {\n    background-color: hsl(120, 100%, 12%) !important;\n}*/\nmain div>div>p>svg {\n    fill: #54595d !important;\n}\nmain div>div>p>code>span {\n    border-color: #54595d !important;\n}\nmain div>div>h3>svg {\n    fill: #54595d !important;\n}\n\nmain>div, main>div>div {\n    background-color: #1e1e1e !important;\n    color: #d4d4d4 !important;\n}\nmain>div>div {\n    border-color: #333 !important;\n}\nmain div>div>div>h2 {\n    color: #fff !important;\n}\nmain div>div>div>h3 {\n    color: #ccc !important;\n}\nmain>div>div>div>div>ul>li>a {\n    background-color: #1e1e1e !important;\n    border-color: #333 !important;\n    color: #d4d4d4 !important;\n}\nmain>div>div>div>ul>li>section {\n    border-color: #333 !important;\n}\nmain>div>div>div>ul>li>section * {\n    color: #d4d4d4 !important;\n}\nmain>div>div>div>ul>li>section h3 {\n    color: #fff !important;\n}\n\nmain>div>div>div>div>ul>li>section {\n    border-color: #333 !important;\n}\nmain>div>div>div>div>ul>li>section * {\n    color: #d4d4d4 !important;\n}\nmain>div>div>div>div>ul>li>section h3 {\n    color: #fff !important;\n}\nmain div>div>div>h2 span {\n    color: #fff !important;\n}\n\nmain>div>div>section h3 {\n    color: #fff !important;\n}\nmain>div>div>section p {\n    color: #d4d4d4 !important;\n}\nmain>div>div>section div a {\n    color: #d4d4d4 !important;\n}\nmain>div>div>section div span {\n    color: #54595d !important;\n}\n\nmain>div>div>div>nav>div>a {\n    background-color: #333 !important;\n    border-color: #54595d !important;\n}\nmain aside p, main aside b {\n    color: #d4d4d4 !important\n}\n\nfooter {\n    background-color: #252526;\n    color: #d4d4d4;\n}\nfooter #footer {\n    background-color: #252526;\n    color: #d4d4d4;\n}\nfooter div>h3 {\n    color: #ccc !important;\n}\nfooter ul>li>a {\n    color: #d4d4d4 !important;\n}\n\n.markdown .keyword,\n.markdown .storage,\n.markdown .storage.type {\n    color: #0366d6;\n}\n\n.markdown table {\n    border: 0px !important;\n}\n.markdown td, .markdown th {\n    border: 0px;\n    background-color: #2d2d2d;\n    color: #d4d4d4;\n}\n.markdown tr:nth-child(2n) td {\n    background-color: #313131;\n}\n\n/*!\n * GitHub Dark v0.5.0\n * Copyright (c) 2012 - 2017 GitHub, Inc.\n * Licensed under MIT (https://github.com/primer/github-syntax-theme-generator/blob/master/LICENSE)\n */\n\n.pl-c /* comment, punctuation.definition.comment, string.comment */ {\n  color: #959da5;\n}\n\n.pl-c1 /* constant, entity.name.constant, variable.other.constant, variable.language, support, meta.property-name, support.constant, support.variable, meta.module-reference, markup.quote, markup.raw, meta.diff.header */,\n.pl-s .pl-v /* string variable */ {\n  color: #c8e1ff;\n}\n\n.pl-e /* entity */,\n.pl-en /* entity.name */ {\n  color: #b392f0;\n}\n\n.pl-smi /* variable.parameter.function, storage.modifier.package, storage.modifier.import, storage.type.java, variable.other */,\n.pl-s .pl-s1 /* string source */ {\n  color: #f6f8fa;\n}\n\n.pl-ent /* entity.name.tag */ {\n  color: #7bcc72;\n}\n\n.pl-k /* keyword, storage, storage.type */ {\n  color: #ea4a5a;\n}\n\n.pl-s /* string */,\n.pl-pds /* punctuation.definition.string, source.regexp, string.regexp.character-class */,\n.pl-s .pl-pse .pl-s1 /* string punctuation.section.embedded source */,\n.pl-sr /* string.regexp */,\n.pl-sr .pl-cce /* string.regexp constant.character.escape */,\n.pl-sr .pl-sre /* string.regexp source.ruby.embedded */,\n.pl-sr .pl-sra /* string.regexp string.regexp.arbitrary-repitition */ {\n  color: #79b8ff;\n}\n\n.pl-v /* variable */,\n.pl-ml /* markup.list, sublimelinter.mark.warning */ {\n  color: #fb8532;\n}\n\n.pl-bu /* invalid.broken, invalid.deprecated, invalid.unimplemented, message.error, brackethighlighter.unmatched, sublimelinter.mark.error */ {\n  color: #d73a49;\n}\n\n.pl-ii /* invalid.illegal */ {\n  color: #fafbfc;\n  background-color: #d73a49;\n}\n\n.pl-c2 /* carriage-return */ {\n  color: #fafbfc;\n  background-color: #d73a49;\n}\n\n.pl-c2::before /* carriage-return */ {\n  content: \"^M\";\n}\n\n.pl-sr .pl-cce /* string.regexp constant.character.escape */ {\n  font-weight: bold;\n  color: #7bcc72;\n}\n\n.pl-mh /* markup.heading */,\n.pl-mh .pl-en /* markup.heading entity.name */,\n.pl-ms /* meta.separator */ {\n  font-weight: bold;\n  color: #0366d6;\n}\n\n.pl-mi /* markup.italic */ {\n  font-style: italic;\n  color: #f6f8fa;\n}\n\n.pl-mb /* markup.bold */ {\n  font-weight: bold;\n  color: #f6f8fa;\n}\n\n.pl-md /* markup.deleted, meta.diff.header.from-file, punctuation.definition.deleted */ {\n  color: #b31d28;\n  background-color: #ffeef0;\n}\n\n.pl-mi1 /* markup.inserted, meta.diff.header.to-file, punctuation.definition.inserted */ {\n  color: #176f2c;\n  background-color: #f0fff4;\n}\n\n.pl-mc /* markup.changed, punctuation.definition.changed */ {\n  color: #b08800;\n  background-color: #fffdef;\n}\n\n.pl-mi2 /* markup.ignored, markup.untracked */ {\n  color: #2f363d;\n  background-color: #959da5;\n}\n\n.pl-mdr /* meta.diff.range */ {\n  font-weight: bold;\n  color: #b392f0;\n}\n\n.pl-mo /* meta.output */ {\n  color: #0366d6;\n}\n\n.pl-ba /* brackethighlighter.tag, brackethighlighter.curly, brackethighlighter.round, brackethighlighter.square, brackethighlighter.angle, brackethighlighter.quote */ {\n  color: #ffeef0;\n}\n\n.pl-sg /* sublimelinter.gutter-mark */ {\n  color: #6a737d;\n}\n\n.pl-corl /* constant.other.reference.link, string.other.link */ {\n  text-decoration: underline;\n  color: #79b8ff;\n}\n",
+        "domains": [
+          "npmjs.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - MDN Web Docs",
+    "id": 43,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "#root, .page-header-main, ul.main-menu {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n}\n\n.hero {\n    background-color: #00438a;\n}\n\n.hero-content h1 {\n    background-color: #2d2d2d;\n}\n\n.hero-content a {\n    color: #1e1e1e !important;\n}\n\n.hero-content a:visited {\n    color: #2d2d2d !important;\n}\n\n.logo>svg {\n    fill: #ccc;\n}\n\n.breadcrumb-locale-container, .metadata {\n    background-color: #333;\n}\n\n.breadcrumbs-container li .breadcrumb-penultimate:after,\n.breadcrumbs-container li .breadcrumb:after,\nul.language-toggle .language-icon:before {\n    filter: invert(.6);\n}\n\nul.main-menu .top-level-entry:before {\n    filter: invert(.8);\n}\n\nbutton.top-level-entry {\n    color: #ccc;\n}\n\ninput#main-q {\n    background-color: #1e1e1e;\n    border-color: #54595d;\n    color: #ccc;\n}\n\n.search-button {\n    filter: invert(.88);\n}\n\n#downshift-0-menu * {\n    background-color: #333 !important;\n}\n\n.main-page-content h1,\n.main-page-content h2 a:link, .main-page-content h2 a:visited,\n.main-page-content h3 a:link, .main-page-content h3 a:visited {\n    color: #fff !important;\n}\n\ntable {\n    border-color: #37373d !important;\n}\n\ntable th {\n    background-color: #1e1e1e;\n    border-color: #37373d !important;\n}\n\ntable td {\n    background-color: #2d2d2d;\n    border-color: #37373d !important;\n}\n\na {\n    color: #36c !important;\n}\n\na:visited {\n    color: #2a4b8d !important;\n}\n\n.callout p, .notecard.note {\n    color: #2d2d2d;\n}\n\n.search-results .highlight, .search-results .summary {\n    color: #d4d4d4;\n}\n\npre, code {\n    background-color: #2d2d2d;\n    color: #f8f8f2;\n}\n\n.interactive {\n    filter: invert(.88); /* styling an iframe is haha */\n}\n\n.main-page-content .inline.optional, .main-page-content .inline.readonly {\n    background-color: #000;\n}\n\n.bc-table th {\n    background-color: #2d2d2d;\n}\n\n.bc-browsers *:before, .bc-platforms *:before {\n    filter: invert(.8);\n}\n\n/* PrismJS 1.25.0\nhttps://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript\n\"minimal\", the same MDN does */\n\n.token.block-comment,\n.token.cdata,\n.token.comment,\n.token.doctype,\n.token.prolog {\n    color: #999\n}\n\n.token.punctuation {\n    color: #ccc\n}\n\n.token.attr-name,\n.token.deleted,\n.token.namespace,\n.token.tag {\n    color: #e2777a\n}\n\n.token.function-name {\n    color: #6196cc\n}\n\n.token.boolean,\n.token.function,\n.token.number {\n    color: #f08d49\n}\n\n.token.class-name,\n.token.constant,\n.token.property,\n.token.symbol {\n    color: #f8c555\n}\n\n.token.atrule,\n.token.builtin,\n.token.important,\n.token.keyword,\n.token.selector {\n    color: #cc99cd\n}\n\n.token.attr-value,\n.token.char,\n.token.regex,\n.token.string,\n.token.variable {\n    color: #7ec699\n}\n\n.token.entity,\n.token.operator,\n.token.url {\n    color: #67cdcc\n}\n\n.token.bold,\n.token.important {\n    font-weight: 700\n}\n\n.token.italic {\n    font-style: italic\n}\n\n.token.entity {\n    cursor: help\n}\n\n.token.inserted {\n    color: green\n}\n",
+        "domains": [
+          "developer.mozilla.org"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - man7",
+    "id": 44,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "html, body {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n    border-color: #727272;\n}\n\nbody {\n    margin-left: calc(50vw - 390.5px);\n    margin-right: calc(50vw - 390.5px);\n}\n\na {\n    color: #0052cc;\n}\n\nb {\n    color: #8f3900;\n}\n\ni {\n    color: #007500;\n}\n\nh2 {\n    color: #c70000;\n}\n\nh3 {\n    color: #8a0000;\n}\n\ndiv.nav-bar, div.footer, .listing {\n    background-color: #313131;\n}\n\nhr.nav-end, hr.start-footer, hr.end-footer, hr.end-man-text, hr {\n    border-color: #727272;\n}\n",
+        "domains": [
+          "man7.org"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - linux.die.net",
+    "id": 45,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n    border-color: #727272;\n}\n\n#bg {\n    max-width: revert;\n}\n\n#content {\n    margin-left: 200px;\n    overflow-y: hidden;\n}\n@media only screen and (min-width: 900px) {\n    #content {\n        margin-left: 25vw;\n        padding-right: calc(50vw - 300px);\n    }\n}\n\n#logo, #menu {\n    width: 150px;\n    max-width: 180px;\n    border-bottom: revert;\n    border-right: 2px solid #727272;\n    position: fixed;\n}\n\n#logo img {\n    margin-left: auto;\n    display: block;\n}\n\n#menu {\n    height: 100vh;\n}\n\n#news {\n    background-color: #313131;\n}\n\n.gsc-control-cse, .gsc-control-cse * {\n    background-color: #313131 !important;\n    border-color: #727272 !important;\n}\n.gs-webResult .gs-snippet, .gs-fileFormatType {\n    color: #d4d4d4 !important;\n}\n.gs-result .gs-title *, .gsc-cursor-page, .gs-spelling a {\n    color: #ae160c !important;\n}\n.gs-webResult div.gs-visibleUrl, .gcsc-find-more-on-google {\n    color: #86363a;\n}\n\nh1, h2 {\n    color: #8f0000;\n}\n\na {\n/*     color: #ae160c; */\n    color: #0052cc;\n}\n\nb {\n/*     color: #8e2626; */\n    color: #8f3900;\n}\n\ni {\n/*     color: #407b11; */\n    color: #007500;\n}\n",
+        "domains": [
+          "die.net"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - opengroup.org",
+    "id": 46,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body, h1, h2, h3, h4, h5, h6, p, li {\n    background-color: #1e1e1e;\n}\n\n.nav, div.box, table {\n    background-color: #313131;\n}\n\nbody, p, li {\n    color: #d4d4d4;\n}\n\na {\n    color: #0052cc !important;\n}\n\nhr {\n    border-color: #727272;\n}\n",
+        "domains": [
+          "pubs.opengroup.org"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - invisible-island",
+    "id": 47,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body, h1, h2, h3, h4, h5, h6, p, li {\n    background-color: #1e1e1e;\n}\n\n.nav, .nav *, div.box {\n    background-color: #313131;\n}\n\n*.nav-top, *.nav-top *{\n    background-color: #727272;\n}\n\nbody, p, li {\n    color: #d4d4d4;\n}\n\na {\n    color: #0052cc;\n}\n\nhr {\n    border-color: #727272;\n}\n",
+        "domains": [
+          "invisible-island.net"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - lfs",
+    "id": 48,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body, * {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n}\n\nh1, h2, h3, h4, h5, h6, b, .strong {\n    color: #e1e1e1;\n}\n\n.book h1, .book .authorgroup, .book .copyright, .book .legalnotice .revhistory,\n.preface h2, .part h1, .chapter h2, .appendix h2, .index h1, .sect1 h2,\ndiv.author *, .book .titlepage, .book .titlepage *,\ndiv.navbar, div.navbar *, #leftmenu ul, #leftmenu ul *,\ndiv.navheader ul, div.navfooter ul,\ndiv.navfooter * {\n    background-color: #313131;\n}\n\n.preface h2, .part h1, .chapter h2, .appendix h2, .index h1, .sect1 h2,\ndiv.navbar, div.navbar *, #leftmenu ul, #leftmenu ul * {\n    border-color: #727272;\n}\n\n.book h2.subtitle, .book hr,\n.book h2.subtitle *, .book hr * {\n    background-color: #424670;\n}\n\ndiv.navheader, div.navfooter {\n    background-color: #727272;\n    border: 0px;\n}\n\npre.userinput, pre.screen, pre code, pre kbd {\n    background-color: #141414;\n    color: #d4d4d4;\n}\n\ndiv.note, div.tip,\ndiv.note *, div.tip *,\ndiv.important, div.warning, div.caution,\ndiv.important *, div.warning *, div.caution *,\n.lfs .package,\n.lfs .configuration,\n.lfs .content ,\n.lfs .package *,\n.lfs .configuration *,\n.lfs .content  * {\n    background-color: #313131;\n    border-color: #727272;\n}\n\na {\n    color: #0052cc !important;/**/\n}\n",
+        "domains": [
+          "linuxfromscratch.org"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - stackexchange",
+    "id": 50,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background: #151515;\n    color: #d4d4d4 !important;\n}\n\ndiv#content {\n    background-color: #1e1e1e;\n    border-color: #727272;\n}\n\nh1 a {\n    color: #e1e1e1 !important;\n}\n\npre,\ncode,\npre code {\n    background-color: #141414 !important;\n    color: #d4d4d4 !important;\n}\n\nselect,\ninput,\ntextarea,\n.wmd-button-bar,\n.wmd-button-row,\n.s-sidebarwidget,\n.s-sidebarwidget *,\naside,\nheader.s-topbar {\n    background-color: #313131 !important;\n    border-color: #727272 !important;\n    color: #d4d4d4 !important;\n}\n\nblockquote {\n    color: #a3a3a3 !important;\n}\n\n.post-tag,\n.geo-tag,\n.container .chosen-choices .search-choice,\n.container .chosen-container-multi .chosen-choices li.search-choice,\nheader.site-header,\nfooter.site-footer {\n    background-color: revert;\n    border-color: revert;\n}",
+        "domains": [
+          "stackexchange.com",
+          "stackoverflow.com",
+          "superuser.com",
+          "askubuntu.com",
+          "serverfault.com",
+          "mathoverflow.net",
+          "stackapps.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - gnu.org",
+    "id": 51,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "html {\n    background-color: #111;\n}\n\nbody {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n    border-color: #727272;\n}\n\ndiv.header {\n    color: #766;\n}\n\nhr {\n    border-color: #727272;\n}\n\nh1, h2, h3, h4, h5, h6, dt, code {\n    color: #ccc;\n}\n\ndiv.example, pre.example,\ndiv.lisp,\ndiv > pre {\n    background-color: #313131 !important;\n    border-color: #727272;\n}\n\n.syntax-symbol,\n.syntax-default {\n    background-color: #313131;\n    color: #c1448c;\n}\n\n.syntax-comment {\n    color: #aaa;\n}\n\na[href].syntax-symbol {\n    background-color: #313131;\n    color: #3c82c8 !important;\n}\n\na {\n    color: #0052cc;\n}\n\na:visited {\n    color: #164182 !important;\n}\n",
+        "regexps": [
+          "https://\\w+\\.gnu\\.org/.*?manual/.*",
+          "https://\\w+\\.gnu\\.org/.*?standards/.*"
+        ]
+      },
+      {
+        "code": "body {\n    margin-left: calc(50vw - 390.5px);\n    margin-right: calc(50vw - 390.5px);\n}\n",
+        "urlPrefixes": [
+          "https://www.gnu.org/software/libc",
+          "https://www.gnu.org/savannah-checkouts/gnu/libc"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - llvm.org",
+    "id": 52,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n    border-color: #727272;\n}\n\n.doc_code, .literal-block, .rel_boxtext, #menu a {\n    background-color: #313131 !important;\n    border-color: #727272;\n}\n\n.doc_title, .doc_section, .doc_subsection, h1, h2,\n.www_sectiontitle, .www_subsection, .www_sidebar,\n.rel_section {\n    filter: invert(.867);\n    color: #414141;\n    border: solid 1px #959595;\n}\n\nimg {\n    filter: invert(.808);\n    background-color: #888;\n    border: solid 1px #959595;\n}\n\na {\n    color: #608dff !important;\n    text-decoration: none;\n}\n\na:hover {\n    color: #637ab5 !important;\n    text-decoration: underline;\n}\n\na:visited {\n    color: #637ab5 !important;\n}\n",
+        "domains": [
+          "llvm.org"
+        ]
+      },
+      {
+        "code": "body {\n    margin-left: calc(50vw - 380.5px);\n    margin-right: calc(50vw - 380.5px);\n}\n",
+        "domains": [
+          "releases.llvm.org"
+        ]
+      },
+      {
+        "code": "body {\n    background-color: #000;\n}\n\ndiv.logo img {\n    filter: invert(1);\n    background-color: #fff;\n    border: none;\n}\n\ndiv.logo {\n    background-color: #000;\n}\n\ndiv.document {\n    background: #1e1e1e;\n}\n\ndiv.related ul {\n    background: #424242;\n    border-color: #727272;\n    overflow: hidden;\n}\n\ndiv.bodywrapper {\n    border-color: #727272;\n}\n\ndiv.footer {\n    background-color: #0e191b;\n}\n\ndiv.sphinxsidebar h3, div.sphinxsidebar h4 {\n    background-color: #3b4c4f;\n    color: revert;\n}\n\ndiv.topic, div.highlight > pre {\n    background-color: #313131;\n    border-color: #727272;\n}\n\n/*! Monokai theme; http://blog.favrik.com/2011/02/22/preview-all-pygments-styles-for-your-code-highlighting-needs/#stylesheetNavigator */\n.highlight, .highlight pre, .highlight table { background: #272822 !important; color: #f8f8f2 !important; }\n.highlight .hll { background-color: #49483e !important; }\n.highlight .c { color: #75715e !important; } /* Comment */\n.highlight .err { color: #960050 !important; background-color: #1e0010 !important; } /* Error */\n.highlight .k { color: #66d9ef !important; } /* Keyword */\n.highlight .l { color: #ae81ff !important; } /* Literal */\n.highlight .n, .highlight .h { color: #f8f8f2 !important; } /* Name */\n.highlight .o { color: #f92672 !important; } /* Operator */\n.highlight .p { color: #f8f8f2 !important; } /* Punctuation */\n.highlight .cm { color: #75715e !important; } /* Comment.Multiline */\n.highlight .cp { color: #75715e !important; } /* Comment.Preproc */\n.highlight .c1 { color: #75715e !important; } /* Comment.Single */\n.highlight .cs { color: #75715e !important; } /* Comment.Special */\n/*.highlight .ge { } /* Generic.Emph */\n/*.highlight .gs { } /* Generic.Strong */\n.highlight .kc { color: #66d9ef !important; } /* Keyword.Constant */\n.highlight .kd { color: #66d9ef !important; } /* Keyword.Declaration */\n.highlight .kn { color: #f92672 !important; } /* Keyword.Namespace */\n.highlight .kp { color: #66d9ef !important; } /* Keyword.Pseudo */\n.highlight .kr { color: #66d9ef !important; } /* Keyword.Reserved */\n.highlight .kt { color: #66d9ef !important; } /* Keyword.Type */\n.highlight .ld { color: #e6db74 !important; } /* Literal.Date */\n.highlight .m { color: #ae81ff !important; } /* Literal.Number */\n.highlight .s { color: #e6db74 !important; } /* Literal.String */\n.highlight .na { color: #a6e22e !important; } /* Name.Attribute */\n.highlight .nb { color: #f8f8f2 !important; } /* Name.Builtin */\n.highlight .nc { color: #a6e22e !important; } /* Name.Class */\n.highlight .no { color: #66d9ef !important; } /* Name.Constant */\n.highlight .nd { color: #a6e22e !important; } /* Name.Decorator */\n.highlight .ni { color: #f8f8f2 !important; } /* Name.Entity */\n.highlight .ne { color: #a6e22e !important; } /* Name.Exception */\n.highlight .nf { color: #a6e22e !important; } /* Name.Function */\n.highlight .nl { color: #f8f8f2 !important; } /* Name.Label */\n.highlight .nn { color: #f8f8f2 !important; } /* Name.Namespace */\n.highlight .nx { color: #a6e22e !important; } /* Name.Other */\n.highlight .py { color: #f8f8f2 !important; } /* Name.Property */\n.highlight .nt { color: #f92672 !important; } /* Name.Tag */\n.highlight .nv { color: #f8f8f2 !important; } /* Name.Variable */\n.highlight .ow { color: #f92672 !important; } /* Operator.Word */\n.highlight .w { color: #f8f8f2 !important; } /* Text.Whitespace */\n.highlight .mf { color: #ae81ff !important; } /* Literal.Number.Float */\n.highlight .mh { color: #ae81ff !important; } /* Literal.Number.Hex */\n.highlight .mi { color: #ae81ff !important; } /* Literal.Number.Integer */\n.highlight .mo { color: #ae81ff !important; } /* Literal.Number.Oct */\n.highlight .sb { color: #e6db74 !important; } /* Literal.String.Backtick */\n.highlight .sc { color: #e6db74 !important; } /* Literal.String.Char */\n.highlight .sd { color: #e6db74 !important; } /* Literal.String.Doc */\n.highlight .s2 { color: #e6db74 !important; } /* Literal.String.Double */\n.highlight .se { color: #ae81ff !important; } /* Literal.String.Escape */\n.highlight .sh { color: #e6db74 !important; } /* Literal.String.Heredoc */\n.highlight .si { color: #e6db74 !important; } /* Literal.String.Interpol */\n.highlight .sx { color: #e6db74 !important; } /* Literal.String.Other */\n.highlight .sr { color: #e6db74 !important; } /* Literal.String.Regex */\n.highlight .s1 { color: #e6db74 !important; } /* Literal.String.Single */\n.highlight .ss { color: #e6db74 !important; } /* Literal.String.Symbol */\n.highlight .bp { color: #f8f8f2 !important; } /* Name.Builtin.Pseudo */\n.highlight .vc { color: #f8f8f2 !important; } /* Name.Variable.Class */\n.highlight .vg { color: #f8f8f2 !important; } /* Name.Variable.Global */\n.highlight .vi { color: #f8f8f2 !important; } /* Name.Variable.Instance */\n.highlight .il { color: #ae81ff !important; } /* Literal.Number.Integer.Long */\n\nbody {\n    margin-left: calc(50vw - 600.5px);\n    margin-right: calc(50vw - 600.5px);\n}\n",
+        "urlPrefixes": [
+          "https://llvm.org/docs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - Git",
+    "id": 54,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background: #111;\n    color: #d4d4d4;\n}\n\n#main,\n#content-wrapper,\n#main .callout {\n    background: #1e1e1e;\n    border-color: #727272;\n}\n\n@media (min-width: 940px) {\n    #documentation .inner,\n    #search .inner {\n        margin-left: calc(48vw - 570.5px);\n        margin-right: calc(52vw - 570.5px);\n    }\n}\n\n#front-content #front-navigation,\n#front-book,\n#companies-projects,\nfooter {\n    border-color: #727272;\n}\n\n.highlight {\n    background-color: #4d4b12;\n}\n\ndiv > pre, code {\n    color: #c49f82 !important;\n    background-color: #313131 !important;\n    border-color: #727272;\n}\n\n#masthead {\n    color: #4e443c;\n    margin-bottom: 0;\n    border-bottom: solid #1e1e1e 2em;\n}\n\nfooter a,\naside nav ul li a,\n#front-nav a {\n    color: #0052cc;\n}\n\nem {\n    color: #42a055 !important;\n}\n",
+        "domains": [
+          "git-scm.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - GitLab",
+    "id": 55,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body,\n.merge-request-tabs-holder,\n.mr-widget-heading,\n.mr-section-container,\n.mr-version-controls,\n.timeline-entry:not(.system-note) {\n    background-color: #1e1e1e;\n    color: #d4d4d4;\n    border-color: #727272 !important;\n}\n\n.notes .system-note .timeline-icon,\n.notes .discussion-filter-note .timeline-icon,\n.diff-file .file-title::before, .diff-file .file-title-flex-parent::before,\n.gl-bg-gray-10 {\n    background-color: #1e1e1e;\n}\n\n.commit-description,\n.commit-row-description,\n.groups-list > li,\n.top-area,\n.group-list-tree .group-row:first-child,\n.breadcrumbs-container,\n.gl-border-t,\n.gl-border-gray-100 {\n    border-color: #727272;\n}\n\n.gl-text-body,\n.gl-text-gray-500 {\n    color: #d4d4d4;\n}\n\n.diff-file.has-body .file-title {\n    box-shadow: none;\n}\n\n.md, .md p,\n.text-muted,\nh1, h2, h3, h4, h5, h6,\n.h1, .h2, .h3, .h4, .h5, .h6,\n.timeline .system-note .note-text,\n.commit a, .generic-commit-status a,\nul.content-list li a,\n.gl-text-gray-900\\! {\n    color: #d4d4d4 !important;\n}\n.mr-state-widget .label-branch,\n.timeline-entry,\n.breadcrumbs-list > li:last-child > a,\n.nav-links li.active:not(.md-header-toolbar) a,\n.nav-links li.active:not(.md-header-toolbar) button,\n.nav-links li:not(.md-header-toolbar) a.active,\n.nav-links li:not(.md-header-toolbar) a:active,\n.nav-links li:not(.md-header-toolbar) a:hover,\n.nav-links li:not(.md-header-toolbar) a:focus,\n.file-holder .file-title a:not(.btn),\n.context-header .sidebar-context-title {\n    color: #fff;\n}\n.note-headline-light,\n.discussion-headline-light,\n.detail-page-description .author-link {\n    color: #727272;\n}\ncode {\n    color: #d4d4d4;\n    background-color: #313131;\n}\n\n.gfm-project_member,\n.gl-bg-blue-50 {\n    background-color: #072f56;\n}\n\n.gl-bg-orange-50 {\n    background-color: #67522e;\n}\n\n.content-block,\n.issuable-discussion .main-notes-list::before,\n.discussion-body .diff-file .file-title,\n.code.white pre.code, .code.white .diff-line-num,\nul.content-list li {\n    border-color: #727272;\n}\n.diff-file .notes_holder td.notes-content {\n    padding-bottom: 0;\n}\n\n.notes .system-note .note-body .note-text.system-note-commit-list:not(.hide-shade)::after {\n    background: linear-gradient(#1e1e1e1a -100px, #1e1e1e 100%);\n}\n\n.discussion .timeline-entry {\n    border-radius: 0;\n}\n\n.file-title-flex-parent, .file-holder .file-title-flex-parent {\n    background-color: #252526;\n    border-color: #727272;\n}\n.diff-file .file-title:hover, .diff-file .file-title-flex-parent:hover {\n    background-color: #414141;\n}\n\n.nav-sidebar,\n.toggle-sidebar-button,\n.right-sidebar:not(.right-sidebar-merge-requests),\n.right-sidebar.right-sidebar-collapsed .gutter-toggle,\n.right-sidebar.right-sidebar-collapsed .participants,\n.discussion-body .discussion-reply-holder,\n.disabled-comment,\n.diff-file .notes_holder td.notes-content .notes,\n.commit-header,\n.info-well {\n    background-color: #313131;\n    border-color: #727272;\n}\n.toggle-sidebar-button:hover,\n.group-list-tree .group-row-contents:hover {\n    background-color: #414141;\n}\n\n.sidebar-top-level-items li > a.gl-link,\n.gl-new-dropdown .gl-new-dropdown-section-header .dropdown-header {\n    color: #d4d4d4;\n}\n.gl-icon {\n    fill: #d4d4d4 !important;\n}\n.toggle-sidebar-button *,\n.js-toggle-sidebar *,\n.qa-toggle-sidebar *,\n.rspec-toggle-sidebar * {\n    color: #d4d4d4 !important;\n}\nul.fly-out-list {\n    background-color: #313131 !important;\n}\n.nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items),\n.nav-sidebar li > a:hover,\n.diff-file-row.is-active {\n    background-color: #414141;\n}\nbody.ui-blue .nav-sidebar li.active > a {\n    color: #fff;\n}\n\n.btn {\n    background-color: #313131 !important;\n    color: #d4d4d4 !important;\n    border-color: #727272 !important;\n    box-shadow: inset 0 0 0 1px #727272 !important;\n}\n.btn:hover, .btn:focus {\n    background-color: #414141 !important;\n    color: #fff !important;\n    border-color: #c3c3c3 !important;\n}\n\n.clipboard-group .label-monospace,\n.commit-sha-group .label-monospace,\n.form-control,\n.form-control:focus,\n.gl-pagination .page-link {\n    background-color: #313131;\n    color: #d4d4d4;\n    border-color: #727272;\n}\n.gl-pagination .page-item.disabled .page-link {\n    background-color: #252526;\n    border-color: #727272;\n}\n.gl-pagination .page-link:not(.active):hover {\n    background-color: #414141;\n    color: #fff;\n}\n\n.gl-new-dropdown .dropdown-menu,\n.dropdown-menu {\n    background-color: #313131;\n    border-color: #727272;\n}\n.gl-new-dropdown-item .dropdown-item,\n.dropdown-menu li > a,\n.dropdown-menu li button,\n.dropdown-menu li .gl-button.btn-link,\n.dropdown-menu li .menu-item {\n    color: #d4d4d4;\n}\n.gl-new-dropdown-item .dropdown-item:not(.disable-hover):hover,\n.gl-new-dropdown-item .dropdown-item:active,\n.gl-new-dropdown-item .dropdown-item:focus,\n.gl-new-dropdown-item .dropdown-item.is-focused {\n    background-color: #414141;\n    color: #fff;\n}\n\n.code.white .line_holder .diff-line-num {\n    background-color: #515151;\n}\n.code.white .line_holder .diff-line-num.old,\n.code.white .line_holder .diff-line-num.old-nomappinginraw {\n    background-color: #78464e;\n}\n.code.white .line_holder .diff-line-num.old a,\n.code.white .line_holder .diff-line-num.old-nomappinginraw a {\n    color: #986d72;\n}\n.code.white .line_holder .diff-line-num.new,\n.code.white .line_holder .diff-line-num.new-nomappinginraw {\n    background-color: #295b38;\n}\n.code.white .line_holder .diff-line-num.new a,\n.code.white .line_holder .diff-line-num.new-nomappinginraw a {\n    color: #569a6a;\n}\n.code.white .line_holder .line_content {\n    background-color: #414141;\n}\n.code.white .line_holder .line_content.old,\n.code.white .line_holder .line_content.old-nomappinginraw {\n    background-color: #6c2d34;\n}\n.code.white .line_holder .line_content.new,\n.code.white .line_holder .line_content.new-nomappinginraw {\n    background-color: #266535;\n}\n.code.white .line_holder.diff-grid-row.expansion .diff-td {\n    background-color: #313131;\n    border-color: #727272 !important;\n}\n.code.white .diff-line-expand-button {\n    background-color: #414141;\n}\n.diff-td.line-coverage.has-tooltip {\n    background-color: #414141 !important;\n}\n\n.gl-badge.badge-muted {\n    background-color: #666;\n    color: #f0f0f0;\n}\n.gl-badge.badge-neutral {\n    background-color: #525252;\n    color: #dbdbdb;\n}\n.gl-badge.badge-info {\n    background-color: #0b5cad;\n    color: #cbe2f9;\n}\n.gl-badge.badge-success {\n    background-color: #24663b;\n    color: #c3e6cd;\n}\n.gl-badge.badge-warning {\n    background-color: #8f4700;\n    color: #f5d9a8;\n}\n.gl-badge.badge-danger {\n    background-color: #ae1800;\n    color: #fdd4cd;\n}\n.gl-badge.badge-tier {\n    background-color: #5943b6;\n    color: #e1d8f9;\n}\n",
+        "domains": [
+          "invent.kde.org"
+        ]
+      }
+    ]
+  }
+]
