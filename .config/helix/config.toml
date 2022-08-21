@@ -5,6 +5,8 @@ C-s = ":w"
 A-c = ":bc"
 C-y = "save_selection"
 '#' = "toggle_comments"
+A-h = "extend_to_line_start"
+A-l = "extend_to_line_end"
 [editor]
 auto-info = false
 auto-pairs = false
