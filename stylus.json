@@ -1,5 +1,15 @@
 [
   {
+    "name": "mep",
+    "id": 1,
+    "enabled": true,
+    "sections": [
+      {
+        "code": ":root {\n --bg-0: #111;\n --bg-1: #1e1e1e;\n --bg-2: #313131;\n --bg-3: #4d4d4d;\n \n --co-0: #d4d4d4;\n --co-1: #eee;\n --co-2: #fff;\n \n --bd-0: #555;\n --bd-1: #727272;\n }\n"
+      }
+    ]
+  },
+  {
     "name": "a - eyesplease",
     "id": 2,
     "enabled": true,
