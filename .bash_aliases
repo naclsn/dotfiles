@@ -12,7 +12,7 @@ alias             la='ls -FXxA'
 alias             ll='ls -FXgo'
 alias              l='ls -FXx'
 alias           tree='tree --dirsfirst'
-alias         treest='treest --printer=fancy --rcfile='"'$HOME/.treestrc'"' -FIXcdj'
+alias         treest='treest --printer=fancy --rcfile='"'$HOME/.treestrc'"' -CdFIjwX'
 alias           info='info --vi-keys'
 alias             db='gdb -q --args'
 alias             py='python3'
@@ -20,6 +20,8 @@ alias              s='git status'
 alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 bind -x       '"\ez":fg&>/dev/null'
+bind -x       '"\er":stty sane -ixon'
+bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`<"$t"`;rm $t'
 set -b
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge "$HOME/.Xdefaults"
