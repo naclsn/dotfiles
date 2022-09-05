@@ -1,4 +1,4 @@
-theme = "autumn"
+theme = "sonokai"
 [keys.normal]
 C-c = ":q"
 C-s = ":w"
@@ -7,14 +7,18 @@ C-y = "save_selection"
 '#' = "toggle_comments"
 A-h = "extend_to_line_start"
 A-l = "extend_to_line_end"
+X = "extend_line_above"
 [editor]
 auto-info = false
 auto-pairs = false
 auto-format = false
+line-number = "relative"
+bufferline = "multiple"
 [editor.cursor-shape]
 insert = "bar"
 [editor.file-picker]
 max-depth = 3
+hidden = false
 [editor.whitespace.render]
-#space = "all"
-#tab = "all"
+space = "all"
+tab = "all"
