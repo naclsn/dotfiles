@@ -7,7 +7,7 @@ C-y = "save_selection"
 '#' = "toggle_comments"
 A-h = "extend_to_line_start"
 A-l = "extend_to_line_end"
-X = "extend_line_above"
+A-x = "extend_line_above"
 [editor]
 auto-info = false
 auto-pairs = false
