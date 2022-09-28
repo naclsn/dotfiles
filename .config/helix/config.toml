@@ -1,4 +1,4 @@
-theme = "sonokai"
+theme = "catppuccin_macchiato"
 [keys.normal]
 C-c = ":q"
 C-s = ":w"
@@ -14,6 +14,8 @@ auto-pairs = false
 auto-format = false
 line-number = "relative"
 bufferline = "multiple"
+[editor.lsp]
+auto-signature-help = false
 [editor.cursor-shape]
 insert = "bar"
 [editor.file-picker]
