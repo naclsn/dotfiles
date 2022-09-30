@@ -1,0 +1,18 @@
+#!/bin/bash
+pass=-len
+keep=1
+word=
+for arg in "$@"
+  do
+    case $arg in
+      -*)     pass="$pass $arg";;
+      [1-9]*) keep=$arg;;
+      *)      word=$arg;;
+    esac
+done
+[ -z "$word" ] && read word
+echo $word | aspell $pass -a | awk -vw=$word -F: '
+  /^*/{print w} # correct
+  /^&/{gsub(", ","\n",$2); print substr($2,2)} # incorrect
+  /^#/{exit 1} # nothing found
+' | head -n $keep
