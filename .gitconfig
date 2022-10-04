@@ -4,7 +4,7 @@
 [alias]
 	sha = rev-parse HEAD
 	url = remote get-url origin
-	ls = branch -vav
+	ls = branch -vv
 	cd = checkout
 	stat = log --stat
 	graph = log --oneline --graph --decorate --simplify-by-decoration
