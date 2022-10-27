@@ -1,4 +1,4 @@
-theme = "onedark"
+theme = "yesmydark"
 [keys.normal]
 C-c = ":q"
 C-s = ":w"

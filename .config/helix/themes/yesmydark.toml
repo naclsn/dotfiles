@@ -1,0 +1,16 @@
+inherits = "onedark"
+
+"ui.cursor" = { fg = "black", bg = "light-gray" }
+"ui.cursor.primary" = { fg = "black", bg = "white" }
+
+# YYY: couldn't get primary to change with the mode...
+
+# inherits = "onedark"
+# "ui.cursor" = { fg = "#222222", bg = "#999999", modifiers = [] }
+# "ui.cursor.primary" = { bg = "#ee7744", modifiers = [] }
+# "ui.cursor.select" = { fg = "#2c2e34", bg = "#76cce0", modifiers = [] }
+
+# inherits = "sonokai"
+# "ui.cursor" = { fg = "#222222", bg = "#999999" }
+# "ui.cursor.select" = { fg = "#ff00ff", bg = "#ff00ff" }
+# "ui.cursor.primary" = { bg = "#ee7744" }
