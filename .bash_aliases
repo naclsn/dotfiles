@@ -25,6 +25,8 @@ alias              s='git status'
 alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 bind -x       '"\ez":fg&>/dev/null'
+bind -x       '"\eZ":fg -&>/dev/null'
+bind -x       '"\eq":tre'
 bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`<"$t"`;rm $t'
 set -b
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"

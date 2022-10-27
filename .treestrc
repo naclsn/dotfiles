@@ -3,7 +3,7 @@
 "-!chmod -x {}	;
 "D!rm -Irf {}	;
 "d!rm -I {}	;
-"c!mv {} ;
+"c!mv {} 
 "e!$EDITOR {}	;
 "f!file {}	
 "g!git status	
