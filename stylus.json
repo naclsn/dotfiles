@@ -173,7 +173,18 @@
       "https://invent.kde.org/*",
       "https://soundcloud.com/*",
       "https://docs.npmjs.com/*",
-      "https://libgit2.org/*"
+      "https://libgit2.org/*",
+      "moz-extension://9dd409ae-661b-40c4-8265-84bdc99f7401/*",
+      "https://everestapi.github.io/*",
+      "https://sourcegraph.com/*",
+      "https://math.stackexchange.com/*",
+      "https://starship.rs/*",
+      "https://bugzilla.mozilla.org/*",
+      "https://mesonbuild.com/*",
+      "https://gitlab.freedesktop.org/*",
+      "https://www.messenger.com/*",
+      "https://en.cppreference.com/*",
+      "https://docs.python.org/*"
     ]
   },
   {
@@ -343,7 +354,17 @@
       "https://userbase.kde.org/*",
       "https://soundcloud.com/*",
       "https://docs.npmjs.com/*",
-      "https://libgit2.org/*"
+      "https://libgit2.org/*",
+      "moz-extension://9dd409ae-661b-40c4-8265-84bdc99f7401/*",
+      "https://math.stackexchange.com/*",
+      "https://starship.rs/*",
+      "https://bugzilla.mozilla.org/*",
+      "https://mesonbuild.com/*",
+      "https://gitlab.freedesktop.org/*",
+      "https://en.wikipedia.org/*",
+      "https://www.messenger.com/*",
+      "https://en.cppreference.com/*",
+      "https://docs.python.org/*"
     ]
   },
   {
@@ -617,6 +638,45 @@
         "domains": [
           "gitlab.com",
           "invent.kde.org"
+        ],
+        "regexps": [
+          ".*gitlab\\..*\\.(?:com|org).*"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep",
+    "id": 56,
+    "enabled": true,
+    "sections": [
+      {
+        "code": ":root {\n    --bg-0: #111;\n    --bg-1: #1e1e1e;\n    --bg-2: #313131;\n    --bg-3: #4d4d4d;\n    \n    --co-0: #d4d4d4;\n    --co-1: #eee;\n    --co-2: #fff;\n    \n    --bd-0: #555;\n    --bd-1: #727272;\n}\n"
+      }
+    ]
+  },
+  {
+    "name": "mep - cppreference.com",
+    "id": 57,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body,\ndiv#cpp-content-base {\n    background-color: var(--bg-1);\n}\n\ndiv#cpp-head-first-base,\ndiv#cpp-head-second-base,\ndiv#cpp-footer-base {\n    background: var(--bg-2);\n    border-color: var(--bd-0);\n}\n\ninput {\n    background-color: var(--bg-2);\n    color: var(--co-0);\n    border: none;\n}\n\ndiv.vectorTabs:nth-child(1) { background: black; }\ndiv.vectorTabs span { filter: invert(1); }\ndiv.vectorTabs ul li { background: var(--bg-2); }\ndiv.vectorTabs ul li.selected { background: var(--bg-3); }\n\n.t-navbar-sep {\n    filter: brightness(.6);\n}\n.t-navbar-head, .t-navbar-sep {\n    border-color: var(--bd-1);\n}\n.t-navbar-menu > div {\n    background-color: var(--bg-2);\n    border-color: var(--bd-1);\n}\n\n.mainpagetable *, #userlogin, #userloginForm {\n    background-color: var(--bg-2) !important;\n    border-color: var(--bd-0) !important;\n}\n\ndiv#content {\n    color: var(--co-0);\n}\nh1, h2, h3, h4, h5, h6 {\n    color: var(--co-1);\n    border-color: var(--bd-1);\n}\n.t-dsc > td, .t-dsc-hitem > td {\n    border-color: var(--bd-1);\n}\n\n.t-inherited, table.ambox {\n    background-color: var(--bg-2);\n    border-color: var(--bd-1);\n}\n\n.t-dcl > td, .t-dcl-h > td, .t-dcl-sep > td, .t-dcl-rev > .t-dcl:first-child > td, .t-dcl-rev > .t-dcl-rev-aux > td,\n.t-rev-inl,\n.t-sdsc-sep,\n.t-rev > td:nth-child(1),\n.t-rev > td:nth-child(2),\n.dsctable > tbody > tr > td,\n.dsctable > tbody > tr:last-child > td {\n    border-color: var(--bd-0);\n}\n\n.t-inheritance-diagram img {\n    filter: invert(.77);\n}\n\npre {\n    color: var(--co-0);\n}\n.t-c, pre, div.mw-geshi {\n    background-color: var(--bg-0);\n    border-color: var(--bd-0);\n}\n.cpp.source-cpp .sy1 {\n    color: #9d2226;\n}\n.cpp.source-cpp .kw1,\n.cpp.source-cpp .kw2,\n.cpp.source-cpp .kw3,\n.cpp.source-cpp .kw4 {\n    color: #226dee;\n}\n\ntable.wikitable {\n    background-color: var(--bg-1);\n    color: var(--co-1);\n}\ntable.wikitable > tr > th, table.wikitable > * > tr > th {\n    background-color: var(--bg-2);\n}\ntable.wikitable > tr > th, table.wikitable > tr > td, table.wikitable > * > tr > th, table.wikitable > * > tr > td {\n    border-color: var(--bd-0);\n}\n\na {\n    color: #0c59d9 !important;\n}\n",
+        "domains": [
+          "cppreference.com"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - python.org",
+    "id": 58,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body/*, html*/ {\n    background-color: var(--bg-0);\n    margin: 0;\n}\n\n.version_switcher_placeholder, .language_switcher_placeholder {\n    background: none;\n}\n\ndiv.related,\ndiv.related ~ div.related,\ndiv.footer {\n    background-color: var(--bg-2);\n    color: var(--co-0);\n    border-color: var(--bd-1);\n}\ndiv.related a {\n    color: var(--co-0);\n}\ndiv.related li.right {\n    float: none;\n}\ndiv.related {\n    margin-top: 0;\n}\ndiv.footer {\n    margin-right: 0;\n    padding-right: 10px;\n}\n\n.mobile-nav, .nav-content, .toggler__label {\n    background-color: var(--bg-2);\n    color: var(--co-0);\n    border-color: var(--bd-1);\n}\n.language_switcher_placeholder select,\n.version_switcher_placeholder select,\n.search input {\n    background-color: var(--bg-3) !important;\n    color: var(--co-1) !important;\n    border: solid 1px var(--bd-1);\n    border-radius: 4px;\n}\n\ndiv.sphinxsidebar {\n    background-color: var(--bg-3);\n}\ndiv.sphinxsidebar ul,\ndiv.sphinxsidebar a {\n    color: var(--co-0);\n}\ndiv.sphinxsidebar h3,\ndiv.sphinxsidebar h3 a,\ndiv.sphinxsidebar h4 {\n    color: var(--co-1);\n}\n\ndiv.document {\n    background-color: var(--bg-0);\n}\n@media (min-width: 1023px) {\n    div.document {\n        padding-left: 1em;\n        padding-right: 1em;\n        padding-top: 0.5em;\n    }\n    div.bodywrapper {\n        margin-left: 25.43%;\n    }\n}\ndiv.body {\n    background-color: var(--bg-1);\n    color: var(--co-0);\n    border: solid 1px var(--bd-0);\n}\n\ndiv.body h1, div.body h2, div.body h3, div.body h4, div.body h5, div.body h6 {\n    background-color: var(--bg-1);\n    color: var(--co-1);\n}\n\ndiv.seealso {\n    filter: brightness(.72);\n}\ndt:target, span.highlighted {\n    background-color: #7f742e;\n}\n\ntable.docutils td, table.docutils th {\n    border-color: var(--bd-1) !important;\n    border-radius: 0;\n}\ntable.docutils th {\n    background-color: var(--bg-3);\n}\ntable.docutils td {\n    background-color: var(--bg-2);\n}\n\ndiv.note {\n    background-color: var(--bg-2);\n    border-color: var(--bd-1);\n}\n\ncode, .note code, div.body pre {\n    background-color: var(--bg-0);\n    color: var(--co-0);\n    border-color: var(--bd-0);\n}\n.copybutton {\n    filter: brightness(.42);\n}\n.highlight .gp {\n    color: #43438e;\n}\n.highlight .nc {\n    color: #2a2ae9;\n}\n",
+        "domains": [
+          "python.org"
         ]
       }
     ]
