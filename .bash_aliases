@@ -34,4 +34,5 @@ set -b
 command_not_found_handle()(echo "$1": command not found>/dev/tty;exit 127) # TODO: make it useful
 which_include()(find `gcc -v -E -</dev/null 2>&1|awk '/^#include </{f=1;next}/^End/{f=0}f'` -name "$1")
 file_which()(file "$(which "$@")")
+unset which # fedora
 reset
