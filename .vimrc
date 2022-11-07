@@ -1,5 +1,4 @@
-command! -nargs=1 Indent set tabstop=<args> shiftwidth=<args>
-set gd hid lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu scf ww=h,l
+set et gd hid lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu ts=4 scf sw=0 ww=h,l
 
 nn <BS> ciw
 nn <C-C> :<C-U>q<CR>
@@ -7,7 +6,11 @@ nn <C-L> :<C-U>exe get(w:,"rex","Ex")\|let w:rex="Rex"<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>w<CR>
-no g. `^
+
+cno <C-A> <Home>
+cno <C-B> <Left>
+cno <C-D> <Del>
+cno <C-F> <Right>
 
 " TODO: find decent mappings (eg. cant use 'r', 'am' and 'im' have delays/timeouts...)
 vn am <Esc>%v%
@@ -25,6 +28,7 @@ for [o,c] in map(split(&mps,","),'split(v:val,":")')
   endfo
 endfo
 
+" XXX: does not work with visual modes
 fu s:neak(d)
   let d = a:d
   let t = ""
@@ -41,23 +45,44 @@ fu s:neak(d)
   exe ":norm! ".v:count.w:eak
   cal histdel("/", -1)
 endf
-no s :<C-U>call <SID>neak(2)<CR>
-no S :<C-U>call <SID>neak(-2)<CR>
+no s :<C-U>cal <SID>neak(2)<CR>
+no S :<C-U>cal <SID>neak(-2)<CR>
 for r in "tTfF"
   exe "nn ".r." :unl! w:eak w:kae<CR>".r
 endfo
-" XXX: impacts '/' hist...
+" XXX: impacts '/' hist
 no <expr> ; get(w:,"eak",";")
 no <expr> , get(w:,"kae",",")
 
-" TODO: autocmds of interest:
-"       - CursorMoved
-"       - InsertLeave
-"       - ModeChanged
-"       - TextChanged
-"       - TextYankPost
-
-cno <C-A> <Home>
-cno <C-B> <Left>
-cno <C-D> <Del>
-cno <C-F> <Right>
+" TODO: do
+fu s:reflect(com)
+  echo "reflect: ".a:com
+  "exe "norm! ".v:count.a:com
+endf
+fu s:crap()
+  let w:crappy = 1
+  for m in "BEHJKLWbehjklw" " TODO: fst
+    exe "map <silent> ".m." :<C-U>cal <SID>reflect('".m."')<CR>:norm! ".m."<CR>"
+  endfo
+  aug crapau
+    au!
+    au TextChanged * cal <SID>reflect('.')
+  aug END
+  setlocal stl=%f\ %h%w%m%r\ %=...
+  redr
+  ec "-- MULTIPLE --"
+endf
+fu s:uncrap()
+  aug crapau
+    au!
+  aug END
+  aug! crapau
+  for m in "BEHJKLWbehjklw"
+    exe "unm ".m
+  endfo
+  unl w:crappy
+  setlocal stl=
+  redr
+  echo ""
+endf
+nn <silent> <C-@> :<C-U>if exists("w:crappy")<CR>cal <SID>uncrap()<CR>el<CR>cal <SID>crap()<CR>en<CR>
