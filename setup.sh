@@ -1,12 +1,18 @@
 #!/bin/sh
+has() { c=`command -v "$1"` || { echo no "$1"; exit; }; }
+has rm
+has mkdir
+has ln
+has find
+has realpath
 c=$1-
 if [ "$c" = -h- ]
   then cat <<-'DOC'; exit
 Usage:
   -h: help
-  -l: list
-  -n: nothing
-  -f: force
+  -l: list (implies -n, but does not create dirs)
+  -n: nothing (may still create dirs)
+  -f: force (rm -f existing ones)
   (none): setup
 DOC
 fi
