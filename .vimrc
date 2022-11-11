@@ -1,4 +1,6 @@
-set et gd hid lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu ts=4 scf sw=0 ww=h,l
+se et gd hid lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu ts=4 scf sw=0 ww=h,l
+se gfn=Monospace\ 14 go-=TL go+=d
+colo slate
 
 nn <BS> ciw
 nn <C-C> :<C-U>q<CR>
@@ -54,35 +56,53 @@ endfo
 no <expr> ; get(w:,"eak",";")
 no <expr> , get(w:,"kae",",")
 
-" TODO: do
-fu s:reflect(com)
-  echo "reflect: ".a:com
-  "exe "norm! ".v:count.a:com
-endf
-fu s:crap()
-  let w:crappy = 1
-  for m in "BEHJKLWbehjklw" " TODO: fst
-    exe "map <silent> ".m." :<C-U>cal <SID>reflect('".m."')<CR>:norm! ".m."<CR>"
+fu s:plop(at)
+  let niw = getpos(a:at)[1:2]
+  let cur = get(w:, "reflocs", [])
+  let l = len(cur)
+  let k = 0
+  wh k < l && (cur[k][0] < niw[0] || cur[k][0] == niw[0] && cur[k][1] < niw[1])
+    let k+= 1
+  endw
+  let w:reflocs = insert(cur, niw, k)
+  ec "complete new list:"
+  for it in cur
+    ec "\t".join(it, ",")
   endfo
-  aug crapau
+endf
+fu s:reflect(count, com)
+  let at = getpos('.')
+  for l in w:reflocs
+    cal setpos('.', [0, l[0], l[1], 0])
+    exe "norm! ".a:count.a:com
+  endfo
+  cal setpos('.', at)
+endf
+fu s:mult()
+  let w:multpy = 1
+  for m in "BEHJKLWbehjklw" " TODO: fst
+    exe "map <silent> ".m." :<C-U>cal <SID>reflect(v:count, '".m."')<CR>:norm! ".m."<CR>"
+  endfo
+  aug multaug
     au!
-    au TextChanged * cal <SID>reflect('.')
+    au TextChanged * cal <SID>reflect(v:count, '.')
   aug END
-  setlocal stl=%f\ %h%w%m%r\ %=...
+  setl stl=%f\ %h%w%m%r\ %=...
   redr
   ec "-- MULTIPLE --"
 endf
-fu s:uncrap()
-  aug crapau
+fu s:unmult()
+  aug multaug
     au!
   aug END
-  aug! crapau
+  aug! multaug
   for m in "BEHJKLWbehjklw"
     exe "unm ".m
   endfo
-  unl w:crappy
+  unl w:multpy
   setlocal stl=
   redr
   echo ""
 endf
-nn <silent> <C-@> :<C-U>if exists("w:crappy")<CR>cal <SID>uncrap()<CR>el<CR>cal <SID>crap()<CR>en<CR>
+nn <silent> <C-Q> :<C-U>if exists("w:multpy")<CR>cal <SID>unmult()<CR>el<CR>cal <SID>mult()<CR>en<CR>
+nn gc :<C-U>call <SID>plop('.')<CR>
