@@ -186,7 +186,8 @@
       "https://docs.python.org/*",
       "https://ell.stackexchange.com/*",
       "https://pictelm.github.io/*",
-      "https://gitlab.com/*"
+      "https://gitlab.com/*",
+      "moz-extension://11bb9003-8b61-4cf6-a882-553d6327bd69/*",
     ]
   },
   {
@@ -368,7 +369,8 @@
       "https://docs.python.org/*",
       "https://ell.stackexchange.com/*",
       "https://pictelm.github.io/*",
-      "https://gitlab.com/*"
+      "https://gitlab.com/*",
+      "moz-extension://11bb9003-8b61-4cf6-a882-553d6327bd69/*",
     ]
   },
   {
