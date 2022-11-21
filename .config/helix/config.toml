@@ -7,6 +7,7 @@ C-y = "save_selection"
 A-h = "extend_to_line_start"
 A-l = "extend_to_line_end"
 A-x = "extend_line_above"
+'A-*' = ["move_prev_word_start", "move_next_word_end", "search_selection", "make_search_word_bounded"]
 [keys.select]
 C-c = ":q"
 C-s = ":w"
@@ -15,12 +16,15 @@ C-y = "save_selection"
 A-h = "extend_to_line_start"
 A-l = "extend_to_line_end"
 A-x = "extend_line_above"
+'A-*' = ["move_prev_word_start", "move_next_word_end", "search_selection", "make_search_word_bounded"]
 [editor]
 auto-info = false
 auto-pairs = false
 auto-format = false
 line-number = "relative"
 bufferline = "multiple"
+[editor.statusline]
+center = ["total-line-numbers", "primary-selection-length"]
 [editor.lsp]
 auto-signature-help = false
 [editor.cursor-shape]
