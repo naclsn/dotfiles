@@ -4,19 +4,13 @@ C-c = ":q"
 C-s = ":w"
 C-y = "save_selection"
 '#' = "toggle_comments"
-A-h = "extend_to_line_start"
-A-l = "extend_to_line_end"
-A-x = "extend_line_above"
-'A-*' = ["move_prev_word_start", "move_next_word_end", "search_selection", "make_search_word_bounded"]
+'A-*' = "make_search_word_bounded"
 [keys.select]
 C-c = ":q"
 C-s = ":w"
 C-y = "save_selection"
 '#' = "toggle_comments"
-A-h = "extend_to_line_start"
-A-l = "extend_to_line_end"
-A-x = "extend_line_above"
-'A-*' = ["move_prev_word_start", "move_next_word_end", "search_selection", "make_search_word_bounded"]
+'A-*' = "make_search_word_bounded"
 [editor]
 auto-info = false
 auto-pairs = false
