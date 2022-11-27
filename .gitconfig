@@ -11,6 +11,7 @@
 	add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
 	irt = !f()(git for-each-ref --format='printf "%%s:%%5d-:+%%d\\\\n" %(refname:short) `git rev-list --left-right --count 'refs/$1'...%(refname)`' refs/${2:-heads}|sh|column -ts:)";"f
 	wdiff = diff --word-diff
+	amend = commit --amend --no-edit
 [init]
 	defaultBranch = main
 [credential]
