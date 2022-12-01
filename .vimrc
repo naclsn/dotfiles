@@ -1,6 +1,9 @@
 se et gd hid lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu ts=4 scf sw=0 ww=h,l
 se gfn=Monospace\ 14 go-=TL go+=d
 colo slate
+let g:netrw_liststyle=3
+
+com Scratch sil %y f|ene|pu f|0d
 
 nn <BS> ciw
 nn <C-C> :<C-U>q<CR>
