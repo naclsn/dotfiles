@@ -1,4 +1,4 @@
-se et gd hid lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu ts=4 scf sw=0 ww=h,l
+se et gd hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nv mps=(:),{:},[:],<:> nohls nowrap nu rnu ts=4 scf sw=0 ww=h,l
 se gfn=Monospace\ 14 go-=TL go+=d
 colo slate
 let g:netrw_liststyle=3
