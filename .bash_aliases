@@ -27,8 +27,8 @@ alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'
-bind -x       '"\eq":tre' # TODO: '..:`tre`' when updated
-bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`<"$t"`;rm $t' # TODO/FIXME: maybe need to set READLINE_POINT to the end of the line? it's doing weird thing where not the whole line is executed despite being shown as when leaving the editor
+bind -x       '"\eq":tre'
+bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`cat $t`;rm $t;READLINE_POINT=${#READLINE_LINE}' # for some unknown reason, this is not a useless use of cat
 bind -x       '"\ey":printf %s "$READLINE_LINE" | xclip -sel c'
 set -b
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
