@@ -17,17 +17,15 @@ cno <C-B> <Left>
 cno <C-D> <Del>
 cno <C-F> <Right>
 
-" TODO: find decent mappings (eg. cant use 'r', 'am' and 'im' have delays/timeouts...)
-vn am <Esc>%v%
-vn im <Esc>%v%<Esc>`>hv`<l
+vn Mam <Esc>%v%
+vn Mim <Esc>%v%<Esc>`>hv`<l
 for [o,c] in map(split(&mps,","),'split(v:val,":")')
   for s in [o,c]
-    exe "nn dm".s." va".o."<Esc>dlgvo<Esc>dl"
-    exe "vn am".s." <Esc>`>a".c."<Esc>`<i".o."<Esc>"
-    exe "vn im".s." <Esc>`>i".c."<Esc>`<a".o."<Esc>"
+    exe "nn Md".s." va".o."<Esc>dlgvo<Esc>dl"
+    exe "vn Ms".s." <Esc>`>a".c."<Esc>`<i".o."<Esc>"
     for [oo,cc] in map(split(&mps,","),'split(v:val,":")')
       for ss in [oo,cc]
-        exe "nn rm".s.ss." va".o."<Esc>r".cc."gvo<Esc>r".oo
+        exe "nn Mr".s.ss." va".o."<Esc>r".cc."gvo<Esc>r".oo
       endfo
     endfo
   endfo
