@@ -4,12 +4,14 @@ C-c = ":q"
 C-s = ":w"
 C-y = "save_selection"
 '#' = "toggle_comments"
+'A-x' = "extend_line_above"
 'A-*' = "make_search_word_bounded"
 [keys.select]
 C-c = ":q"
 C-s = ":w"
 C-y = "save_selection"
 '#' = "toggle_comments"
+'A-x' = "extend_line_above"
 'A-*' = "make_search_word_bounded"
 [editor]
 auto-info = false
