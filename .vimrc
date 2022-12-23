@@ -33,7 +33,6 @@ for [o,c] in map(split(&mps,","),'split(v:val,":")')
   endfo
 endfo
 
-" XXX: does not work with visual modes
 fu s:neak(d)
   let d = a:d
   let t = ""
@@ -48,14 +47,13 @@ fu s:neak(d)
   let w:eak = (0 < a:d ? "/" : "?").t."\<CR>"
   let w:kae = (0 < a:d ? "?" : "/").t."\<CR>"
   exe ":norm! ".v:count.w:eak
-  cal histdel("/", -1)
+  norm gv;
 endf
 no s :<C-U>cal <SID>neak(2)<CR>
 no S :<C-U>cal <SID>neak(-2)<CR>
 for r in "tTfF"
   exe "nn ".r." :unl! w:eak w:kae<CR>".r
 endfo
-" XXX: impacts '/' hist
 no <expr> ; get(w:,"eak",";")
 no <expr> , get(w:,"kae",",")
 
