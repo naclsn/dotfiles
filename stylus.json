@@ -712,9 +712,22 @@
     "enabled": true,
     "sections": [
       {
-        "code": "html {\n    background-color: var(--bg-0);\n}\n\nbody {\n    background-color: var(--bg-1);\n    color: var(--co-0);\n    border-color: var(--bd-0);\n}\n\nh1, h2, h3, h4 {\n    color: var(--co-1);\n}\n\nimg {\n    background-color: unset;\n}\ntd img, h1 a img {\n    filter: invert(.88);\n}\ntd.news ul {\n    border-color: var(--bd-1);\n}\n\na:link {\n\tcolor: #5555e5;\n}\na:visited {\n\tcolor: #9555e5;\n}\na:link:hover, a:visited:hover {\n\tbackground-color: var(--bg-2);\n\tcolor: #5555e5;\n}\na:link:active, a:visited:active {\n\tcolor: #FF0000;\n}\n:target {\n\tbackground-color: var(--bg-3);\n}\n\ntable.nav img {\n    filter: invert(.8);\n}\n\np.warning {\n    color: var(--co-0);\n}\n",
+        "code": "html {\n    background-color: var(--bg-0);\n}\n\nbody {\n    background-color: var(--bg-1);\n    color: var(--co-0);\n    border-color: var(--bd-0);\n}\n\nh1, h2, h3, h4 {\n    color: var(--co-1);\n}\n\nimg {\n    background-color: unset;\n}\ntd img, h1 a img {\n    filter: invert(.88);\n}\ntd.news ul {\n    border-color: var(--bd-1);\n}\n\ncode, pre {\n    background-color: var(--bg-2);\n    border: solid 1px var(--bd-1);\n    border-radius: 4px;\n}\n\na:link {\n\tcolor: #5555e5;\n}\na:visited {\n\tcolor: #9555e5;\n}\na:link:hover, a:visited:hover {\n\tbackground-color: var(--bg-2);\n\tcolor: #5555e5;\n}\na:link:active, a:visited:active {\n\tcolor: #FF0000;\n}\n:target {\n\tbackground-color: var(--bg-3);\n}\n\ntable.nav img {\n    filter: invert(.8);\n}\n\np.warning {\n    color: var(--co-0);\n}\n",
         "domains": [
           "lua.org"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "mep - news.ycombinator",
+    "id": 61,
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background-color: var(--bg-0);\n}\ntr:not(:first-of-type) {\n    background-color: var(--bg-1);\n}\n.c00 {\n    color: var(--co-1);\n}\na:link {\n    color: var(--co-0);\n}\n#pagespace::after {\n    content: ' ';\n}\n",
+        "domains": [
+          "news.ycombinator.com"
         ]
       }
     ]

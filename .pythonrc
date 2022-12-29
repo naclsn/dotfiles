@@ -2,6 +2,7 @@ import rlcompleter
 import readline
 readline.parse_and_bind("tab: complete")
 from functools import *
+from itertools import *
 import os, sys
 _install_dunders = lambda *names: lambda it: ([setattr(it, name, lambda self, *va, _clo_name_=name, **ka: (getattr(it, str(id(self))).append((_clo_name_, va, ka)), self)[1]) for name in names], it)[1]
 # TODO: cannot use `__new__`, `__init__` nor `__call__`; also `__repr__`, `__str__` and `__bytes__` basically useless...
