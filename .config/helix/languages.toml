@@ -1,0 +1,15 @@
+[[language]]
+name = "markdown"
+file-types = ["md", "markdown", "EDIT_DESCRIPTION"]
+comment-token = "<!--"
+
+[[language]]
+name = "sel"
+scope = "source.sel"
+file-types = ["sel"]
+roots = []
+comment-token = "#"
+indent = { tab-width = 2, unit = "  " }
+[[grammar]]
+name = "sel"
+# source = { git = "https://github.com/PictElm/sel.git", rev = "59b60440eb719e2f3f1d63f74b4f95956b332fcf" }
