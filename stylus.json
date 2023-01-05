@@ -199,7 +199,8 @@
       "https://www.lua.org/*",
       "https://codereview.stackexchange.com/*",
       "https://reverseengineering.stackexchange.com/*",
-      "https://stats.stackexchange.com/*"
+      "https://stats.stackexchange.com/*",
+      "https://cplusplus.com/*"
     ]
   },
   {
@@ -394,7 +395,8 @@
       "https://www.lua.org/*",
       "https://codereview.stackexchange.com/*",
       "https://reverseengineering.stackexchange.com/*",
-      "https://stats.stackexchange.com/*"
+      "https://stats.stackexchange.com/*",
+      "https://cplusplus.com/*"
     ]
   },
   {
@@ -778,6 +780,19 @@
         "code": "html {\n    background-color: var(--bg-0);\n}\n\n#logo img {\n    filter: invert(.935);\n}\n.result {\n    margin-left: 20vw;\n    margin-right: 20vw;\n}\n\n.ans {\n    background-color: var(--bg-1);\n    border-color: var(--bd-1);\n}\n.ans a {\n    color: var(--co-1);\n}\n.doc, .doc a {\n    color: var(--co-0);\n}\na:hover {\n    background-color: #662;\n}\n\n#footer {\n    background-color: var(--bg-2);\n    color: var(--co-2);\n    border-color: var(--bd-1);\n}\n",
         "domains": [
           "hoogle.haskell.org"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 65,
+    "name": "mep - cplusplus.com",
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    background-color: var(--bg-0);\n    color: var(--co-0);\n}\n\n#I_nav, #I_main {\n    background-color: var(--bg-1);\n}\n#I_bar, #I_nav .sect {\n    background-color: var(--bg-3);\n    border-color: var(--bd-1);\n}\n\nh1, h2, h3, h4,\n.C_doc #I_description {\n    color: var(--co-1);\n}\n\n.C_doc .hierarchy LI B {\n    border-color: var(--bd-1);\n}\n.C_doc .hierarchy LI B::before {\n    filter: invert(.48);\n}\n\n.C_doc .links, .C_doc .links dt,\ntable.boxed th {\n    background-color: var(--bg-3);\n    color: var(--co-2);\n    border-color: var(--bd-0);\n}\n.C_doc .links dd,\ntable.boxed td {\n    background-color: var(--bg-2);\n    color: var(--co-1);\n    border-color: var(--bd-0);\n}\n\n.C_deco tr.odd td, .C_deco tr.even td, .C_forThread .bot, .C_deco tr td {\n    background-color: var(--bg-2);\n}\n.C_forPost .boxtop, .C_forPost .dwhat .quote td.qd, .auto .source {\n    background-color: var(--bg-3);\n    border-color: var(--bd-1);\n}\n.C_forPost .box {\n    background-color: var(--bg-2);\n    border-color: var(--bd-1);\n}\n\n.C_doc a, .C_doc a:visited, a {\n    color: #8080ee;\n}\n\n.gsc-input-box {\n    background-color: var(--bg-2);\n    border-color: var(--bd-1);\n}\ninput.gsc-input, table[role='presentation'][style] {\n    background-color: var(--bg-2) !important;\n    color: var(--co-2);\n}\n.gsc-control-cse {\n    background-color: var(--bg-2);\n    border-color: var(--bd-0);\n}\n.gsc-above-wrapper-area {\n    border: none;\n}\n.gsc-webResult.gsc-result, .gsc-results .gsc-imageResult {\n    background-color: var(--bg-3);\n    border-color: var(--bd-1);\n}\n.gsc-webResult.gsc-result:hover {\n    background-color: var(--bg-2);\n}\n.gs-webResult:not(.gs-no-results-result):not(.gs-error-result) .gs-snippet,\n.gs-fileFormatType {\n    color: var(--co-1);\n}\n.gs-webResult.gs-result a.gs-title,\n.gs-webResult.gs-result a.gs-title b,\n.gs-imageResult a.gs-title,\n.gs-imageResult a.gs-title b {\n    color: var(--co-2) !important;\n}\n.gsc-results .gsc-cursor-box .gsc-cursor-page {\n    background-color: inherit;\n}\n",
+        "domains": [
+          "cplusplus.com"
         ]
       }
     ]
