@@ -6,10 +6,10 @@ comment-token = "<!--"
 [[language]]
 name = "sel"
 scope = "source.sel"
-file-types = ["sel"]
+file-types = [{ suffix = ".sel" }]
 roots = []
 comment-token = "#"
 indent = { tab-width = 2, unit = "  " }
 [[grammar]]
 name = "sel"
-# source = { git = "https://github.com/PictElm/sel.git", rev = "59b60440eb719e2f3f1d63f74b4f95956b332fcf" }
+source = { git = "https://github.com/naclsn/sel.git", rev = "075f72d6cdc84af8014b84c95f8f8c772109fb6a" }
