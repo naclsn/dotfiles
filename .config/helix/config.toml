@@ -33,8 +33,3 @@ select = "underline"
 [editor.file-picker]
 max-depth = 4
 hidden = false
-# [editor.indent-guides]
-# render = true
-# [editor.whitespace.render]
-# space = "all"
-# tab = "all"

@@ -24,6 +24,9 @@ alias              s='git status'
 alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
+alias             ff='firefox'
+alias           fuck='eval $(thefuck $(fc -ln -1)); history -r'
+alias           FUCK='fuck'
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'
 bind -x       '"\eq":tre'
@@ -37,3 +40,19 @@ which_include()(find `gcc -v -E -</dev/null 2>&1|awk '/^#include </{f=1;next}/^E
 fwhich()(file "$(which "$@")")
 unset which # fedora
 reset
+
+ok() { # inspired by https://github.com/ErrorNoInternet/ok 
+  db=~/.cache/ok
+  case ${1##*-} in
+    h*) echo Usage: ok >&2;;
+    l*) ${PAGER:-less} "$db";;
+    m*) cat "$db" "$2" | sort -n >"$db";;
+    r*|c*) rm -f "$db";;
+    s*)
+      touch "$db"
+      echo OK count: `wc -l <"$db"`
+      ;;
+    *) echo `date +%s` "`history -p !-2`" >>"$db"; history -d -1;;
+  esac
+  unset db
+}

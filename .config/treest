@@ -1,0 +1,13 @@
+# bind 'x R' source ~/.config/treestrc
+sort extension dirs_first
+
+bind o prompt 'mkdir ' shell mkdir
+bind e expand shell_wait 'hx {}'
+# TODO: nothing works like it should
+# bind e expand shell_wait 'sh -c '"\'"'$EDITOR {}'"\'"
+
+bind f expand shell 'file {}'
+
+bind 'x x' expand shell '{}'
+bind + expand shell 'chmod +x {}'
+bind - expand shell 'chmod -x {}'

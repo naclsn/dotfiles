@@ -210,7 +210,23 @@
       "https://esolangs.org/*",
       "https://en.wikibooks.org/*",
       "https://bilingualmanga.net/*",
-      "https://lists.llvm.org/*"
+      "https://lists.llvm.org/*",
+      "https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/*",
+      "https://drawception.com/*",
+      "https://naclsn.github.io/*",
+      "https://monkeytype.com/*",
+      "https://time.is/*",
+      "https://play.rust-lang.org/*",
+      "https://learn.microsoft.com/*",
+      "https://hexdocs.pm/*",
+      "https://crates.io/*",
+      "https://serde.rs/*",
+      "https://rustc-dev-guide.rust-lang.org/*",
+      "https://gitlab.haskell.org/*",
+      "https://monkeypatch.io/*",
+      "https://sketch.pixiv.net/*",
+      "https://motion-canvas.github.io/*",
+      "https://rosettacode.org/*"
     ]
   },
   {
@@ -416,7 +432,23 @@
       "https://esolangs.org/*",
       "https://en.wikibooks.org/*",
       "https://bilingualmanga.net/*",
-      "https://lists.llvm.org/*"
+      "https://lists.llvm.org/*",
+      "https://mapping-high-level-constructs-to-llvm-ir.readthedocs.io/*",
+      "https://drawception.com/*",
+      "https://naclsn.github.io/*",
+      "https://monkeytype.com/*",
+      "https://time.is/*",
+      "https://play.rust-lang.org/*",
+      "https://learn.microsoft.com/*",
+      "https://hexdocs.pm/*",
+      "https://crates.io/*",
+      "https://serde.rs/*",
+      "https://rustc-dev-guide.rust-lang.org/*",
+      "https://gitlab.haskell.org/*",
+      "https://monkeypatch.io/*",
+      "https://sketch.pixiv.net/*",
+      "https://motion-canvas.github.io/*",
+      "https://rosettacode.org/*"
     ]
   },
   {
@@ -468,7 +500,8 @@
         "regexps": [
           "https://.*\\.(wikipedia|wiktionary|wikimedia|wikibooks|mediawiki).org/.*",
           "https://wiki\\.[\\w-]+\\.org/.*",
-          "https://[\\w-]+\\.wiki/.*"
+          "https://[\\w-]+\\.wiki/.*",
+          "https://.+/wiki/.*"
         ]
       }
     ]
@@ -602,7 +635,7 @@
     "enabled": true,
     "sections": [
       {
-        "code": "body {\n    background: var(--bg-0);\n    color: var(--co-0) !important;\n}\n\nbody.floating-content #content,\nbody.floating-content>.container,\ndiv#content {\n    background-color: var(--bg-1);\n    border-color: var(--bd-0);\n}\n\nh1 a,\n.s-label,\n.s-topbar .s-navigation .s-navigation--item:not(.is-selected) {\n    color: var(--co-1) !important;\n}\n\npre,\ncode,\npre code,\n.s-topbar .s-navigation .s-navigation--item:not(.is-selected):hover {\n    background-color: var(--bg-0) !important;\n    color: var(--co-0) !important;\n}\n\nselect,\ninput,\ntextarea,\n.wmd-button-bar,\n.wmd-button-row,\n.s-sidebarwidget,\n.s-sidebarwidget *,\naside,\nheader.s-topbar {\n    background-color: var(--bg-2) !important;\n    border-color: var(--bd-0) !important;\n    color: var(--co-0) !important;\n}\n\n.bg-black-050, .h\\:bg-black-050:hover, .f\\:bg-black-050:focus, .f\\:bg-black-050:focus-within {\n    background-color: var(--bg-2) !important;\n}\n\nblockquote {\n    color: var(--bd-1) !important;\n}\n.question-page #answers .answer,\n.bc-black-2, .bc-black-075,\nul.comments-list .comment > *,\n.snippet-code {\n    border-color: var(--bd-0) !important;\n}\n\n.post-tag,\n.geo-tag,\n.container .chosen-choices .search-choice,\n.container .chosen-container-multi .chosen-choices li.search-choice,\nheader.site-header,\nfooter.site-footer {\n    background-color: revert;\n    border-color: revert;\n}\n",
+        "code": "body {\n    background: var(--bg-0);\n    color: var(--co-0) !important;\n}\n\nbody.floating-content #content,\nbody.floating-content>.container,\ndiv#content {\n    background-color: var(--bg-1);\n    border-color: var(--bd-0);\n}\n\nh1 a,\n.s-label,\n.s-topbar .s-navigation .s-navigation--item:not(.is-selected) {\n    color: var(--co-1) !important;\n}\n\npre,\ncode,\npre code,\n.s-topbar .s-navigation .s-navigation--item:not(.is-selected):hover {\n    background-color: var(--bg-0) !important;\n    color: var(--co-0) !important;\n}\n\nselect,\ninput,\ntextarea,\n.wmd-button-bar,\n.wmd-button-row,\n.s-sidebarwidget,\n.s-sidebarwidget *,\naside,\nheader.s-topbar {\n    background-color: var(--bg-2) !important;\n    border-color: var(--bd-0) !important;\n    color: var(--co-0) !important;\n}\n\n.bg-black-050, .h\\:bg-black-050:hover, .f\\:bg-black-050:focus, .f\\:bg-black-050:focus-within {\n    background-color: var(--bg-2) !important;\n}\n\nblockquote {\n    color: var(--bd-1) !important;\n}\n.question-page #answers .answer,\n.bc-black-2, .bc-black-075,\nul.comments-list .comment > *,\n.snippet-code {\n    border-color: var(--bd-0) !important;\n}\n\n.post-tag,\n.geo-tag,\n.container .chosen-choices .search-choice,\n.container .chosen-container-multi .chosen-choices li.search-choice,\nheader.site-header,\nfooter.site-footer {\n    background-color: revert;\n    border-color: revert;\n}\n\n.s-prose hr {\n    background-color: var(--bd-1);\n}\n",
         "domains": [
           "stackexchange.com",
           "stackoverflow.com",
@@ -651,6 +684,9 @@
         "code": "@media (min-width: 1200px) {\n    body {\n        margin-left: calc(50vw - 380.5px);\n        margin-right: calc(50vw - 380.5px);\n    }\n}\n",
         "domains": [
           "releases.llvm.org"
+        ],
+        "urlPrefixes": [
+          "https://llvm.org/doxygen"
         ]
       },
       {
@@ -824,7 +860,7 @@
     "enabled": true,
     "sections": [
       {
-        "code": ":root, [data-theme=\"classic\"] {\n    --main-bg: var(--bg-0);\n    --main-bg-dark: var(--bg-2);\n    --main-color: var(--co-0);\n    --gray-border: var(--bd-0);\n}\n\nnav[aria-label~=subpages]+div>div:first-child {\n    background-color: var(--bg-1);\n}\nnav[aria-label~=subpages]~ul>li>div {\n    background-color: var(--bg-1);\n    --hover-bg-color: var(--bg-2) !important;\n}\n\nsection[aria-label~=metadata]>div>p+button:hover {\n    background-color: var(--bg-2);\n}\n\ndiv[class*=dropdown]>ul {\n    background-color: var(--bg-2);\n}\n\nmain>div>div>ol>li>div {\n    background-color: var(--bg-1) !important;\n}\nmain>div>div>ol>li>div svg>circle {\n    fill: var(--bg-1);\n}\n\nh1, h2, h3, h4 {\n    color: var(--co-2) !important;\n}\n\ncode {\n    background-color: var(--bg-2) !important;\n}\ntable th, table td {\n    border-color: var(--bd-1) !important;\n}\n\n.hljs {\n    color: var(--co-2);\n}\n.hljs-code, .hljs-comment, .hljs-formula {\n    color: #b6b7b7;\n}\n.hljs-meta .hljs-string, .hljs-regexp, .hljs-string {\n    color: #13f729;\n}\n.hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number, .hljs-operator, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id, .hljs-variable {\n    color: #2d81e1;\n}\n\ninput {\n    background-color: var(--bg-2);\n    color: var(--co-2) !important;\n}\n\ncanvas {\n    filter: invert(1);\n}",
+        "code": ":root, [data-theme=\"classic\"] {\n    --main-bg: var(--bg-0);\n    --main-bg-dark: var(--bg-2);\n    --main-color: var(--co-0);\n    --gray-border: var(--bd-0);\n}\n\nnav[aria-label~=subpages]+div>div:first-child {\n    background-color: var(--bg-1);\n}\nnav[aria-label~=subpages]~ul>li>div {\n    background-color: var(--bg-1);\n    --hover-bg-color: var(--bg-2) !important;\n}\n\nsection[aria-label~=metadata]>div>p+button:hover {\n    background-color: var(--bg-2);\n}\n\ndiv[class*=dropdown]>ul {\n    background-color: var(--bg-2);\n}\n\nmain>div>div>section>ol>li>a,\nmain>div>div>section>ul>li>a,\nmain>div>div>ol>li>div {\n    background-color: var(--bg-1) !important;\n}\nmain>div>div>ol>li>div svg>circle {\n    fill: var(--bg-1);\n}\n\nh1, h2, h3, h4 {\n    color: var(--co-2) !important;\n}\n\ncode {\n    background-color: var(--bg-2) !important;\n}\ntable th, table td {\n    border-color: var(--bd-1) !important;\n}\n\n.hljs {\n    color: var(--co-2);\n}\n.hljs-code, .hljs-comment, .hljs-formula {\n    color: #b6b7b7;\n}\n.hljs-meta .hljs-string, .hljs-regexp, .hljs-string {\n    color: #13f729;\n}\n.hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number, .hljs-operator, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id, .hljs-variable {\n    color: #2d81e1;\n}\n\ninput {\n    background-color: var(--bg-2);\n    color: var(--co-2) !important;\n}\n\ncanvas {\n    filter: invert(1);\n}",
         "domains": [
           "crates.io"
         ]
@@ -866,6 +902,22 @@
         "code": "body {\n    background-color: var(--bg-0);\n    color: var(--co-0);\n}\n\n.sm-dox {\n    background: var(--bg-2);\n}\n.sm-dox a,\n.sm-dox a:focus,\n.sm-dox a:active,\n.sm-dox a:hover,\n.sm-dox a.highlighted {\n    background-image: none;\n    border-right: solid 1px var(--bd-1);\n    text-shadow: none;\n    color: var(--co-1);\n}\n.sm-dox ul,\n.sm-dox ul a,\n.sm-dox ul a:focus,\n.sm-dox ul a:hover,\n.sm-dox ul a:active {\n    background-color: var(--bg-2);\n    color: var(--co-0);\n    border-color: var(--bd-1);\n}\n.sm-dox span.scroll-up,\n.sm-dox span.scroll-down {\n    background-color: var(--bg-1);\n}\n\n.navpath ul {\n    background: var(--bg-2);\n    border-color: var(--bd-0);\n}\n.navpath li.navelem a {\n    text-shadow: none;\n    color: var(--co-0);\n}\n\ndiv.header {\n    background: var(--bg-1);\n    border-color: var(--bd-1);\n}\n\ndiv.center>img {\n    filter: invert(.7);\n}\n\n/* list top of page */\n.mdescLeft,\n.mdescRight,\n.memItemLeft,\n.memItemRight,\n.memTemplItemLeft,\n.memTemplItemRight,\n.memTemplParams {\n    background-color: var(--bg-1);\n}\n.memSeparator {\n    border-color: var(--bd-0);\n}\n/*-*/\n\n/* individual definitions */\n.memtitle {\n    background: var(--bg-1);\n    border-color: var(--bd-1);\n}\n.memproto, dl.reflist dt {\n    background-color: var(--bg-1);\n    border-color: var(--bd-1);\n}\n.memdoc, dl.reflist dd {\n    background-color: var(--bg-2);\n    border-color: var(--bd-1);\n}\n.memproto, dl.reflist dt {\n    text-shadow: none;\n    color: #11a72d;\n}\n.paramname {\n    color: #e9603e;\n}\n/*-*/\n",
         "regexps": [
           "https://.*/doxygen/.*"
+        ],
+        "urlPrefixes": [
+          "https://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 70,
+    "name": "mep - time.is",
+    "enabled": true,
+    "sections": [
+      {
+        "code": "body {\n    color: var(--co-1);\n}\nhtml,\n#mainwrapper {\n    background-color: var(--bg-2);\n}\n.caln td div {\n    border-color: var(--bd-1);\n}\n",
+        "domains": [
+          "time.is"
         ]
       }
     ]
