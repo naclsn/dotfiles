@@ -23,6 +23,7 @@ auto-pairs = false
 auto-format = false
 line-number = "relative"
 bufferline = "multiple"
+scrolloff = 1
 [editor.statusline]
 center = ["total-line-numbers", "primary-selection-length"]
 [editor.lsp]
