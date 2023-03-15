@@ -1,14 +1,17 @@
 # bind 'x R' source ~/.config/treestrc
 sort extension dirs_first
+filter add dotfiles
+bind <C-h> filter toggle dotfiles
+bind <C-l> reload
 
 bind o prompt 'mkdir ' shell mkdir
-bind a expand prompt_init 'mv\  {} shell mv {}'
+bind a expand prompt_init '-> {@} shell mv {@}'
+bind d expand shell 'rm {}'
 
 bind e expand shell_wait 'hx {}'
-# TODO: nothing works like it should
-# bind e expand shell_wait 'sh -c '"\'"'$EDITOR {}'"\'"
+# bind e expand shell_wait 'sh -c "$EDITOR {}"'
 
-bind f expand shell 'file {}'
+bind f expand shell 'file {@}'
 
 bind 'x x' expand shell '{}'
 bind + expand shell 'chmod +x {}'
