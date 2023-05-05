@@ -1,5 +1,6 @@
 theme = "yesmydark"
 [keys.normal]
+C-l = ":lsp-restart"
 C-c = ":q"
 C-s = ":w"
 C-y = "save_selection"
@@ -28,9 +29,10 @@ scrolloff = 1
 center = ["total-line-numbers", "primary-selection-length"]
 [editor.lsp]
 auto-signature-help = false
+snippets = false
 [editor.cursor-shape]
 insert = "bar"
 select = "underline"
 [editor.file-picker]
-max-depth = 4
+max-depth = 5
 hidden = false
