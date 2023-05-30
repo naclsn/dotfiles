@@ -3,32 +3,49 @@ bind <A-q> quit
 
 sort extension dirs-first
 filter add dotfiles
-bind <C-h> filter toggle dotfiles
+filter add file .gitignore
+filter add file .ignore
+bind <C-h> seq 'filter toggle dotfiles' 'filter toggle file .gitignore' 'filter toggle file .ignore'
 bind <C-l> reload
 
 var step 15
 bind <C-u> expand rep '{step} prev-node'
 bind <C-d> expand rep '{step} next-node'
+# TODO: maths
+# bind <C-b> expand rep '{step*3} prev-node'
+# bind <C-f> expand rep '{step*3} next-node'
 
-bind o expand prompt-init 'mkdir\  {.relative} shell mkdir'
-bind a expand prompt-init '-> {.relative} shell mv {.relative}'
-bind d expand prompt-init 'rm\  "{selection?selection.relative:.relative}" shell rm'
-bind D expand prompt-init 'rm!\  "{selection?selection.relative:.relative}" shell rm -rf'
+bind 'm k' expand prompt-init 'touch\  {.relative} sh touch'
+bind 'M K' expand prompt-init 'mkdir\  {.relative} sh mkdir'
+bind 'm v' expand prompt-init 'mv\ {.file-name}\  {.relative} sh mv {}'
+bind 'c p' expand prompt-init 'cp\ {.file-name}\  {.relative} sh cp {}'
+bind 'r m' expand prompt-init 'rm\  "{selection?selection.relative:.relative}" sh rm'
+bind 'R M' expand prompt-init 'rm!\  "{selection?selection.relative:.relative}" sh rm -rf'
 
-bind e expand shell-wait 'hx {selection?selection:}'
-# bind e expand shell-wait 'sh -c "$EDITOR {}"'
+bind 'e d' expand sh-wait 'hx {selection?selection:}'
+bind 'x d' expand sh-wait 'sh -c "xxd -g1 '\'\{}\'' | hx"'
 
-bind f expand shell 'file {.relative}'
-# bind F expand shell 'head {}' # FIXME: this trying to parse fn key
+bind f expand sh 'file {.relative}'
+bind F expand sh 'head {}'
 
-# bind | expand prompt '| shell sh -c "<{} {|}"'
-# bind | expand prompt-init '| "<{} " shell sh -c'
-# bind | expand prompt '| shell {reply} {}
+bind y expand sh 'echo {} | xclip -sel c'
+bind Y expand sh 'xclip -sel c {}'
 
-bind 'x x' expand shell '{}'
-bind + expand shell 'chmod +x {}'
-bind - expand shell 'chmod -x {}'
+# TODO: {reply} or something for prompt
+# bind | expand prompt '| sh sh -c "<{} {|}"'
+# bind | expand prompt-init '| "<{} " sh sh -c'
+# bind | expand prompt '| sh {reply} {}
 
-bind 'x o' expand shell-wait 'rifle {selection?selection:}'
+bind 'x x' expand sh '{}'
+bind 'x h' expand prompt '"{.relative} " sh {}'
+# bind 'x w' expand prompt-init '"#!" "python {}" sh {}' # TODO: same as with |
+bind + expand sh 'chmod +x {selection?selection:}'
+bind - expand sh 'chmod -x {selection?selection:}'
 
+bind 'u n z' expand sh 'unzip -l {.relative}'
+bind 'g u n z' expand sh 'gunzip -l {.relative}'
+bind 'x o' expand sh-wait 'rifle {selection?selection:}'
+
+bind 'c d' expand seq '"reroot {}" "cd {root}"'
+bind 'C D' expand seq '"reroot .." "cd {root}"'
 bind S expand seq '"echo cd {}" quit'

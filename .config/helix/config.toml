@@ -9,6 +9,8 @@ C-y = "save_selection"
 '}' = "goto_next_paragraph"
 'A-x' = "extend_line_above"
 'A-*' = "make_search_word_bounded"
+'A-z' = ":toggle-option soft-wrap.enable"
+'=' = ":pipe spell"
 [keys.select]
 C-c = ":q"
 C-s = ":w"
@@ -18,6 +20,8 @@ C-y = "save_selection"
 '}' = "goto_next_paragraph"
 'A-x' = "extend_line_above"
 'A-*' = "make_search_word_bounded"
+'A-z' = ":toggle-option soft-wrap.enable"
+'=' = ":pipe spell"
 [editor]
 auto-info = false
 auto-pairs = false

@@ -1,9 +1,9 @@
-# PS1="\[\e[33m\]\u\[\e[m\]:\[\e[36m\]\w\[\e[m\]\\\$ $(printf %${SHLVL}s|tr \  \()\j)\n  "
-PS1='\e[33m\u\e[m:\e[36m\w\e[m\$\n  '
+PS1='\e[33m\u\e[m'$(printf %${SHLVL:-1}s|tr \  :)'\e[36m\w\e[m\$\n  '
 
 expath(){ [[ :$PATH: == *:$1:* ]]||export PATH=$1:$PATH;}
 expath ~/.local/bin
 expath ~/.cargo/bin
+expath ~/.nimble/bin
 expath ~/.npm-global/bin
 expath ./node_modules/.bin
 
@@ -66,17 +66,25 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
 bind -x       '"\e0":fg&>/dev/null'
 bind -x       '"\e-":fg -&>/dev/null'
 for n in {1..9}
-  do bind -x  '"\e'$n'":fg %'$n'>/dev/null'
+  do bind -x  '"\e'$n'":fg %'$n'&>/dev/null'
 done
 
 __jabs_git() { echo git-$1; }
 __jabs_man() {
   if [ 2 == $# ]
     then echo "$2($1)"
-    else echo "$1(.)"
+    else echo "$1`man -k ^$1\$ | awk '{print$2}'`"
   fi
 }
 __jabs_less() { echo ${1##*/}; }
+__jabs_daety() {
+  # TODO: could discard daety-opts, try to use -i/-a/-C, etc..
+  printf ^
+  if type -t __jabs_${1##*/} >/dev/null
+    then __jabs_${1##*/} "$*"
+    else echo $1
+  fi
+}
 
 __jabs() {
   jobs | while read spec status comm args
