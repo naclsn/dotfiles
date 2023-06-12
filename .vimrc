@@ -78,8 +78,21 @@ endf
 " TODO: binding not decided, would like to have a <C-W> binding for term buffer types
 no q; :<C-U>cal <SID>wapb()<CR>
 
-fu s:tree(dir, maxd)
-  return a:maxd ? {a:dir: map(readdir(a:dir), {_, x -> isdirectory(x) ? {x: s:tree(a:dir.'/'.x, a:maxd-1)} : x})} : 0
+fu s:tree(dir, depth)
+  let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
+  let depth = a:depth+1
+  let p = repeat('| ', depth)
+  "cal setline('$', [dir]+map(readdir(dir), 'isdirectory(dir.v:val) ? p.v:val."/" : p.v:val'))
+  "cal setline('$', [dir]+map(readdir(dir), 'isdirectory(dir.v:val) ? s:tree(dir.v:val."/", depth) : p.v:val'))
+  cal setline('$', dir)
+  for e in readdir(dir)
+    "if isdirectory(dir.e)
+    "  cal setline('$', p.e.'/')
+    "  cal s:tree(dir.e, depth)
+    "el
+      cal setline('$', p.e)
+    "en
+  endfo
 endf
 fu s:plore(dir)
   "let d = endswith('/') ? as_is : add_it
@@ -87,7 +100,9 @@ fu s:plore(dir)
   cal bufload(b)
   exe "b ".b
   se bl bt=nofile noswf
-  cal setline(1, s:tree(a:dir, 3))
+  "cal setline('$', a:dir)
+  cal s:tree(a:dir, 0)
+  "cal setline(1, ['line 1', 'line 2', 'last line'])
 endf
 no <C-Q> <Cmd>cal <SID>plore('/tmp/crap')<CR>
 
