@@ -81,29 +81,25 @@ no q; :<C-U>cal <SID>wapb()<CR>
 fu s:tree(dir, depth)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
-  let p = repeat('| ', depth)
-  "cal setline('$', [dir]+map(readdir(dir), 'isdirectory(dir.v:val) ? p.v:val."/" : p.v:val'))
-  "cal setline('$', [dir]+map(readdir(dir), 'isdirectory(dir.v:val) ? s:tree(dir.v:val."/", depth) : p.v:val'))
-  cal setline('$', dir)
+  let p = repeat('|  ', depth)
   for e in readdir(dir)
-    "if isdirectory(dir.e)
-    "  cal setline('$', p.e.'/')
-    "  cal s:tree(dir.e, depth)
-    "el
-      cal setline('$', p.e)
-    "en
+    if isdirectory(dir.e) && '.git' != e
+      cal append('$', p.e.'/')
+      cal s:tree(dir.e, depth)
+    el
+      cal append('$', p.e)
+    en
   endfo
 endf
 fu s:plore(dir)
-  "let d = endswith('/') ? as_is : add_it
+  let d = expand('/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir)
   let b = bufadd("dir: ".a:dir)
   cal bufload(b)
   exe "b ".b
   se bl bt=nofile noswf
-  "cal setline('$', a:dir)
-  cal s:tree(a:dir, 0)
-  "cal setline(1, ['line 1', 'line 2', 'last line'])
+  cal setline(1, d)
+  cal s:tree(d, 0)
 endf
-no <C-Q> <Cmd>cal <SID>plore('/tmp/crap')<CR>
+no <C-Q> <Cmd>cal <SID>plore('~/Documents/Projects/mn')<CR>
 
 " vim: se ts=2:
