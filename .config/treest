@@ -8,6 +8,9 @@ filter add file .ignore
 bind <C-h> seq 'filter toggle dotfiles' 'filter toggle file .gitignore' 'filter toggle file .ignore'
 bind <C-l> reload
 
+bind K prev-node
+bind J next-node
+
 var step 15
 bind <C-u> expand rep '{step} prev-node'
 bind <C-d> expand rep '{step} next-node'
@@ -15,10 +18,10 @@ bind <C-d> expand rep '{step} next-node'
 # bind <C-b> expand rep '{step*3} prev-node'
 # bind <C-f> expand rep '{step*3} next-node'
 
-bind 'm k' expand prompt-init 'touch\  {.relative} sh touch'
-bind 'M K' expand prompt-init 'mkdir\  {.relative} sh mkdir'
-bind 'm v' expand prompt-init 'mv\ {.file-name}\  {.relative} sh mv {}'
-bind 'c p' expand prompt-init 'cp\ {.file-name}\  {.relative} sh cp {}'
+bind 'm k' expand prompt-init 'touch\  "{.relative}" sh touch'
+bind 'M K' expand prompt-init 'mkdir\  "{.relative}" sh mkdir'
+bind 'm v' expand prompt-init 'mv\ {.file-name}\  "{.relative}" sh mv {}'
+bind 'c p' expand prompt-init 'cp\ {.file-name}\  "{.relative}" sh cp {}'
 bind 'r m' expand prompt-init 'rm\  "{selection?selection.relative:.relative}" sh rm'
 bind 'R M' expand prompt-init 'rm!\  "{selection?selection.relative:.relative}" sh rm -rf'
 

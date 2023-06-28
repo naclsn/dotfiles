@@ -49,7 +49,7 @@ reset
 ok() { # inspired by https://github.com/ErrorNoInternet/ok 
   db=~/.cache/ok
   case ${1##*-} in
-    h*) echo Usage: ok >&2;;
+    h*) echo Usage: ok '[help|list|merge|reset|clear|show]'>&2;;
     l*) ${PAGER:-less} "$db";;
     m*) cat "$db" "$2" | sort -n >"$db";;
     r*|c*) rm -f "$db";;

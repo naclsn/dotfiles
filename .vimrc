@@ -1,4 +1,4 @@
-se ai et gd hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nv nohls nowrap nu rnu ru ts=4 scf sw=0 udf ww=h,l
+se ai et hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nv nohls noto nowrap nu rnu ru ts=4 scf sw=0 udf
 se dir=~/.vim/cache/swap//
 se udir=~/.vim/cache/undo//
 colo slate
@@ -6,12 +6,19 @@ sy on
 filet on
 filet plugin on
 
-com Scratch sil %y f|ene|pu f|0d
 nn <BS> ciw
 nn <C-C> :<C-U>q<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>w<CR>
+
+map <C-W>t :<C-U>vert term ++cols=50<CR>
+map <C-W>f :<C-U>(TODO) ... cols=50
+map <C-W>b :<C-U>ls! "(TODO)<CR>
+map <space>w <C-W>
+
+com Scratch sil %y f|ene|pu f|0d
+com! -nargs=+ -complete=command Less ene|se bt=nofile nobl nonu nornu noswf|cal execute(<q-args>)->split('\n')->setline(1)
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -34,9 +41,10 @@ if has('gui_running')
   endfo
 en
 
-" buffer switcher {{{1
-nn <C-W><C-E> :<C-U>ls!<CR>:b 
-tnoremap <C-W><C-E> <C-W>:ls!<CR>:b 
+" buffer switcher / file switch {{{1
+" TODO: todo
+"nn <C-W><C-E> :<C-U>ls!<CR>:b 
+"tnoremap <C-W><C-E> <C-W>:ls!<CR>:b 
 
 " readline {{{1
 cno <C-A> <Home>
@@ -48,7 +56,7 @@ cno <C-X> <C-A>
 
 " surround (rather 'Zurround') {{{1
 " TODO: still don't like the binding leader (here 'Z')
-let pairs = map(split(&mps, ','), 'split(v:val,":")') + [['"','"'],["'","'"],['`','`']]
+let pairs = map(split(&mps, ','), 'split(v:val,":")') + [['<','>'],['"','"'],["'","'"],['`','`']]
 for [o,c] in pairs
   for s in [o,c]
     for [oo,cc] in pairs
@@ -56,7 +64,7 @@ for [o,c] in pairs
         exe 'nn ZR'.s.ss.' va'.o.'<Esc>r'.cc.'gvo<Esc>r'.oo.'``'
       endfo
     endfo
-    exe 'nn ZD'.s.' va'.o.'<Esc>dgvo<Esc>d``'
+    exe 'nn ZD'.s.' va'.o.'<Esc>xgvo<Esc>x``'
   endfo
 endfo
 
@@ -90,6 +98,7 @@ no <expr> ; get(w:,'eak',';')
 no <expr> , get(w:,'kae',',')
 
 " comment with 'gc{motion}' {{{1
+" TODO: fixme!
 fu s:omment(ty='')
   if '' == a:ty
     se opfunc=<SID>omment
@@ -110,10 +119,22 @@ fu s:omment(ty='')
       let b = p[1]
       let a = p[2]
     en
+    " FIXME: this jank and no work
     let n = s[1]
+    let ls = []
+    let i = ''
     wh n <= e[1]
-      cal setline(n, b.getline(n).a)
+      cal add(ls, getline(n))
+      let ii = matchstr(ls[n-s[1]], '^\s*')
+      if len(ii) < len(i)
+        let i = ii
+      en
       let n = n+1
+    endw
+    wh s[1] <= n
+      echom len(ls).' - '.len(ls[n-s[1]]).' - '.(n-s[1])
+      cal setline(n, i.b.ls[n-s[1]][len(i):].a)
+      let n = n-1
     endw
   en
   cal setpos('.', s)
@@ -126,9 +147,11 @@ nn <expr> gcc <SID>omment().'_'
 fu s:tree(dir, depth)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
-  let p = repeat('|  ', depth)
-  for e in readdir(dir)
-    if isdirectory(dir.e) && '.git' != e
+  " XXX: could make a fancier tree ('|'/'+'/'L'/'-' probably)
+  " but then commands like '<' and '>' are not helpful
+  let p = repeat(repeat(' ', &ts), depth)
+  for e in readdir(dir) " TODO: partition dirfirst, filter dotfiles...
+    if isdirectory(dir.e) && '.git' != e && '.svn' != e
       cal append('$', p.e.'/')
       cal s:tree(dir.e, depth)
     el
@@ -137,17 +160,17 @@ fu s:tree(dir, depth)
   endfo
 endf
 fu s:plore(dir)
-  let d = expand('/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir)
+  let d = trim(expand(a:dir), '/\', 2).'/'
   let b = bufadd('dir: '.a:dir)
   cal bufload(b)
   exe 'b '.b
-  se bl bt=nofile noswf
+  se bl bt=nofile et fdm=indent noswf sw=0 ts=3
   cal setline(1, d)
   cal s:tree(d, 0)
 endf
-no <C-Q> :<C-U>cal <SID>plore('~/Documents/Projects/mn')<CR>
+com -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 
-" netrw (TODO: tree too janky, switch away) {{{1
+" netrw {{{1
 let g:netrw_banner      = 0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 let g:netrw_liststyle   = 3
