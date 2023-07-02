@@ -7,16 +7,28 @@ filet on
 filet plugin on
 
 nn <BS> ciw
-nn <C-C> :<C-U>q<CR>
+nn <C-C> :<C-U>bw<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
-nn <C-S> :<C-U>w<CR>
+nn <C-S> :<C-U>up<CR>
 
 map <C-W>t :<C-U>vert term ++cols=50<CR>
 map <C-W>f :<C-U>(TODO) ... cols=50
-map <C-W>b :<C-U>ls! "(TODO)<CR>
 map <space>w <C-W>
 
+" view sticky {{{1
+map ZG GZ
+map Zb <C-B>Z
+map Zd <C-D>Z
+map Zf <C-F>Z
+map Zg ggZ
+map Zj <C-E>Z
+map Zk <C-Y>Z
+map Zu <C-U>Z
+map Z/ /
+map Z<space> <space>
+
+" random commands {{{1
 com Scratch sil %y f|ene|pu f|0d
 com! -nargs=+ -complete=command Less ene|se bt=nofile nobl nonu nornu noswf|cal execute(<q-args>)->split('\n')->setline(1)
 
@@ -41,22 +53,46 @@ if has('gui_running')
   endfo
 en
 
-" buffer switcher / file switch {{{1
-" TODO: todo
-"nn <C-W><C-E> :<C-U>ls!<CR>:b 
-"tnoremap <C-W><C-E> <C-W>:ls!<CR>:b 
-
-" readline {{{1
+" command-line {{{1
 cno <C-A> <Home>
 cno <C-B> <Left>
 cno <C-D> <Del>
 cno <C-F> <Right>
-" TODO: maybe even more if gui_running (^[b ^[f ^[d ...)
 cno <C-X> <C-A>
 
+" terminal things {{{1
+fu s:etup_term()
+  se nobl nonu nornu
+  if &sh =~ 'cmd\|powershell\|pwsh'
+    tno <C-A> <Home>
+    tno <C-B> <Left>
+    tno <C-D> <Del>
+    tno <C-E> <End>
+    tno <C-F> <Right>
+    tno <C-H> <BS>
+    tno <C-N> <Down>
+    tno <C-P> <Up>
+  en
+endf
+autocmd TerminalOpen * cal <SID>etup_term()
+
+" 3 names in status line {{{1
+fu! Stl_Off_bufname(dir)
+  let ls = split(execute('ls'), '\n')
+  return len(ls) <3 ? '' : bufname(str2nr(ls[(indexof(ls, 'v:val =~ "^\\s*'.bufnr().'"') + a:dir) % len(ls)]))
+endf
+let &stl="%#Conceal#%{Stl_Off_bufname(-1)}%#Ignore# %f%m %#Conceal#%{Stl_Off_bufname(1)}%#Ignore# %=%q %l/%L %c%V %y %{(&fenc??&enc).'+'.&ff}"
+
 " surround (rather 'Zurround') {{{1
-" TODO: still don't like the binding leader (here 'Z')
-let pairs = map(split(&mps, ','), 'split(v:val,":")') + [['<','>'],['"','"'],["'","'"],['`','`']]
+let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
+fu s:urround(o, c)
+  if '"' == a:o
+    exe 'se opfunc={_->execute(\"norm!\ `[mz`]a\\\"\\<Esc>`zi\\\"\")}'
+  el
+    exe 'se opfunc={_->execute(\"norm!\ `[mz`]a'.a:c.'\\<Esc>`zi'.a:o.'\")}'
+  en
+  retu 'g@'
+endf
 for [o,c] in pairs
   for s in [o,c]
     for [oo,cc] in pairs
@@ -65,6 +101,9 @@ for [o,c] in pairs
       endfo
     endfo
     exe 'nn ZD'.s.' va'.o.'<Esc>xgvo<Esc>x``'
+    exe 'nn <expr> Z'.s.' <SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
+    exe 'xn <expr> Z'.s.' <SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
+    exe 'nn <expr> Z'.s.'Z <SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")."_"'
   endfo
 endfo
 
@@ -98,7 +137,6 @@ no <expr> ; get(w:,'eak',';')
 no <expr> , get(w:,'kae',',')
 
 " comment with 'gc{motion}' {{{1
-" TODO: fixme!
 fu s:omment(ty='')
   if '' == a:ty
     se opfunc=<SID>omment
@@ -108,6 +146,7 @@ fu s:omment(ty='')
   let e = getpos("']")
   let p = matchlist(&cms, '^\(.*\)%s\(.*\)$')
   if 'char' == a:ty && len(p[2])
+    " FIXME: this is still incorrect, and TODO: also could look for s/e flags in &com
     let l = getline(e[1]) | cal setline(e[1], l[:e[2]].p[2].l[e[2]:])
     let l = getline(s[1]) | cal setline(s[1], l[:s[2]-2].p[1].l[s[2]-2:])
   el
@@ -119,22 +158,21 @@ fu s:omment(ty='')
       let b = p[1]
       let a = p[2]
     en
-    " FIXME: this jank and no work
     let n = s[1]
     let ls = []
     let i = ''
     wh n <= e[1]
       cal add(ls, getline(n))
       let ii = matchstr(ls[n-s[1]], '^\s*')
-      if len(ii) < len(i)
+      if n == s[1] || len(ii) < len(i)
         let i = ii
       en
-      let n = n+1
+      let n+= 1
     endw
+    let n-= 1
     wh s[1] <= n
-      echom len(ls).' - '.len(ls[n-s[1]]).' - '.(n-s[1])
       cal setline(n, i.b.ls[n-s[1]][len(i):].a)
-      let n = n-1
+      let n-= 1
     endw
   en
   cal setpos('.', s)
