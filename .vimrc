@@ -1,4 +1,6 @@
-se ai et hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nv nohls noto nowrap nu rnu ru ts=4 scf sw=0 udf
+se ai et hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nv noea nohls noto nowrap nu rnu ru sb spr sw=0 ts=4 udf
+" isk-=_
+se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 se udir=~/.vim/cache/undo//
 colo slate
@@ -12,7 +14,7 @@ nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
-map <C-W>t :<C-U>vert term ++cols=50<CR>
+map <C-W>t :<C-U>vert abo term ++cols=50<CR>
 map <C-W>f :<C-U>(TODO) ... cols=50
 map <space>w <C-W>
 
@@ -29,7 +31,7 @@ map Z/ /
 map Z<space> <space>
 
 " random commands {{{1
-com Scratch sil %y f|ene|pu f|0d
+com! Scratch sil %y f|ene|pu f|0d
 com! -nargs=+ -complete=command Less ene|se bt=nofile nobl nonu nornu noswf|cal execute(<q-args>)->split('\n')->setline(1)
 
 " platform specific {{{1
@@ -51,6 +53,7 @@ if has('gui_running')
   for c in split('abcdefghijklmnopqrstuvwxyz', '\zs')
     exe 'tno <M-'.c.'> <Esc>'.c
   endfo
+  map! <M-BS> <Esc><BS>
 en
 
 " command-line {{{1
@@ -62,7 +65,7 @@ cno <C-X> <C-A>
 
 " terminal things {{{1
 fu s:etup_term()
-  se nobl nonu nornu
+  setl nobl nonu nornu
   if &sh =~ 'cmd\|powershell\|pwsh'
     tno <C-A> <Home>
     tno <C-B> <Left>
@@ -77,20 +80,30 @@ endf
 autocmd TerminalOpen * cal <SID>etup_term()
 
 " 3 names in status line {{{1
-fu! Stl_Off_bufname(dir)
+fu! Stl_3_bufnames()
   let ls = split(execute('ls'), '\n')
-  return len(ls) <3 ? '' : bufname(str2nr(ls[(indexof(ls, 'v:val =~ "^\\s*'.bufnr().'"') + a:dir) % len(ls)]))
+  if !&bl || len(ls) <3
+    retu '%f'
+  en
+  let k = 0
+  for v in ls
+    if v =~ '^\s*'.bufnr()
+      break
+    en
+    let k+= 1
+  endfo
+  let Present = {nr -> "%-16.16(%{'".substitute(substitute(bufname(nr), '%', '%%', 'g'), "'", "''", 'g')."'}"}
+  let bp = Present(str2nr(ls[(k-1) % len(ls)])).'%)'
+  let bc = Present(bufnr()).(&ro ? '[RO]' : '%-4.4(%m%)').'%)'
+  let bn = Present(str2nr(ls[(k+1) % len(ls)])).'%)'
+  retu g:actual_curbuf != bufnr() ? "%#StatusLineNC#".bp." ".bc." ".bn : "%#StatusLineNC#".bp."%#StatusLine# ".bc." %#StatusLineNC#".bn."%#StatusLine#"
 endf
-let &stl="%#Conceal#%{Stl_Off_bufname(-1)}%#Ignore# %f%m %#Conceal#%{Stl_Off_bufname(1)}%#Ignore# %=%q %l/%L %c%V %y %{(&fenc??&enc).'+'.&ff}"
+let &stl="%{%Stl_3_bufnames()%} %=%q %l/%L %c%V %y %{(&fenc??&enc).'+'.&ff}"
 
 " surround (rather 'Zurround') {{{1
 let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
 fu s:urround(o, c)
-  if '"' == a:o
-    exe 'se opfunc={_->execute(\"norm!\ `[mz`]a\\\"\\<Esc>`zi\\\"\")}'
-  el
-    exe 'se opfunc={_->execute(\"norm!\ `[mz`]a'.a:c.'\\<Esc>`zi'.a:o.'\")}'
-  en
+  exe '"' == a:o ? 'se opfunc={_->execute(\"norm!\ `[mz`]a\\\"\\<Esc>`zi\\\"\")}' : 'se opfunc={_->execute(\"norm!\ `[mz`]a'.a:c.'\\<Esc>`zi'.a:o.'\")}'
   retu 'g@'
 endf
 for [o,c] in pairs
@@ -206,7 +219,7 @@ fu s:plore(dir)
   cal setline(1, d)
   cal s:tree(d, 0)
 endf
-com -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
+com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 
 " netrw {{{1
 let g:netrw_banner      = 0

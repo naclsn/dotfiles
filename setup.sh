@@ -1,5 +1,5 @@
 #!/bin/sh
-has() { c=`command -v "$1"` || { echo no "$1"; exit; }; }
+has() { c=`command -v $1` && echo $1 is $c || { echo no $1; exit; }; }
 has rm
 has mkdir
 has ln
