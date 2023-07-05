@@ -7,7 +7,7 @@ expath ~/.nimble/bin
 expath ~/.npm-global/bin
 expath ./node_modules/.bin
 
-export        EDITOR=hx
+export        EDITOR=`command -v nvim || echo vim`
 export          LESS='FiR --mouse --wheel-lines=3'
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules

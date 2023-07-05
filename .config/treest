@@ -25,8 +25,9 @@ bind 'c p' expand prompt-init 'cp\ {.file-name}\  "{.relative}" sh cp {}'
 bind 'r m' expand prompt-init 'rm\  "{selection?selection.relative:.relative}" sh rm'
 bind 'R M' expand prompt-init 'rm!\  "{selection?selection.relative:.relative}" sh rm -rf'
 
-bind 'e d' expand sh-wait 'hx {selection?selection:}'
-bind 'x d' expand sh-wait 'sh -c "xxd -g1 '\'\{}\'' | hx"'
+#bind 'e d' expand sh-wait '{$EDITOR} {selection?selection:}'
+bind 'e d' expand sh-wait 'sh -c "$EDITOR {selection?selection:}"'
+bind 'x d' expand sh-wait 'sh -c "xxd -g1 '\'\{}\'' | $EDITOR -"'
 
 bind f expand sh 'file {.relative}'
 bind F expand sh 'head {}'
@@ -51,4 +52,4 @@ bind 'x o' expand sh-wait 'rifle {selection?selection:}'
 
 bind 'c d' expand seq '"reroot {}" "cd {root}"'
 bind 'C D' expand seq '"reroot .." "cd {root}"'
-bind S expand seq '"echo cd {}" quit'
+bind S expand seq '"echo {}" quit'

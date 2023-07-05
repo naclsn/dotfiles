@@ -14,7 +14,11 @@ nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
-map <C-W>t :<C-U>vert abo term ++cols=50<CR>
+if has('nvim') " nvim no has `++cols`!?
+  map <C-W>t :<C-U>vert abo term<CR>
+el
+  map <C-W>t :<C-U>vert abo term ++cols=50<CR>
+en
 map <C-W>f :<C-U>(TODO) ... cols=50
 map <space>w <C-W>
 
@@ -77,7 +81,9 @@ fu s:etup_term()
     tno <C-P> <Up>
   en
 endf
-autocmd TerminalOpen * cal <SID>etup_term()
+if !has('nvim') " neovim no has `TerminalOpen!?
+  autocmd TerminalOpen * cal <SID>etup_term()
+en
 
 " 3 names in status line {{{1
 fu! Stl_3_bufnames()
@@ -98,7 +104,7 @@ fu! Stl_3_bufnames()
   let bn = Present(str2nr(ls[(k+1) % len(ls)])).'%)'
   retu g:actual_curbuf != bufnr() ? "%#StatusLineNC#".bp." ".bc." ".bn : "%#StatusLineNC#".bp."%#StatusLine# ".bc." %#StatusLineNC#".bn."%#StatusLine#"
 endf
-let &stl="%{%Stl_3_bufnames()%} %=%q %l/%L %c%V %y %{(&fenc??&enc).'+'.&ff}"
+let &stl="%{%Stl_3_bufnames()%} %=%q %l/%L %c%V %y %{(&fenc?&fenc:&enc).'+'.&ff}"
 
 " surround (rather 'Zurround') {{{1
 let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
@@ -136,7 +142,7 @@ fu s:neak(d)
   let w:kae = (0 < a:d ? '?' : '/').t."\<CR>"
   exe 'norm '.v:count.w:eak
 endf
-if has('patch-8.3.1978')
+if has('patch-8.3.1978') || has('nvim') " neovim no advertise it?
   no s <Cmd>cal <SID>neak(2)<CR>
   no S <Cmd>cal <SID>neak(-2)<CR>
 el " will not have proper support for eg. visual...
