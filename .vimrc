@@ -1,42 +1,58 @@
-se ai et hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nv noea nohls noto nowrap nu rnu ru sb spr sw=0 ts=4 udf
-" isk-=_
+se ai et ff=unix hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ssl sw=0 ts=4 udf
+" isk-=_ sb spr
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
-se udir=~/.vim/cache/undo//
+if has('nvim')
+  se udir=~/.vim/cache/nundo//
+el
+  se udir=~/.vim/cache/undo//
+en
+
 colo slate
+" TODO: no work
+hi link MatchParen Title
+hi link diffRemoved Identifier
+hi link diffAdded Special
+
 sy on
 filet on
 filet plugin on
 
 nn <BS> ciw
-nn <C-C> :<C-U>bw<CR>
+nn <C-C> :<C-U>bd<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
-if has('nvim') " nvim no has `++cols`!?
-  map <C-W>t :<C-U>vert abo term<CR>
+if has('nvim')
+  map <C-W>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>50<Bar>
 el
-  map <C-W>t :<C-U>vert abo term ++cols=50<CR>
+  map <C-W>t :<C-U>vert abo term ++cols=50 ++noclose<CR>
 en
-map <C-W>f :<C-U>(TODO) ... cols=50
+"map <C-W>f :<C-U>Sex! .<CR>:setl nu rnu<CR><C-W>50<Bar>
+map <C-W>f :<C-U>50Lex .<CR><C-W>50<Bar>
 map <space>w <C-W>
 
 " view sticky {{{1
+map Z/ /
+map Z<space> <space>
+map Z? ?
 map ZG GZ
+map ZZ Z
 map Zb <C-B>Z
+map Zb zbZ
 map Zd <C-D>Z
 map Zf <C-F>Z
 map Zg ggZ
 map Zj <C-E>Z
 map Zk <C-Y>Z
+map Zt ztZ
 map Zu <C-U>Z
-map Z/ /
-map Z<space> <space>
+map Zz zzZ
 
 " random commands {{{1
 com! Scratch sil %y f|ene|pu f|0d
-com! -nargs=+ -complete=command Less ene|se bt=nofile nobl nonu nornu noswf|cal execute(<q-args>)->split('\n')->setline(1)
+com! -nargs=+ -complete=command Less ene|se bt=nofile nobl nonu nornu noswf|f [less] <args>|cal execute(<q-args>)->split('\n')->setline(1)
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -81,7 +97,7 @@ fu s:etup_term()
     tno <C-P> <Up>
   en
 endf
-if !has('nvim') " neovim no has `TerminalOpen!?
+if !has('nvim')
   autocmd TerminalOpen * cal <SID>etup_term()
 en
 
@@ -89,7 +105,7 @@ en
 fu! Stl_3_bufnames()
   let ls = split(execute('ls'), '\n')
   if !&bl || len(ls) <3
-    retu '%f'
+    retu '%f'.(&ro ? '[RO]' : '%-4.4(%m%)')
   en
   let k = 0
   for v in ls
@@ -106,7 +122,17 @@ fu! Stl_3_bufnames()
 endf
 let &stl="%{%Stl_3_bufnames()%} %=%q %l/%L %c%V %y %{(&fenc?&fenc:&enc).'+'.&ff}"
 
+" evaluate with 'ge{motion}' and replace with result {{{1
+fu s:eval_this(ty='')
+  exe 'se opfunc={_->execute(\"norm!\ `]lc`[\\<C-R>=eval(@\\\")\\<Esc>\")}'
+  retu 'g@'
+endf
+nn <expr> ge <SID>eval_this()
+xn <expr> ge <SID>eval_this()
+nn <expr> gee <SID>eval_this().'_'
+
 " surround (rather 'Zurround') {{{1
+" TODO: could be better with a programmatic pending-mode (think `s:neak`)
 let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
 fu s:urround(o, c)
   exe '"' == a:o ? 'se opfunc={_->execute(\"norm!\ `[mz`]a\\\"\\<Esc>`zi\\\"\")}' : 'se opfunc={_->execute(\"norm!\ `[mz`]a'.a:c.'\\<Esc>`zi'.a:o.'\")}'
@@ -131,18 +157,21 @@ fu s:neak(d)
   let d = a:d
   let t = ''
   wh d
+    redr|ec '('.d.')'.t
     let c = getchar()
     if 27 == c
+      redr|ec
       retu
     en
     let t.= nr2char(c)
     let d-= 0 < a:d ? 1 : -1
   endw
+  let t = '\V'.t
   let w:eak = (0 < a:d ? '/' : '?').t."\<CR>"
   let w:kae = (0 < a:d ? '?' : '/').t."\<CR>"
   exe 'norm '.v:count.w:eak
 endf
-if has('patch-8.3.1978') || has('nvim') " neovim no advertise it?
+if has('patch-8.3.1978') || has('nvim')
   no s <Cmd>cal <SID>neak(2)<CR>
   no S <Cmd>cal <SID>neak(-2)<CR>
 el " will not have proper support for eg. visual...
@@ -230,10 +259,10 @@ com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 " netrw {{{1
 let g:netrw_banner      = 0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
-let g:netrw_liststyle   = 3
+"let g:netrw_liststyle   = 3
 let g:netrw_preview     = 1
 let g:netrw_winsize     = 25
-nn <C-L> :<C-U>exe get(w:,'rex','Ex')\|let w:rex='Rex'<CR>
+nn <C-L> :<C-U>exe get(w:,'rex','Ex')<Bar>let w:rex='Rex'<CR>
 aug netrw_mapping
   au FileType netrw sil! unm <buffer> s
   au FileType netrw sil! unm <buffer> S

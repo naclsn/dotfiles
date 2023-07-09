@@ -1,12 +1,14 @@
 #!/bin/sh
 has() { c=`command -v $1` && echo $1 is $c || { echo no $1; exit; }; }
-has rm
-has mkdir
-has ln
 has find
+has ln
+has mkdir
 has realpath
-c=$1-
-if [ "$c" = -h- ]
+has rm
+has readlink
+echo ---
+
+if [ %$1 = %-h ]
   then cat <<-'DOC'; exit
 Usage:
   -h: help
@@ -16,11 +18,33 @@ Usage:
   (none): setup
 DOC
 fi
-ln() { echo ln "$@"; [ "$c" = -n- ] || command ln "$@"; }
+
 find . -type f -path ./.\* -printf '%h %p\n' -o -name .git -prune | while read dir rel
   do
-    [ "$c" = -l- ] && { echo ${rel#./}; continue; }
+    rel=${rel#./}
+    abs=`realpath $rel`
+
+    if [ %$1 = %-l ]
+      then
+        if [ -e ~/$rel ]
+          then
+            case `readlink ~/$rel` in
+              '') msg=unlinked;;
+              $abs) msg=linked;;
+              *) msg=other;;
+            esac
+          else msg=missing
+        fi
+        printf '%s\t%s\n' $rel $msg
+        continue
+    fi
+
     [ -d ~/$dir ] || mkdir -p ~/$dir
-    [ "$c" = -f- ] && rm -f ~/$rel
-    [ -e ~/$rel ] || ln -s "$(realpath $rel)" ~/$rel
+    [ %$1 = %-f ] && rm -f ~/$rel
+
+    if ! [ -e ~/$rel ]
+      then
+        echo ln -s "$abs" ~/$rel
+        [ %$1 = %-n ] || ln -s "$abs" ~/$rel
+    fi
 done
