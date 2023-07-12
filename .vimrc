@@ -25,12 +25,12 @@ nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
 if has('nvim')
-  map <C-W>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>50<Bar>
+  map <space>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>
 el
-  map <C-W>t :<C-U>vert abo term ++cols=50 ++noclose<CR>
+  map <space>t :<C-U>vert abo term ++cols=60 ++noclose<CR>
 en
-"map <C-W>f :<C-U>Sex! .<CR>:setl nu rnu<CR><C-W>50<Bar>
-map <C-W>f :<C-U>50Lex .<CR><C-W>50<Bar>
+"map <C-W>f :<C-U>Sex! .<CR>:setl nu rnu<CR><C-W>60<Bar>
+map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
 map <space>w <C-W>
 
 " view sticky {{{1
@@ -52,7 +52,7 @@ map Zz zzZ
 
 " random commands {{{1
 com! Scratch sil %y f|ene|pu f|0d
-com! -nargs=+ -complete=command Less ene|se bt=nofile nobl nonu nornu noswf|f [less] <args>|cal execute(<q-args>)->split('\n')->setline(1)
+com! -nargs=+ -complete=command Less let l=execute(<q-args>)|ene|se bt=nofile nobl nonu nornu noswf|f [less] <args>|cal setline(1, split(l, '\n'))
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -74,6 +74,7 @@ if has('gui_running')
     exe 'tno <M-'.c.'> <Esc>'.c
   endfo
   map! <M-BS> <Esc><BS>
+  map <C-Z> :<C-U>b !<CR>
 en
 
 " command-line {{{1
@@ -262,7 +263,7 @@ let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 "let g:netrw_liststyle   = 3
 let g:netrw_preview     = 1
 let g:netrw_winsize     = 25
-nn <C-L> :<C-U>exe get(w:,'rex','Ex')<Bar>let w:rex='Rex'<CR>
+"nn <C-L> :<C-U>exe get(w:,'rex','Ex')<Bar>let w:rex='Rex'<CR>
 aug netrw_mapping
   au FileType netrw sil! unm <buffer> s
   au FileType netrw sil! unm <buffer> S
