@@ -27,6 +27,7 @@ alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
 alias             ff='firefox'
+alias     blush_here='. ~/.local/bin/blush'
 
 # (2 lines) obsoleted by jabs, may remove
 bind -x       '"\ez":fg&>/dev/null'
@@ -46,7 +47,7 @@ unset which # fedora
 set -b
 reset
 
-ok() { # inspired by https://github.com/ErrorNoInternet/ok 
+ok() { # inspired by https://github.com/ErrorNoInternet/ok
   db=~/.cache/ok
   case ${1##*-} in
     h*) echo Usage: ok '[help|list|merge|reset|clear|show]'>&2;;
@@ -95,7 +96,7 @@ __jabs() {
         -) col=34;;
         *) col=0;;
       esac
-      printf '\b\e[%dm[%d %s]\e[m ' $col ${spec:1:1} $comm
+      printf '\e[%dm[%d %s]\e[m' $col ${spec:1:1} $comm
   done
 }
 

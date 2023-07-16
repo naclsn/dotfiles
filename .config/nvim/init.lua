@@ -5,6 +5,7 @@ require('packer').startup(function(use)
     use 'neovim/nvim-lspconfig'
 end)
 
+-- TODO: doesn't work :/
 require('lspconfig/configs')['my_mono_omni_sharp'] = {
     default_config = {
         cmd = { '/home/sel/Public/OmniSharp/omnisharp-mono/OmniSharp.exe', '--languageserver' },
@@ -19,7 +20,7 @@ require('lspconfig/configs')['my_mono_omni_sharp'] = {
 
 for _, it in pairs {
     'clangd',
-    'my_mono_omni_sharp',
+    --'my_mono_omni_sharp',
     'elmls',
     'erlangls',
     'jdtls',

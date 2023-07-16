@@ -1,5 +1,5 @@
 #!/bin/sh
-case $- in *i*) ;; *) return;; esac
+case $- in *i*) ;; *) exit 2;; esac
 cd "${1:-missing path}" || return
 VERYOLDPWD=$OLDPWD
 

@@ -102,6 +102,9 @@ if !has('nvim')
   autocmd TerminalOpen * cal <SID>etup_term()
 en
 
+" better v_! (filters exact selection) {{{1
+xm ! "pc<C-R>=(system(input('<Bar>!','','shellcmd'),@p)??@p).nr2char(27)<CR>
+
 " 3 names in status line {{{1
 fu! Stl_3_bufnames()
   let ls = split(execute('ls'), '\n')
