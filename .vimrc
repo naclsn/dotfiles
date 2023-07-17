@@ -135,8 +135,7 @@ nn <expr> ge <SID>eval_this()
 xn <expr> ge <SID>eval_this()
 nn <expr> gee <SID>eval_this().'_'
 
-" surround (rather 'Zurround') {{{1
-" TODO: could be better with a programmatic pending-mode (think `s:neak`)
+" surround (rather 'Zurround' -- messes with 'z) {{{1
 let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
 fu s:urround(o, c)
   exe '"' == a:o ? 'se opfunc={_->execute(\"norm!\ `[mz`]a\\\"\\<Esc>`zi\\\"\")}' : 'se opfunc={_->execute(\"norm!\ `[mz`]a'.a:c.'\\<Esc>`zi'.a:o.'\")}'
@@ -146,13 +145,12 @@ for [o,c] in pairs
   for s in [o,c]
     for [oo,cc] in pairs
       for ss in [oo,cc]
-        exe 'nn ZR'.s.ss.' va'.o.'<Esc>r'.cc.'gvo<Esc>r'.oo.'``'
+        exe 'nn ZR'.s.ss 'mzvi'.o.'<Esc>lr'.cc.'gvo<Esc>hr'.oo.'`z'
       endfo
     endfo
-    exe 'nn ZD'.s.' va'.o.'<Esc>xgvo<Esc>x``'
-    exe 'nn <expr> Z'.s.' <SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
-    exe 'xn <expr> Z'.s.' <SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
-    exe 'nn <expr> Z'.s.'Z <SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")."_"'
+    exe 'nn ZD'.s 'mzvi'.o.'<Esc>lxgvo<Esc>hx`z'
+    exe 'nn <expr> Z'.s '<SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
+    exe 'xn <expr> Z'.s '<SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
   endfo
 endfo
 
