@@ -1,4 +1,5 @@
-se ai et ff=unix hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ssl sw=0 ts=4 udf
+lan C
+se ai et ff=unix hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 " isk-=_ sb spr
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
@@ -25,12 +26,28 @@ nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
 if has('nvim')
-  map <space>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>
+  map <space>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
+  tmap <C-W>N <C-\><C-N>
 el
   map <space>t :<C-U>vert abo term ++cols=60 ++noclose<CR>
+  fu s:etup_term()
+    setl nobl nonu nornu
+    if &sh =~ 'cmd\|powershell\|pwsh'
+      tno <C-A> <Home>
+      tno <C-B> <Left>
+      tno <C-D> <Del>
+      tno <C-E> <End>
+      tno <C-F> <Right>
+      tno <C-H> <BS>
+      tno <C-N> <Down>
+      tno <C-P> <Up>
+    en
+  endf
+  autocmd TerminalOpen * cal <SID>etup_term()
 en
-"map <C-W>f :<C-U>Sex! .<CR>:setl nu rnu<CR><C-W>60<Bar>
 map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
+map <space>b :<C-U>Ebuffer<CR>
+map <space>B :<C-U>Ebuffer!<CR>
 map <space>w <C-W>
 
 " view sticky {{{1
@@ -74,7 +91,12 @@ if has('gui_running')
     exe 'tno <M-'.c.'> <Esc>'.c
   endfo
   map! <M-BS> <Esc><BS>
-  map <C-Z> :<C-U>b !<CR>
+  tma <S-space> <space>
+  if has('nvim')
+    map <C-Z> :<C-U>b term:<CR>
+  el
+    map <C-Z> :<C-U>b !<CR>
+  en
 en
 
 " command-line {{{1
@@ -84,47 +106,8 @@ cno <C-D> <Del>
 cno <C-F> <Right>
 cno <C-X> <C-A>
 
-" terminal things {{{1
-fu s:etup_term()
-  setl nobl nonu nornu
-  if &sh =~ 'cmd\|powershell\|pwsh'
-    tno <C-A> <Home>
-    tno <C-B> <Left>
-    tno <C-D> <Del>
-    tno <C-E> <End>
-    tno <C-F> <Right>
-    tno <C-H> <BS>
-    tno <C-N> <Down>
-    tno <C-P> <Up>
-  en
-endf
-if !has('nvim')
-  autocmd TerminalOpen * cal <SID>etup_term()
-en
-
 " better v_! (filters exact selection) {{{1
 xm ! "pc<C-R>=(system(input('<Bar>!','','shellcmd'),@p)??@p).nr2char(27)<CR>
-
-" 3 names in status line {{{1
-fu! Stl_3_bufnames()
-  let ls = split(execute('ls'), '\n')
-  if !&bl || len(ls) <3
-    retu '%f'.(&ro ? '[RO]' : '%-4.4(%m%)')
-  en
-  let k = 0
-  for v in ls
-    if v =~ '^\s*'.bufnr()
-      break
-    en
-    let k+= 1
-  endfo
-  let Present = {nr -> "%-16.16(%{'".substitute(substitute(bufname(nr), '%', '%%', 'g'), "'", "''", 'g')."'}"}
-  let bp = Present(str2nr(ls[(k-1) % len(ls)])).'%)'
-  let bc = Present(bufnr()).(&ro ? '[RO]' : '%-4.4(%m%)').'%)'
-  let bn = Present(str2nr(ls[(k+1) % len(ls)])).'%)'
-  retu g:actual_curbuf != bufnr() ? "%#StatusLineNC#".bp." ".bc." ".bn : "%#StatusLineNC#".bp."%#StatusLine# ".bc." %#StatusLineNC#".bn."%#StatusLine#"
-endf
-let &stl="%{%Stl_3_bufnames()%} %=%q %l/%L %c%V %y %{(&fenc?&fenc:&enc).'+'.&ff}"
 
 " evaluate with 'ge{motion}' and replace with result {{{1
 fu s:eval_this(ty='')
@@ -176,7 +159,7 @@ endf
 if has('patch-8.3.1978') || has('nvim')
   no s <Cmd>cal <SID>neak(2)<CR>
   no S <Cmd>cal <SID>neak(-2)<CR>
-el " will not have proper support for eg. visual...
+el
   no s :<C-U>cal <SID>neak(2)<CR>
   no S :<C-U>cal <SID>neak(-2)<CR>
 en
@@ -196,9 +179,8 @@ fu s:omment(ty='')
   let e = getpos("']")
   let p = matchlist(&cms, '^\(.*\)%s\(.*\)$')
   if 'char' == a:ty && len(p[2])
-    " FIXME: this is still incorrect, and TODO: also could look for s/e flags in &com
-    let l = getline(e[1]) | cal setline(e[1], l[:e[2]].p[2].l[e[2]:])
-    let l = getline(s[1]) | cal setline(s[1], l[:s[2]-2].p[1].l[s[2]-2:])
+    let l = getline(e[1]) | cal setline(e[1], l[:e[2]-1].p[2].l[e[2]:])
+    let l = getline(s[1]) | cal setline(s[1], l[:s[2]-2].p[1].l[s[2]-1:])
   el
     let q = filter(map(split(&com, ','), 'matchlist(v:val, "^b\\?:\\(.*\\)")'), 'len(v:val)')
     if len(q)
@@ -252,11 +234,40 @@ fu s:plore(dir)
   let b = bufadd('dir: '.a:dir)
   cal bufload(b)
   exe 'b '.b
-  se bl bt=nofile et fdm=indent noswf sw=0 ts=3
+  setl bl bt=nofile et fdm=indent noswf sw=0 ts=3
   cal setline(1, d)
   cal s:tree(d, 0)
 endf
 com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
+
+" buffer pick/drop {{{1
+fu s:ebuffers_apply(bufdo)
+  let nls = getline(1, '$')
+  let k = 0
+  let c = a:bufdo
+  for l in b:ls
+    let nr = matchstr(l, '^\s*\d\+')
+    if k < len(nls) && nls[k][:len(nr)-1] == nr
+      let k+= 1
+    el
+      let c.= ' '.nr
+    en
+  endfo
+  exe c
+endf
+fu s:ebuffers(bang)
+  let pls = split(execute('ls'.a:bang), '\n')
+  exe 'bel' &cmdwinheight.'sp'
+  ene
+  setl bt=nofile cul nobl noswf
+  let b:ls = pls
+  cal matchadd('Comment', '^\s*\d\+u.*$')
+  %d _
+  cal setline(1, b:ls)
+  exe 'au BufLeave <buffer> ++once cal <SID>ebuffers_apply("' ('!'==a:bang?'bw':'bd') '")'
+  map <buffer> <silent> <CR> :<C-U>let l=getline('.')<Bar>bw<Bar>exe ''==l?'ene':'b'.matchstr(l,'\d\+')<CR>
+endf
+com! -bang Ebuffers cal <SID>ebuffers('<bang>')
 
 " netrw {{{1
 let g:netrw_banner      = 0
@@ -264,7 +275,7 @@ let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 "let g:netrw_liststyle   = 3
 let g:netrw_preview     = 1
 let g:netrw_winsize     = 25
-"nn <C-L> :<C-U>exe get(w:,'rex','Ex')<Bar>let w:rex='Rex'<CR>
+let g:netrw_chgwin      = 2
 aug netrw_mapping
   au FileType netrw sil! unm <buffer> s
   au FileType netrw sil! unm <buffer> S
