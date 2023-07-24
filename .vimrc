@@ -14,6 +14,7 @@ colo slate
 hi link MatchParen Title
 hi link diffRemoved Identifier
 hi link diffAdded Special
+hi Normal ctermfg=white ctermbg=black
 
 sy on
 filet on
@@ -256,6 +257,7 @@ fu s:ebuffers_apply(bufdo)
   exe c
 endf
 fu s:ebuffers(bang)
+  let pnr = bufnr()
   let pls = split(execute('ls'.a:bang), '\n')
   exe 'bel' &cmdwinheight.'sp'
   ene
@@ -266,6 +268,8 @@ fu s:ebuffers(bang)
   cal setline(1, b:ls)
   exe 'au BufLeave <buffer> ++once cal <SID>ebuffers_apply("' ('!'==a:bang?'bw':'bd') '")'
   map <buffer> <silent> <CR> :<C-U>let l=getline('.')<Bar>bw<Bar>exe ''==l?'ene':'b'.matchstr(l,'\d\+')<CR>
+  sil! exe '/^\s*'.pnr
+  norm! zz
 endf
 com! -bang Ebuffers cal <SID>ebuffers('<bang>')
 
