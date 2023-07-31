@@ -1,5 +1,5 @@
 lan C
-se ai et ff=unix hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai et ff=unix ffs=unix,dos hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 " isk-=_ sb spr
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
@@ -70,7 +70,8 @@ map Zz zzZ
 
 " random commands {{{1
 com! Scratch sil %y f|ene|pu f|0d
-com! -nargs=+ -complete=command Less let l=execute(<q-args>)|ene|se bt=nofile nobl nonu nornu noswf|f [less] <args>|cal setline(1, split(l, '\n'))
+com! -nargs=+ -complete=command Less let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
+com! -nargs=* -complete=file -bang GitDiff ene|setl bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -260,7 +261,7 @@ fu s:ebuffers(bang)
   let pnr = bufnr()
   let pls = split(execute('ls'.a:bang), '\n')
   exe 'bel' &cmdwinheight.'sp'
-  ene
+  ene|f [Buffer List]
   setl bt=nofile cul nobl noswf
   let b:ls = pls
   cal matchadd('Comment', '^\s*\d\+u.*$')
@@ -268,7 +269,7 @@ fu s:ebuffers(bang)
   cal setline(1, b:ls)
   exe 'au BufLeave <buffer> ++once cal <SID>ebuffers_apply("' ('!'==a:bang?'bw':'bd') '")'
   map <buffer> <silent> <CR> :<C-U>let l=getline('.')<Bar>bw<Bar>exe ''==l?'ene':'b'.matchstr(l,'\d\+')<CR>
-  sil! exe '/^\s*'.pnr
+  sil! exe '/^\s*'.pnr.'\D'
   norm! zz
 endf
 com! -bang Ebuffers cal <SID>ebuffers('<bang>')
