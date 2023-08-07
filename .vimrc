@@ -8,23 +8,26 @@ if has('nvim')
 el
   se udir=~/.vim/cache/undo//
 en
+se ssop=blank,buffers,folds,globals,resize,sesdir,slash,terminal,unix,winsize,winpos
 
 colo slate
-" TODO: no work
-hi link MatchParen Title
-hi link diffRemoved Identifier
-hi link diffAdded Special
-hi Normal ctermfg=white ctermbg=black
-
 sy on
 filet on
 filet plugin on
+
+hi clear MatchParen | hi link MatchParen Title
+hi clear diffRemoved | hi link diffRemoved Identifier
+hi clear diffAdded | hi link diffAdded Special
+hi Normal ctermfg=white ctermbg=black
 
 nn <BS> ciw
 nn <C-C> :<C-U>bd<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
+
+nn + :<C-U>.+
+nn - :<C-U>.-
 
 if has('nvim')
   map <space>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
@@ -50,6 +53,7 @@ map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
 map <space>b :<C-U>Ebuffer<CR>
 map <space>B :<C-U>Ebuffer!<CR>
 map <space>w <C-W>
+map <space>a :<C-U>argdo norm 
 
 " view sticky {{{1
 map Z/ /
