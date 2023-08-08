@@ -9,6 +9,7 @@ el
   se udir=~/.vim/cache/undo//
 en
 se ssop=blank,buffers,folds,globals,resize,sesdir,slash,terminal,unix,winsize,winpos
+au SourcePost Session*.vim exe get(g:, 'Run', 'echom ''no "Run" in this session''')
 
 colo slate
 sy on
