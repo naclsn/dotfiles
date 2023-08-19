@@ -18,7 +18,7 @@ alias             la='ls -FXxA'
 alias             ll='ls -FXgo'
 alias              l='ls -FXx'
 alias           tree='tree --dirsfirst'
-alias            tre='treest'
+alias            tre='treest -C'
 alias           info='info --vi-keys'
 alias             db='gdb -q --args'
 alias             py='python3'
@@ -27,7 +27,7 @@ alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
 alias             ff='firefox'
-alias     blush_here='. ~/.local/bin/blush'
+alias          today='nvim ~ +cd\ .local/share/today +cal\ "'"readdir('.','execute(''bad ''.v:val)')"'" +e\ `date +%Y-%m-%d`.md +se\ spell\ wrap' # inspired by https://git.sr.ht/~sotirisp/today
 
 # (2 lines) obsoleted by jabs, may remove
 bind -x       '"\ez":fg&>/dev/null'

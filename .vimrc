@@ -21,7 +21,7 @@ hi clear diffRemoved | hi link diffRemoved Identifier
 hi clear diffAdded | hi link diffAdded Special
 hi Normal ctermfg=white ctermbg=black
 
-nn <BS> ciw
+" nn <BS> ciw
 nn <C-C> :<C-U>bd<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
@@ -74,9 +74,11 @@ map Zu <C-U>Z
 map Zz zzZ
 
 " random commands {{{1
-com! Scratch sil %y f|ene|pu f|0d
-com! -nargs=+ -complete=command Less let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
-com! -nargs=* -complete=file -bang GitDiff ene|setl bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))
+com!                               Scratch  let ft=&ft|sil %y f|ene|pu f|0d _|let &ft=ft|unlet ft
+com! -nargs=+ -complete=command    Less     let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
+com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))
+com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
+com! -bang                         GitMsg   exe 'GitDiff<bang>'|42vs msg|setl ft=gitcommit spell
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -111,6 +113,7 @@ cno <C-A> <Home>
 cno <C-B> <Left>
 cno <C-D> <Del>
 cno <C-F> <Right>
+cno <C-O> <C-F>
 cno <C-X> <C-A>
 
 " better v_! (filters exact selection) {{{1
@@ -265,9 +268,8 @@ endf
 fu s:ebuffers(bang)
   let pnr = bufnr()
   let pls = split(execute('ls'.a:bang), '\n')
-  exe 'bel' &cmdwinheight.'sp'
-  ene|f [Buffer List]
-  setl bt=nofile cul nobl noswf
+  bel 10sp|ene|setl bh=wipe bt=nofile cul nobl noswf
+  f [Buffer List]
   let b:ls = pls
   cal matchadd('Comment', '^\s*\d\+u.*$')
   %d _
@@ -278,6 +280,16 @@ fu s:ebuffers(bang)
   norm! zz
 endf
 com! -bang Ebuffers cal <SID>ebuffers('<bang>')
+
+" edit a variable (eg ':Eva Run') {{{1
+fu s:evariable(name)
+  bel 10sp|ene|setl bh=wipe bt=nofile nobl noswf
+  exe 'f [Edit Variable' a:name.']'
+  cal setline(1, split(get(g:, a:name, ''), '\n'))
+  let nr = bufnr()
+  exe 'au BufLeave <buffer> ++once let '.a:name.' = join(getbufline('.nr.', 1, "$"), "\n")'
+endf
+com -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
 
 " netrw {{{1
 let g:netrw_banner      = 0
