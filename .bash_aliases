@@ -27,7 +27,7 @@ alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
 alias             ff='firefox'
-alias          today='nvim ~ +cd\ .local/share/today +cal\ "'"readdir('.','execute(''bad ''.v:val)')"'" +e\ `date +%Y-%m-%d`.md +se\ spell\ wrap' # inspired by https://git.sr.ht/~sotirisp/today
+alias          today='nvim ~ +cd\ ~/.local/share/today +cal\ "'"readdir('.','execute(''bad ''.v:val)')"'" +e\ `date +%Y-%m-%d`.md +se\ spell\ wrap' # inspired by https://git.sr.ht/~sotirisp/today
 
 # (2 lines) obsoleted by jabs, may remove
 bind -x       '"\ez":fg&>/dev/null'
