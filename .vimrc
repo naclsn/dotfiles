@@ -1,5 +1,6 @@
 lan C
-se ai et ff=unix ffs=unix,dos hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai cul et ff=unix ffs=unix,dos hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+au FileType * se fo+=j fo-=o
 " isk-=_ sb spr
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
@@ -67,8 +68,10 @@ map Zb zbZ
 map Zd <C-D>Z
 map Zf <C-F>Z
 map Zg ggZ
+map Zh zhZ
 map Zj <C-E>Z
 map Zk <C-Y>Z
+map Zl zlZ
 map Zt ztZ
 map Zu <C-U>Z
 map Zz zzZ
@@ -76,9 +79,16 @@ map Zz zzZ
 " random commands {{{1
 com!                               Scratch  let ft=&ft|sil %y f|ene|pu f|0d _|let &ft=ft|unlet ft
 com! -nargs=+ -complete=command    Less     let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
-com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))
 com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
-com! -bang                         GitMsg   exe 'GitDiff<bang>'|42vs msg|setl ft=gitcommit spell
+com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
+com!                         -bang GitMsg   exe 'GitDiff<bang>'|42vs msg|setl spell|cal setline(1,['','']+map(systemlist('git status -sb'),'strlen(v:val)?"# ".v:val:"#"'))|cal <SID>git_msg_sb_syn()
+fu s:git_msg_sb_syn()
+  sy match Keyword /\%^.*\%<51v./
+  sy match diffRemoved /[ MTADRCU]/ contained
+  sy match diffAdded /[ MTADRCU]/ contained nextgroup=diffRemoved
+  sy match Comment /^# / contains=String,diffAdded,diffRemoved nextgroup=diffAdded
+  sy match Comment /^# \(??\|!!\|##\) .*/
+endf
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -126,7 +136,7 @@ fu s:eval_this(ty='')
 endf
 nn <expr> ge <SID>eval_this()
 xn <expr> ge <SID>eval_this()
-nn <expr> gee <SID>eval_this().'_'
+"nn <expr> gee <SID>eval_this().'_'
 
 " surround (rather 'Zurround' -- messes with 'z) {{{1
 let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
@@ -289,7 +299,7 @@ fu s:evariable(name)
   let nr = bufnr()
   exe 'au BufLeave <buffer> ++once let '.a:name.' = join(getbufline('.nr.', 1, "$"), "\n")'
 endf
-com -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
+com! -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
 
 " netrw {{{1
 let g:netrw_banner      = 0

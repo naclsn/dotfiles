@@ -27,7 +27,7 @@ alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
 alias             ff='firefox'
-alias          today='nvim ~ +cd\ ~/.local/share/today +cal\ "'"readdir('.','execute(''bad ''.v:val)')"'" +e\ `date +%Y-%m-%d`.md +se\ spell\ wrap' # inspired by https://git.sr.ht/~sotirisp/today
+alias          today='nvim +cd\ ~/.local/share/today +cal\ "'"readdir('.','execute(''bad ''.v:val)')"'" +e\ `date +%Y-%m-%d`.md +se\ spell\ wrap' # inspired by https://git.sr.ht/~sotirisp/today
 
 # (2 lines) obsoleted by jabs, may remove
 bind -x       '"\ez":fg&>/dev/null'
@@ -40,7 +40,8 @@ bind -x       '"\ey":printf %s "$READLINE_LINE" | xclip -sel c'
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
 
 command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
-which_include()(find `gcc -v -E -</dev/null 2>&1|awk '/^#include </{f=1;next}/^End/{f=0}f'` -name "$1")
+which_include()(n=$1;shift;find $(echo|cc -v -E - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
+grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|cc -dM -E - 2>&1|grep "$n")
 fwhich()(file "$(which "$@")")
 unset which # fedora
 
@@ -74,7 +75,7 @@ __jabs_git() { echo git-$1; }
 __jabs_man() {
   if [ 2 == $# ]
     then echo "$2($1)"
-    else echo "$1`man -k ^$1\$ | awk '{print$2}'`"
+    else echo "$1`man -k ^$1\$ 2>/dev/null | awk '{print$2}' || echo ' (man)'`"
   fi
 }
 __jabs_less() { echo ${1##*/}; }
