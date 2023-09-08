@@ -55,7 +55,9 @@ map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
 map <space>b :<C-U>Ebuffer<CR>
 map <space>B :<C-U>Ebuffer!<CR>
 map <space>w <C-W>
-map <space>a :<C-U>argdo norm 
+map <space>y "+y
+map <space>p "+p
+map <space>P "+P
 
 " view sticky {{{1
 map Z/ /
@@ -84,6 +86,7 @@ com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff n
 com!                         -bang GitMsg   exe 'GitDiff<bang>'|42vs msg|setl spell|cal setline(1,['','']+map(systemlist('git status -sb'),'strlen(v:val)?"# ".v:val:"#"'))|cal <SID>git_msg_sb_syn()
 fu s:git_msg_sb_syn()
   sy match Keyword /\%^.*\%<51v./
+  sy match Error /\%2l/
   sy match diffRemoved /[ MTADRCU]/ contained
   sy match diffAdded /[ MTADRCU]/ contained nextgroup=diffRemoved
   sy match Comment /^# / contains=String,diffAdded,diffRemoved nextgroup=diffAdded
