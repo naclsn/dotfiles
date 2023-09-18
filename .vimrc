@@ -1,7 +1,5 @@
 lan C
-se ai cul et ff=unix ffs=unix,dos hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
-au FileType * se fo+=j fo-=o
-" isk-=_ sb spr
+se ai cul et ff=unix ffs=unix,dos fo+=1cjr hid is lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -22,12 +20,12 @@ hi clear diffRemoved | hi link diffRemoved Identifier
 hi clear diffAdded | hi link diffAdded Special
 hi Normal ctermfg=white ctermbg=black
 
-" nn <BS> ciw
 nn <C-C> :<C-U>bd<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
+nm U u
 nn + :<C-U>.+
 nn - :<C-U>.-
 
@@ -162,22 +160,23 @@ endfo
 
 " sneak movement (multi-char and multi-line 't'/'f') {{{1
 fu s:neak(d)
-  let d = a:d
-  let t = ''
-  wh d
-    redr|ec '('.d.')'.t
-    let c = getchar()
-    if 27 == c
-      redr|ec
-      retu
-    en
-    let t.= nr2char(c)
-    let d-= 0 < a:d ? 1 : -1
-  endw
-  let t = '\V'.t
-  let w:eak = (0 < a:d ? '/' : '?').t."\<CR>"
-  let w:kae = (0 < a:d ? '?' : '/').t."\<CR>"
-  exe 'norm '.v:count.w:eak
+  redr|ec '('.a:d.')'
+  let l = [92, 86]
+  for k in range(abs(a:d))
+    if add(l, getchar())[-1] < 32 || 126 < l[-1]|retu|en
+    if 39 == l[-1]|cal add(l, 39)|en
+  endfo
+  let s = "cal search('".join(map(l, 'nr2char(v:val)'), '')."', "
+  let g:eak = s.(a:d < 0 ? "'sb', line('w0'))" : "'sz', line('w$'))")
+  let g:kae = s.(a:d < 0 ? "'sz', line('w$'))" : "'sb', line('w0'))")
+  exe g:eak
+  if has('patch-8.3.1978') || has('nvim')
+    let g:eak = "\<Cmd>".g:eak."\<CR>"
+    let g:kae = "\<Cmd>".g:kae."\<CR>"
+  el
+    let g:eak = ":\<C-U>".g:eak."\<CR>"
+    let g:kae = ":\<C-U>".g:kae."\<CR>"
+  en
 endf
 if has('patch-8.3.1978') || has('nvim')
   no s <Cmd>cal <SID>neak(2)<CR>
@@ -187,10 +186,10 @@ el
   no S :<C-U>cal <SID>neak(-2)<CR>
 en
 for r in ['t','T','f','F']
-  exe 'nn '.r.' :unl! w:eak w:kae<CR>'.r
+  exe 'nn '.r.' :unl! g:eak g:kae<CR>'.r
 endfo
-no <expr> ; get(w:,'eak',';')
-no <expr> , get(w:,'kae',',')
+no <expr> ; get(g:,'eak',';')
+no <expr> , get(g:,'kae',',')
 
 " comment with 'gc{motion}' {{{1
 fu s:omment(ty='')
