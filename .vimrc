@@ -1,5 +1,5 @@
 lan C
-se ai cul et ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai cul et ff=unix ffs=unix,dos fo+=1cjr hid is lbr list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -8,17 +8,24 @@ el
   se udir=~/.vim/cache/undo//
 en
 se ssop=blank,buffers,folds,globals,resize,sesdir,slash,terminal,unix,winsize,winpos
-au SourcePost Session*.vim exe get(g:, 'Run', 'echom ''no "Run" in this session''')
+au SourcePost Session*.vim if has_key(g:,'Run')|cal execute(g:Run)|en
 
 colo slate
 sy on
 filet on
 filet plugin on
 
+au FileType c,cpp sy keyword Title self
 hi clear MatchParen | hi link MatchParen Title
 hi clear diffRemoved | hi link diffRemoved Identifier
 hi clear diffAdded | hi link diffAdded Special
 hi Normal ctermfg=white ctermbg=black
+if has_key(g:, 'terminal_ansi_colors')
+  let c = matchstr(execute('hi Normal'), 'guibg=\S\+')[6:]
+  let g:terminal_ansi_colors = [c]+g:terminal_ansi_colors[1:]
+  exe 'hi Terminal guibg='.c
+  unl c
+en
 
 nn <C-C> :<C-U>bd<CR>
 nn <C-N> :<C-U>bn<CR>
@@ -30,10 +37,10 @@ nn + :<C-U>.+
 nn - :<C-U>.-
 
 if has('nvim')
-  map <space>t :<C-U>vert abo term<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
+  map <space>t :<C-U>vert abo ter<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
   tmap <C-W>N <C-\><C-N>
 el
-  map <space>t :<C-U>vert abo term ++cols=60 ++noclose<CR>
+  map <space>t :<C-U>vert abo ter ++cols=60 ++noclose<CR>
   fu s:etup_term()
     setl nobl nonu nornu
     if &sh =~ 'cmd\|powershell\|pwsh'
@@ -79,6 +86,7 @@ map Zz zzZ
 " random commands {{{1
 com!                               Scratch  let ft=&ft|sil %y f|ene|pu f|0d _|let &ft=ft|unlet ft
 com! -nargs=+ -complete=command    Less     let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
+com!                               Watch    setl ar|au CursorHold <buffer> checkt
 com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
 com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
 com!                         -bang GitMsg   exe 'GitDiff<bang>'|42vs msg|setl spell|cal setline(1,['','']+map(systemlist('git status -sb'),'strlen(v:val)?"# ".v:val:"#"'))|cal <SID>git_msg_sb_syn()

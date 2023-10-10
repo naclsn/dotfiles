@@ -39,8 +39,9 @@ bind -x       '"\ey":printf %s "$READLINE_LINE" | xclip -sel c'
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
 
 command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
-which_include()(n=$1;shift;find $(echo|cc -v -E - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
-grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|cc -dM -E - 2>&1|grep "$n")
+which_include()(n=$1;shift;find $(echo|cpp -v - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
+grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|cpp -dM - 2>&1|grep "$n")
+tree_include()(cpp -H "$@" 2>&1>/dev/null|grep --color=never '^\.\+ [^/]')
 unset which # fedora
 
 set -b
