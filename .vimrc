@@ -59,6 +59,7 @@ en
 map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
 map <space>b :<C-U>Ebuffer<CR>
 map <space>B :<C-U>Ebuffer!<CR>
+map <space>u :<C-U>Eundotree<CR>
 map <space>w <C-W>
 map <space>y "+y
 map <space>p "+p
@@ -243,6 +244,31 @@ nn <expr> gc <SID>omment()
 xn <expr> gc <SID>omment()
 nn <expr> gcc <SID>omment().'_'
 
+fu s:lignby(ty='')
+  if '' == a:ty
+    se opfunc=<SID>lignby
+    retu 'g@'
+  en
+  let pat = input('align pattern: ')
+  let st = getpos("'[")[1]
+  let ed = getpos("']")[1]
+  let far = 0
+  let lines = []
+  let offsets = []
+  for k in range(st, ed)
+    let cur = add(offsets, match(add(lines, getline(k))[-1], pat))[-1]
+    if far < cur | let far = cur | en
+  endfo
+  for k in range(st, ed)
+    let ln = remove(lines, 0)
+    let off = remove(offsets, 0)
+    cal setline(k, ln[:off-1].repeat(' ', far-off).ln[off:])
+  endfo
+endfu
+nn <expr> gc <SID>lignby()
+xn <expr> gc <SID>lignby()
+nn <expr> gcc <SID>lignby().'_'
+
 " splore (file tree) {{{1
 fu s:tree(dir, depth)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
@@ -310,6 +336,30 @@ fu s:evariable(name)
   exe 'au BufLeave <buffer> ++once let '.a:name.' = join(getbufline('.nr.', 1, "$"), "\n")'
 endf
 com! -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
+
+" navigate undo tree visually {{{1
+fu s:eundotree_pr(nodes, cur, depth)
+  let d = a:depth+1
+  let ind = repeat('  ', d)
+  for n in a:nodes
+    cal append('$', ind.(a:cur == n.seq ? '('.n.seq.')' : n.seq))
+    if has_key(n, 'alt')
+      cal s:eundotree_pr(n.alt, a:cur, d)
+    en
+  endfo
+endf
+fu s:eundotree()
+  let x = undotree()
+  let b = bufnr()
+  abo 20vs|ene|setl bh=wipe bt=nofile nobl noswf nonu nornu
+  exe 'f [undotree -' bufname(b).']'
+  cal s:eundotree_pr(x.entries, x.seq_cur, 0)
+  1d
+  setl noma
+  /(
+  exe 'no <buffer> <CR> :<C-U>'.b.'bufdo undo <C-R>=getline(".")<CR><CR><C-^>:setl ma<CR>I[<Esc>/(<CR>xf)x/[<CR>r(A)<Esc>^:setl noma<CR>'
+endf
+com! Eundotree cal <SID>eundotree()
 
 " netrw {{{1
 let g:netrw_banner      = 0
