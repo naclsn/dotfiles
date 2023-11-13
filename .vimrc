@@ -1,5 +1,5 @@
 lan C
-se ai cul et ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cul et ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -43,7 +43,7 @@ el
   map <space>t :<C-U>vert abo ter ++cols=60 ++noclose<CR>
   fu s:etup_term()
     setl nobl nonu nornu
-    if &sh =~ 'cmd\|powershell\|pwsh'
+    if 'cmd' == &sh
       tno <C-A> <Home>
       tno <C-B> <Left>
       tno <C-D> <Del>
@@ -52,6 +52,8 @@ el
       tno <C-H> <BS>
       tno <C-N> <Down>
       tno <C-P> <Up>
+    elseif &sh =~ 'powershell\|pwsh'
+      cal term_sendkeys('', '$_psss=@{EditMode="Emacs";Colors=@{Operator="$([char]27)[m";Parameter="$([char]27)[m"}};set-psreadlineoption @_psss'."\r")
     en
   endf
   autocmd TerminalOpen * cal <SID>etup_term()
@@ -244,6 +246,7 @@ nn <expr> gc <SID>omment()
 xn <expr> gc <SID>omment()
 nn <expr> gcc <SID>omment().'_'
 
+" align by with 'g={motion}' {{{1
 fu s:lignby(ty='')
   if '' == a:ty
     se opfunc=<SID>lignby
@@ -265,9 +268,9 @@ fu s:lignby(ty='')
     cal setline(k, ln[:off-1].repeat(' ', far-off).ln[off:])
   endfo
 endfu
-nn <expr> gc <SID>lignby()
-xn <expr> gc <SID>lignby()
-nn <expr> gcc <SID>lignby().'_'
+nn <expr> g= <SID>lignby()
+xn <expr> g= <SID>lignby()
+nn <expr> g== <SID>lignby().'_'
 
 " splore (file tree) {{{1
 fu s:tree(dir, depth)
@@ -297,6 +300,7 @@ endf
 com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 
 " buffer pick/drop {{{1
+" FIXME: breaks, like it closes an unrelated window on occasion..
 fu s:ebuffers_apply(bufdo)
   let nls = getline(1, '$')
   let k = 0
@@ -317,6 +321,9 @@ fu s:ebuffers(bang)
   bel 10sp|ene|setl bh=wipe bt=nofile cul nobl noswf
   f [Buffer List]
   let b:ls = pls
+  cal matchadd('String', '"[^"]*"')
+  cal matchadd('Comment', '\%6ch')
+  cal matchadd('Special', '\%6ca')
   cal matchadd('Comment', '^\s*\d\+u.*$')
   %d _
   cal setline(1, b:ls)
@@ -338,6 +345,7 @@ endf
 com! -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
 
 " navigate undo tree visually {{{1
+" FIXME: do apply without switching buffer
 fu s:eundotree_pr(nodes, cur, depth)
   let d = a:depth+1
   let ind = repeat('  ', d)
