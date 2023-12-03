@@ -1,4 +1,5 @@
 PS1='\e[33m\u\e[m'$(printf %${SHLVL:-1}s|tr \  :)'\e[36m\w\e[m\$\n  '
+HISTCONTROL=ignoreboth
 
 expath(){ [[ :$PATH: == *:$1:* ]]||export PATH=$1:$PATH;}
 expath ~/.local/bin

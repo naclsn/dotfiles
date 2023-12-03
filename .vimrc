@@ -15,7 +15,7 @@ sy on
 filet on
 filet plugin on
 
-au FileType c,cpp sy keyword Title self
+au FileType c,py sy keyword Title self
 hi clear MatchParen | hi link MatchParen Title
 hi clear diffRemoved | hi link diffRemoved Identifier
 hi clear diffAdded | hi link diffAdded Special
@@ -128,6 +128,7 @@ if has('gui_running')
   el
     map <C-Z> :<C-U>b !<CR>
   en
+  map <C-W><C-Z> <C-W><C-^><C-W>H<C-W>60<Bar>
 en
 
 " command-line {{{1
@@ -301,6 +302,8 @@ com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 
 " buffer pick/drop {{{1
 " FIXME: breaks, like it closes an unrelated window on occasion..
+"        -> this happens when bd the buffer in previous window (maybe)
+" also do highlight correctly
 fu s:ebuffers_apply(bufdo)
   let nls = getline(1, '$')
   let k = 0
@@ -369,7 +372,7 @@ fu s:eundotree()
 endf
 com! Eundotree cal <SID>eundotree()
 
-" netrw {{{1
+" netrw, I don't like you :< {{{1
 let g:netrw_banner      = 0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
 "let g:netrw_liststyle   = 3
