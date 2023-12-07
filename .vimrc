@@ -74,7 +74,6 @@ map Z? ?
 map ZG GZ
 map ZZ Z
 map Zb <C-B>Z
-map Zb zbZ
 map Zd <C-D>Z
 map Zf <C-F>Z
 map Zg ggZ
@@ -82,7 +81,6 @@ map Zh zhZ
 map Zj <C-E>Z
 map Zk <C-Y>Z
 map Zl zlZ
-map Zt ztZ
 map Zu <C-U>Z
 map Zz zzZ
 
