@@ -1,5 +1,5 @@
 #!/bin/sh
-has() { c=`command -v $1` && echo $1 is $c || { echo no $1; exit; }; }
+has() { c=`command -v $1` && printf "%-8s is %s\n" $1 $c || { echo no $1; exit; }; }
 has find
 has ln
 has mkdir
@@ -15,6 +15,7 @@ Usage:
   -l: list (implies -n, but does not create dirs)
   -n: nothing (may still create dirs)
   -f: force (rm -f existing ones)
+  -o: only (next arg is a local file name/path)
   (none): setup
 DOC
 fi
@@ -35,9 +36,11 @@ find . -type f -path ./.\* -printf '%h %p\n' -o -name .git -prune | while read d
             esac
           else msg=missing
         fi
-        printf '%s\t%s\n' $rel $msg
+        printf '%-20s\t%s\n' $rel $msg
         continue
     fi
+
+    [ %$1 = %-o ] && ! [ $rel = $2 ] && continue
 
     [ -d ~/$dir ] || mkdir -p ~/$dir
     [ %$1 = %-f ] && rm -f ~/$rel

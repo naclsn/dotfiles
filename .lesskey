@@ -1,0 +1,32 @@
+#command
+\040w   noaction
+
+#line-edit
+\e\177  word-backspace
+\e\b    word-backspace
+\e^?    word-backspace
+\eb     word-left
+\ed     word-delete
+\ef     word-right
+^A      home
+^B      left
+^D      delete
+^D      down
+^E      end
+^F      right
+^I      forw-complete
+^U      up
+^X      expand
+\e\e    abort
+\ed     abort
+\eh     abort
+\ej     abort
+\ek     abort
+\el     abort
+\eq     abort
+\eu     abort
+\e\040w abort
+^G      abort
+#stop
+
+#env
