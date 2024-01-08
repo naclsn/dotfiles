@@ -11,11 +11,13 @@
 ^A      home
 ^B      left
 ^D      delete
-^D      down
 ^E      end
 ^F      right
 ^I      forw-complete
-^U      up
+^K      kill-line
+^N      down
+^P      up
+^U      kill-line
 ^X      expand
 \e\e    abort
 \ed     abort
