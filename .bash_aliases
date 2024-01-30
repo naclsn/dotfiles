@@ -29,6 +29,7 @@ alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
 alias             ff='firefox'
 alias          today='$EDITOR +cd\ ~/.local/share/today +cal\ "'"readdir('.','execute(''bad ''.v:val)')"'" +e\ `date +%Y-%m-%d`.md +se\ spell\ wrap' # inspired by https://git.sr.ht/~sotirisp/today
+alias             xo='xdg-open 2>/dev/null'
 
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'
@@ -40,8 +41,8 @@ bind -x       '"\ey":printf %s "$READLINE_LINE" | xclip -sel c'
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
 
 command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
-which_include()(n=$1;shift;find $(echo|cpp -v - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
-grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|cpp -dM - 2>&1|grep "$n")
+which_include()(n=$1;shift;find $(echo|${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
+grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|${CC:-cpp} -dM - 2>&1|grep "$n")
 tree_include()(cpp -H "$@" 2>&1>/dev/null|grep --color=never '^\.\+ [^/]')
 unset which # fedora
 

@@ -91,6 +91,7 @@ com!                               Watch    setl ar|au CursorHold <buffer> check
 com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
 com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
 com!                         -bang GitMsg   exe 'GitDiff<bang>'|42vs msg|setl spell|cal setline(1,['','']+map(systemlist('git status -sb'),'strlen(v:val)?"# ".v:val:"#"'))|cal <SID>git_msg_sb_syn()
+com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 fu s:git_msg_sb_syn()
   sy match Keyword /\%^.*\%<51v./
   sy match Error /\%2l/
@@ -113,6 +114,11 @@ if has('gui_running')
   se go+=d go-=L go-=m go-=T wak=no
   if g:is_win
     se gfn=Consolas:h14
+  elsei exists('g:neovide')
+    se gfn=Monospace:h14
+    let g:neovide_hide_mouse_when_typing = v:true
+    let g:neovide_scroll_animation_length = 0.15
+    let g:neovide_cursor_animation_length = 0.06
   el
     se gfn=Monospace\ 14
   en
