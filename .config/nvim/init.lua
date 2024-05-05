@@ -3,7 +3,21 @@ vim.cmd.so '~/.vimrc'
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'neovim/nvim-lspconfig'
+    use 'nvim-treesitter/nvim-treesitter'
 end)
+
+--[[require('nvim-treesitter.configs').setup {
+    ensure_installed= 'all',
+    sync_install= false,
+    auto_install= true,
+    highlight= {
+        enable= true,
+        additional_vim_regex_highlighting= false,
+    },
+}
+vim.cmd.hi 'link @punctuation NormalNC']]
+
+--do return end
 
 for _, it in pairs {
     'clangd',

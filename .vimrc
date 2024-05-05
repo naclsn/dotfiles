@@ -1,5 +1,5 @@
 lan C
-se ai bs= cul et ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=0 fdm=marker ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -9,6 +9,7 @@ el
 en
 se ssop=blank,buffers,folds,globals,resize,sesdir,slash,terminal,unix,winsize,winpos
 au SourcePost Session*.vim if has_key(g:,'Run')|cal execute(g:Run)|en
+au BufEnter * se fo-=o
 
 colo slate
 sy on
@@ -26,6 +27,7 @@ if has_key(g:, 'terminal_ansi_colors')
   exe 'hi Terminal guibg='.c
   unl c
 en
+au FileType xxd nn <C-A> geebi0x<Esc><C-A>b"_2xe|nn <C-X> geebi0x<Esc><C-X>b"_2xe
 
 nn <C-C> :<C-U>bd<CR>
 nn <C-N> :<C-U>bn<CR>
@@ -35,6 +37,8 @@ nn <C-S> :<C-U>up<CR>
 nm U u
 nn + :<C-U>.+
 nn - :<C-U>.-
+
+map <C-J> :<C-U>py print()<C-B>
 
 if has('nvim')
   map <space>t :<C-U>vert abo ter<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
@@ -67,6 +71,11 @@ map <space>y "+y
 map <space>p "+p
 map <space>P "+P
 
+map <C-W><lt> :<C-U>winc <lt><CR><C-W>
+map <C-W>>    :<C-U>winc >   <CR><C-W>
+map <C-W>+    :<C-U>winc +   <CR><C-W>
+map <C-W>-    :<C-U>winc -   <CR><C-W>
+
 " view sticky {{{1
 map Z/ /
 map Z<space> <space>
@@ -85,21 +94,20 @@ map Zu <C-U>Z
 map Zz zzZ
 
 " random commands {{{1
-com!                               Scratch  let ft=&ft|sil %y f|ene|pu f|0d _|let &ft=ft|unlet ft
-com! -nargs=+ -complete=command    Less     let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
-com!                               Watch    setl ar|au CursorHold <buffer> checkt
-com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
-com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile ft=diff nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com!                         -bang GitMsg   exe 'GitDiff<bang>'|42vs msg|setl spell|cal setline(1,['','']+map(systemlist('git status -sb'),'strlen(v:val)?"# ".v:val:"#"'))|cal <SID>git_msg_sb_syn()
+"com!                               Scratch  let ft=&ft|sil %y f|ene|pu f|0d _|let &ft=ft|unlet ft
+"com! -nargs=+ -complete=command    Less     let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
+"com!                               Watch    setl ar|au CursorHold <buffer> checkt
+"com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
-fu s:git_msg_sb_syn()
-  sy match Keyword /\%^.*\%<51v./
-  sy match Error /\%2l/
-  sy match diffRemoved /[ MTADRCU]/ contained
-  sy match diffAdded /[ MTADRCU]/ contained nextgroup=diffRemoved
-  sy match Comment /^# / contains=String,diffAdded,diffRemoved nextgroup=diffAdded
-  sy match Comment /^# \(??\|!!\|##\) .*/
-endf
+
+com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
+com! -nargs=*                      GitLog   ene|setl bh=wipe bt=nofile fdm=syntax ft=todo      nobl noswf|f [git-log] <args> |cal setline(1, systemlist('git log '.<q-args>))
+com! -nargs=* -complete=file       GitShow  ene|setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf|f [git-show] <args>|cal setline(1, systemlist('git show '.<q-args>))
+
+abc
+ca lang se wrap! spell! spl
+ca scra se bt=nofile ft
+ca hl se hls!
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -142,9 +150,6 @@ cno <C-D> <Del>
 cno <C-F> <Right>
 cno <C-O> <C-F>
 cno <C-X> <C-A>
-
-" better v_! (filters exact selection) {{{1
-xm ! "pc<C-R>=(system(input('<Bar>!','','shellcmd'),@p)??@p).nr2char(27)<CR>
 
 " evaluate with 'ge{motion}' and replace with result {{{1
 fu s:eval_this(ty='')
@@ -281,28 +286,39 @@ nn <expr> g== <SID>lignby().'_'
 fu s:tree(dir, depth)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
-  " XXX: could make a fancier tree ('|'/'+'/'L'/'-' probably)
-  " but then commands like '<' and '>' are not helpful
-  let p = repeat(repeat(' ', &ts), depth)
-  for e in readdir(dir) " TODO: partition dirfirst, filter dotfiles...
+  if 9 < depth | retu | en
+  let p = repeat('|  ', depth)
+  for e in readdir(dir, {e -> e[0] != '.'})
     if isdirectory(dir.e) && '.git' != e && '.svn' != e
-      cal append('$', p.e.'/')
+      cal append('$', p.e.'/ --'.depth.' ('.dir.e.'/)')
       cal s:tree(dir.e, depth)
     el
-      cal append('$', p.e)
+      cal append('$', p.e.('x' == getfperm(dir.e)[2] ? '*' : '').' -- ('.dir.e.')')
     en
   endfo
+  cal append('$', p[:-4].'`---')
 endf
-fu s:plore(dir)
+fu s:plore(bang, dir)
   let d = trim(expand(a:dir), '/\', 2).'/'
-  let b = bufadd('dir: '.a:dir)
-  cal bufload(b)
-  exe 'b '.b
-  setl bl bt=nofile et fdm=indent noswf sw=0 ts=3
+  try
+    exe 'b' 'splore://'.d
+    if a:bang | %d | el | retu | en
+  cat
+    ene
+    exe 'f' 'splore://'.d
+  endt
+  setl bt=nowrite cole=3 et fdm=marker fdt=matchstr(getline(v:foldstart),'.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fmr=/\ --,--- ft=splore inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') noswf sw=0 ts=3
+  "TODO: bt=acwrite then BufWriteCmd probably
   cal setline(1, d)
-  cal s:tree(d, 0)
+  cal s:tree(resolve(getcwd().'/'.d), 0)
+  sy match Conceal / --.*$/ conceal
+  sy match Statement /[^ /]\+\//
+  sy match Structure /[^ *]\+\*/
+  sy match Comment /|  \|`---/
+  nn <buffer> zp $h:<C-U>bel vert ped <cfile><CR><C-W>60<Bar>0
 endf
-com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
+com! -complete=dir -nargs=1 Splore cal <SID>plore(<bang>0, <q-args>)
+exe 'hi Folded ctermbg=NONE guibg=NONE' execute('hi Statement')[20:]
 
 " buffer pick/drop {{{1
 " FIXME: breaks, like it closes an unrelated window on occasion..
@@ -376,16 +392,124 @@ fu s:eundotree()
 endf
 com! Eundotree cal <SID>eundotree()
 
+" ASETNIOP layout using mapmode-l {{{1
+aug asetniop
+  au!
+  au InsertEnter * se to tm=100
+  au InsertLeave * se noto
+aug END
+lmapc
+let km =<< trim KEYMAP
+a a
+b fj
+c sf
+d ds
+e d
+f fa
+g fl
+h jk
+i k
+j js
+k ks
+l lk
+m j;
+n j
+o l
+p ;
+q aj
+r fd
+s s
+t f
+u jl
+v fk
+w sa
+x da
+y jd
+z ak
+! ;k
+@ :K
+' ;d
+" :D
+<BS> ;f
+; ;l
+: :L
+, kd
+< KD
+. ls
+> LS
+/ ;a
+? :A
+( al
+[ AL
+) ;s
+] :S
+- ld
+_ LD
+KEYMAP
+"<Tab> asdf
+"<CR> ;lkj
+for kv in km
+  let [k, v] = split(kv)
+  exe 'lm' v k
+  exe 'lm' v[1].v[0] k
+  let u = toupper(k)
+  if u != k
+    let w = (';'==v[0]?':':toupper(v[0])).(';'==v[1]?':':toupper(v[1]))
+    exe 'lm' w u
+    exe 'lm' w[1].w[0] u
+  en
+endfo
+unl km k v w
+
+" ansimple (handle a restricted few escape sequences) {{{1
+fu! s:ansimple_ft()
+    sy match ansimpleConceal /\e\[\d*m/ conceal
+    let ww =<< trim ANSIMPLE
+      Bold      1  \(0\|22\) =bold
+      Underline 4  \(0\|24\) =underline
+      Black     30 0         fg=Black
+      Red       31 0         fg=Red
+      Green     32 0         fg=Green
+      Yellow    33 0         fg=Yellow
+      Blue      34 0         fg=Blue
+      Magenta   35 0         fg=Magenta
+      Cyan      36 0         fg=Cyan
+      White     37 0         fg=White
+ANSIMPLE
+    for nsev in ww
+      let [n, s, e, v] = split(nsev)
+      exe 'sy region ansimple'.n 'concealends matchgroup=ansimpleConceal start=/\e\['.s.'m/  end=/\e\['.e.'\?m/ contains=@ansimpleAll'
+      exe 'hi ansimple'.n 'cterm'.v 'gui'.v
+    endfo
+    exe 'sy cluster ansimpleAll contains='.join(map(ww, '"ansimple".split(v:val)[0]'), ',')
+    se cocu=nc cole=3
+endf
+au FileType ansimple cal <SID>ansimple_ft()
+
+" surveil (update a copy-buffer and filter with command) {{{1
+fu s:urveil(buf, com='%!cat')
+  let nr = bufnr(a:buf)
+  if bufnr() == nr|bel 30vs|en
+  ene|setl bt=nofile noswf
+  exe 'f [surveil -' a:buf.']' escape(a:com, '%#\$!<*')
+  let menr = bufnr()
+  let b:urveil = a:com
+  exe 'aug surveil'.menr
+  exe 'au surveil'.menr 'BufWritePost <buffer='.nr.'> let b:w=win_findbuf('.menr.')|if len(b:w)|cal deletebufline('.menr.',1,"$")|cal setbufline('.menr.',1,getbufline('.nr.',1,"$"))|cal win_execute(b:w[0],"noau ".getbufvar('.menr.',"urveil"))|en|unl b:w'
+  aug END
+  exe 'au BufDelete <buffer> ++once au! surveil'.menr.'|aug! surveil'.menr
+endf
+com! -nargs=+ -complete=buffer Surveil cal <SID>urveil(<f-args>)
+
 " netrw, I don't like you :< {{{1
 let g:netrw_banner      = 0
 let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
-"let g:netrw_liststyle   = 3
 let g:netrw_preview     = 1
 let g:netrw_winsize     = 25
-let g:netrw_chgwin      = 2
 aug netrw_mapping
   au FileType netrw sil! unm <buffer> s
   au FileType netrw sil! unm <buffer> S
 aug END
 
-" vim: se ts=2:
+" modeline {{{1
+" vim: se fdm=marker fdl=0 ts=2:
