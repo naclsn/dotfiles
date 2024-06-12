@@ -1,5 +1,5 @@
 lan C
-se ai bs= cot=menuone,noselect cul et fdl=0 fdm=marker ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=0 fdm=marker ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -29,7 +29,7 @@ if has_key(g:, 'terminal_ansi_colors')
 en
 au FileType xxd nn <C-A> geebi0x<Esc><C-A>b"_2xe|nn <C-X> geebi0x<Esc><C-X>b"_2xe
 
-nn <C-C> :<C-U>bd<CR>
+nn <C-C> :<C-U>q!<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
@@ -63,13 +63,14 @@ el
   autocmd TerminalOpen * cal <SID>etup_term()
 en
 map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
-map <space>b :<C-U>Ebuffer<CR>
-map <space>B :<C-U>Ebuffer!<CR>
+map <space>b :<C-U>Ebuffers<CR>
+map <space>B :<C-U>Ebuffers!<CR>
 map <space>u :<C-U>Eundotree<CR>
 map <space>w <C-W>
 map <space>y "+y
 map <space>p "+p
 map <space>P "+P
+map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
 
 map <C-W><lt> :<C-U>winc <lt><CR><C-W>
 map <C-W>>    :<C-U>winc >   <CR><C-W>
@@ -282,67 +283,111 @@ nn <expr> g= <SID>lignby()
 xn <expr> g= <SID>lignby()
 nn <expr> g== <SID>lignby().'_'
 
-" splore (file tree) {{{1
-fu s:tree(dir, depth)
+" splore (file tree - only relative to cwd) {{{1
+fu s:plore_tree(dir, depth)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
   if 9 < depth | retu | en
-  let p = repeat('|  ', depth)
+  let p = repeat("\t", depth)
   for e in readdir(dir, {e -> e[0] != '.'})
     if isdirectory(dir.e) && '.git' != e && '.svn' != e
-      cal append('$', p.e.'/ --'.depth.' ('.dir.e.'/)')
-      cal s:tree(dir.e, depth)
+      cal append('$', p.e.'/ --'.depth.' ('.dir.e.')')
+      cal s:plore_tree(dir.e, depth)
     el
       cal append('$', p.e.('x' == getfperm(dir.e)[2] ? '*' : '').' -- ('.dir.e.')')
     en
   endfo
-  cal append('$', p[:-4].'`---')
+  cal append('$', p[:-2].'`---')
+endf
+fu s:plore_apply()
+  let lns = getline(1, '$')
+  let path = [resolve(getcwd().'/'.lns[0]).'/']
+  let scb = []
+  for k in range(1, len(lns)-1)
+    let m = matchlist(lns[k], '\t\+\(.\{-}\)\( --\d* (\(.*\))\)\?$')
+    if !len(m) | con | en
+    if '`---' == m[1] | cal remove(path, -1) | con | en
+    let name = '/' == m[1][-1:] || '*' == m[1][-1:] ? m[1][:-2] : m[1]
+    let full = join(path,'').name
+    if '/' == m[1][-1:] | cal add(path, m[1]) | en
+    if len(m[3]) && m[3] == full | con | en
+    if len(m[3])
+      let ln = len(name) ? "rename('".m[3]."', '".full."')" : "delete('".m[3]."'".('/' == m[1][-1:] ? ", 'rf')" : ")")
+    el
+      let ln = '/' == m[1][-1:] ? "mkdir('".full."'".(name =~ '/' ? ", 'p')" : ")") : "writefile([], '".full."')"
+    en
+    cal add(scb, 'cal '.ln)
+    echom ln
+  endfo
+  if !len(scb) | setl nomod | retu | en
+  if 1 == confirm('do?', "&Yes\n&No", 2)
+    for s in scb | exe 'cal' s | endfo
+    setl nomod
+  en
 endf
 fu s:plore(bang, dir)
-  let d = trim(expand(a:dir), '/\', 2).'/'
-  try
-    exe 'b' 'splore://'.d
-    if a:bang | %d | el | retu | en
-  cat
-    ene
-    exe 'f' 'splore://'.d
-  endt
-  setl bt=nowrite cole=3 et fdm=marker fdt=matchstr(getline(v:foldstart),'.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fmr=/\ --,--- ft=splore inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') noswf sw=0 ts=3
-  "TODO: bt=acwrite then BufWriteCmd probably
+  if !len(a:dir) && 'splore://' == @%[:8]
+    if !a:bang | retu | en
+    let d = @%[9:]
+    %d
+  el
+    let d = trim(expand(len(a:dir) ? a:dir : '.'), '/\', 2).'/'
+    try
+      exe 'b' 'splore://'.d
+      if a:bang | %d | el | retu | en
+    cat
+      ene
+      exe 'f' 'splore://'.d
+    endt
+  en
+  let pul = &ul
+  setl bt=acwrite cole=3 et fdm=marker fdt='\|\ \ '.matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
+  au BufWriteCmd <buffer> cal <SID>plore_apply()
   cal setline(1, d)
-  cal s:tree(resolve(getcwd().'/'.d), 0)
-  sy match Conceal / --.*$/ conceal
+  cal s:plore_tree(resolve(getcwd().'/'.d), 0)
+  sy match Conceal / --\d* (.*)$/ conceal
   sy match Statement /[^ /]\+\//
   sy match Structure /[^ *]\+\*/
-  sy match Comment /|  \|`---/
+  sy match Comment /`---/
   nn <buffer> zp $h:<C-U>bel vert ped <cfile><CR><C-W>60<Bar>0
+  no <buffer> [[ ? --\d\+?+1<CR>
+  no <buffer> ]] /`---/-1<CR>
+  let &ul = pul
+  setl nomod
 endf
-com! -complete=dir -nargs=1 Splore cal <SID>plore(<bang>0, <q-args>)
+com! -complete=dir -nargs=? Splore cal <SID>plore(<bang>0, <q-args>)
 exe 'hi Folded ctermbg=NONE guibg=NONE' execute('hi Statement')[20:]
 
-" buffer pick/drop {{{1
-" FIXME: breaks, like it closes an unrelated window on occasion..
-"        -> this happens when bd the buffer in previous window (maybe)
-" also do highlight correctly
+" buffer pick/drop/rename {{{1
 fu s:ebuffers_apply(bufdo)
   let nls = getline(1, '$')
   let k = 0
   let c = a:bufdo
+  let d = 0
   for l in b:ls
     let nr = matchstr(l, '^\s*\d\+')
     if k < len(nls) && nls[k][:len(nr)-1] == nr
+      let nn = matchstr(nls[k], '"[^"]\+"')
+      if matchstr(l, '"[^"]\+"') != nn
+        exe 'b' nr '|f' nn[1:-2]
+        if @# != @% | sil! bw # | en
+        if filereadable(@%) | setl mod | en
+      en
       let k+= 1
     el
-      let c.= ' '.nr
+      let d = 1
+      let c.= nr
     en
   endfo
-  exe c
+  if d | exe c | en
 endf
 fu s:ebuffers(bang)
   let pnr = bufnr()
   let pls = split(execute('ls'.a:bang), '\n')
   bel 10sp|ene|setl bh=wipe bt=nofile cul nobl noswf
-  f [Buffer List]
+  exe 'f [Buffer List'.a:bang.']'
+  let pul = &ul
+  setl ul=-1
   let b:ls = pls
   cal matchadd('String', '"[^"]*"')
   cal matchadd('Comment', '\%6ch')
@@ -350,10 +395,12 @@ fu s:ebuffers(bang)
   cal matchadd('Comment', '^\s*\d\+u.*$')
   %d _
   cal setline(1, b:ls)
+  au BufLeave <buffer> ++once cal clearmatches()
   exe 'au BufLeave <buffer> ++once cal <SID>ebuffers_apply("' ('!'==a:bang?'bw':'bd') '")'
-  map <buffer> <silent> <CR> :<C-U>let l=getline('.')<Bar>bw<Bar>exe ''==l?'ene':'b'.matchstr(l,'\d\+')<CR>
+  map <buffer> <silent> <CR> :<C-U>let l=getline('.')<Bar>bw<Bar>exe ''==l?'ene':'b'.matchstr(l,'^\s*\d\+')<Bar>unl l<CR>
   sil! exe '/^\s*'.pnr.'\D'
   norm! zz
+  let &ul = pul
 endf
 com! -bang Ebuffers cal <SID>ebuffers('<bang>')
 
@@ -446,8 +493,6 @@ z ak
 - ld
 _ LD
 KEYMAP
-"<Tab> asdf
-"<CR> ;lkj
 for kv in km
   let [k, v] = split(kv)
   exe 'lm' v k

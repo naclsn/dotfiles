@@ -26,7 +26,7 @@ bind 'm k' expand prompt-init 'touch\  "{.relative}" sh touch'
 bind 'M K' expand prompt-init 'mkdir\  "{.relative}" sh mkdir -p'
 # (2 lines) crashes when trying to use {selection?selection.file-name:.file-name} or any other combination
 bind 'm v' expand prompt-init 'mv\ {.file-name}\  "{.relative}" sh mv {selection?selection:}'
-bind 'c p' expand prompt-init 'cp\ {.file-name}\  "{.relative}" sh cp {selection?selection:}'
+bind 'c p' expand prompt-init 'cp\ {.file-name}\  "{.relative}" sh cp -r {selection?selection:}'
 bind 'r m' expand prompt-init 'rm\  "{selection?selection.relative:.relative}" sh rm'
 bind 'R M' expand prompt-init 'rm!\  "{selection?selection.relative:.relative}" sh rm -rf'
 
