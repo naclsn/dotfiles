@@ -44,7 +44,7 @@ command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixo
 which_include()(n=$1;shift;find $(echo|${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
 grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|${CC:-cpp} -dM - 2>&1|grep "$n")
 include_tree()(cpp -H "$@" 2>&1>/dev/null|grep --color=never '^\.\+ [^/]')
-ccdo()(c=$1;shift;cc -x c -<<<$c -o /tmp/ccdo "$@"&&/tmp/ccdo)
+ccdo()(c=$1;shift;if [ -f "$c" ];then cc -x c "$c" -o /tmp/ccdo "$@";else cc -x c -<<<$c -o /tmp/ccdo "$@";fi&&/tmp/ccdo)
 unset which # fedora
 
 set -b

@@ -38,7 +38,7 @@ nm U u
 nn + :<C-U>.+
 nn - :<C-U>.-
 
-map <C-J> :<C-U>py print()<C-B>
+nm <C-J> :<C-U>py print()<C-B>
 
 if has('nvim')
   map <space>t :<C-U>vert abo ter<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
@@ -285,18 +285,22 @@ nn <expr> g== <SID>lignby().'_'
 
 " splore (file tree - only relative to cwd) {{{1
 fu s:plore_tree(dir, depth)
-  let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
-  if 9 < depth | retu | en
   let p = repeat("\t", depth)
-  for e in readdir(dir, {e -> e[0] != '.'})
-    if isdirectory(dir.e) && '.git' != e && '.svn' != e
-      cal append('$', p.e.'/ --'.depth.' ('.dir.e.')')
-      cal s:plore_tree(dir.e, depth)
-    el
-      cal append('$', p.e.('x' == getfperm(dir.e)[2] ? '*' : '').' -- ('.dir.e.')')
-    en
-  endfo
+  if depth < 5
+    let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
+    let k = 0
+    for e in readdir(dir, {e -> '.' != e && '..' != e})
+      let k+= 1
+      if 88 < k | cal append('$', p.'...') | brea | en
+      if isdirectory(dir.e) && '.git' != e && '.svn' != e
+        cal append('$', p.e.'/ --'.depth.' ('.dir.e.')')
+        cal s:plore_tree(dir.e, depth)
+      el
+        cal append('$', p.e.('x' == getfperm(dir.e)[2] ? '*' : '').' -- ('.dir.e.')')
+      en
+    endfo
+  en
   cal append('$', p[:-2].'`---')
 endf
 fu s:plore_apply()
@@ -305,7 +309,7 @@ fu s:plore_apply()
   let scb = []
   for k in range(1, len(lns)-1)
     let m = matchlist(lns[k], '\t\+\(.\{-}\)\( --\d* (\(.*\))\)\?$')
-    if !len(m) | con | en
+    if !len(m) || '...' == m[1] | con | en
     if '`---' == m[1] | cal remove(path, -1) | con | en
     let name = '/' == m[1][-1:] || '*' == m[1][-1:] ? m[1][:-2] : m[1]
     let full = join(path,'').name
@@ -341,7 +345,7 @@ fu s:plore(bang, dir)
     endt
   en
   let pul = &ul
-  setl bt=acwrite cole=3 et fdm=marker fdt='\|\ \ '.matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
+  setl bt=acwrite cole=3 et fdm=marker fdt=repeat('\|\ \ ',indent(v:foldstart)/&ts).matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
   au BufWriteCmd <buffer> cal <SID>plore_apply()
   cal setline(1, d)
   cal s:plore_tree(resolve(getcwd().'/'.d), 0)
@@ -349,7 +353,9 @@ fu s:plore(bang, dir)
   sy match Statement /[^ /]\+\//
   sy match Structure /[^ *]\+\*/
   sy match Comment /`---/
-  nn <buffer> zp $h:<C-U>bel vert ped <cfile><CR><C-W>60<Bar>0
+  nn <buffer> zp $h:<C-U>bel vert ped <cfile><CR><C-W>48<Bar>0
+  nn <buffer> zP $h:<C-U>bel ped <cfile><CR><C-W>48_0
+  " TODO: not good enough, need to use the indent level of the current line
   no <buffer> [[ ? --\d\+?+1<CR>
   no <buffer> ]] /`---/-1<CR>
   let &ul = pul
