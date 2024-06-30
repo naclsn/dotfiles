@@ -77,7 +77,7 @@ __jabs_git() { echo git-$1; }
 __jabs_man() {
   if [ 2 = $# ]
     then echo "$2($1)"
-    else echo "$1`man -k ^$1\$ 2>/dev/null | awk '{print$2}' || echo '(man)'`"
+    else echo "$1`man -k ^$1\$ 2>/dev/null | awk '{printf$2}' | sed 's/)(/,/g' || echo '(man)'`"
   fi
 }
 __jabs_less() { echo ${1##*/}; }
