@@ -311,11 +311,6 @@ fu s:plore_dotdotdot()
     norm k
     if ln+1 != ed | exec ln.','.(ed-2) 'foldc!' | en
     norm zvj
-    let pul = &ul
-    setl ul=-1
-    exe "norm a \<BS>\<Esc>"
-    let &ul = pul
-    setl nomod
   en
 endf
 fu s:plore_apply()
@@ -335,7 +330,7 @@ fu s:plore_apply()
     el
       let ln = '/' == m[1][-1:] ? "mkdir('".full."'".(name =~ '/' ? ", 'p')" : ")") : "writefile([], '".full."')"
     en
-    cal add(scb, 'cal '.ln)
+    cal add(scb, ln)
     echom ln
   endfo
   if !len(scb) | setl nomod | retu | en
