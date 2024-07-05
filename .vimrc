@@ -102,7 +102,7 @@ map Zz zzZ
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
 com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com! -nargs=*                      GitLog   ene|setl bh=wipe bt=nofile fdm=syntax ft=todo      nobl noswf|f [git-log] <args> |cal setline(1, systemlist('git log '.<q-args>))
+com! -nargs=*                      GitLog   ene|setl bh=wipe bt=nofile fdm=syntax ft=todo      nobl noswf|f [git-log] <args> |cal setline(1, systemlist('git log '.<q-args>))|nn <buffer> zp :bel vert ped <C-R><C-W><lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @%')<CR><C-W>56<lt>Bar>
 com! -nargs=* -complete=file       GitShow  ene|setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf|f [git-show] <args>|cal setline(1, systemlist('git show '.<q-args>))
 
 abc
@@ -167,6 +167,7 @@ fu s:urround(o, c)
   exe '"' == a:o ? 'se opfunc={_->execute(\"norm!\ `[mz`]a\\\"\\<Esc>`zi\\\"\")}' : 'se opfunc={_->execute(\"norm!\ `[mz`]a'.a:c.'\\<Esc>`zi'.a:o.'\")}'
   retu 'g@'
 endf
+" TODO: rewrite these as functions too
 for [o,c] in pairs
   for s in [o,c]
     for [oo,cc] in pairs
@@ -222,15 +223,13 @@ fu s:omment(ty='')
   let s = getpos("'[")
   let e = getpos("']")
   let p = matchlist(&cms, '^\(.*\)%s\(.*\)$')
-  if 'char' == a:ty && len(p[2])
+  if 'char' == a:ty && len(p) && len(p[2])
     let l = getline(e[1]) | cal setline(e[1], l[:e[2]-1].p[2].l[e[2]:])
     let l = getline(s[1]) | cal setline(s[1], l[:s[2]-2].p[1].l[s[2]-1:])
   el
-    let q = filter(map(split(&com, ','), 'matchlist(v:val, "^b\\?:\\(.*\\)")'), 'len(v:val)')
-    if len(q)
-      let b = q[0][1].('b' == q[0][0][0] ? ' ' : '')
-      let a = ''
-    el
+    let b = matchstr(&com, ':\(//\|--\|"\|#\|;\|%\)')[1:]
+    let a = ''
+    if !len(b)
       let b = p[1]
       let a = p[2]
     en
@@ -264,6 +263,7 @@ fu s:lignby(ty='')
     retu 'g@'
   en
   let pat = input('align pattern: ')
+  if !len(pat) | retu | en
   let st = getpos("'[")[1]
   let ed = getpos("']")[1]
   let far = 0
@@ -276,12 +276,11 @@ fu s:lignby(ty='')
   for k in range(st, ed)
     let ln = remove(lines, 0)
     let off = remove(offsets, 0)
-    cal setline(k, ln[:off-1].repeat(' ', far-off).ln[off:])
+    if -1 != off | cal setline(k, ln[:off-1].repeat(' ', far-off).ln[off:]) | en
   endfo
 endfu
 nn <expr> g= <SID>lignby()
 xn <expr> g= <SID>lignby()
-nn <expr> g== <SID>lignby().'_'
 
 " splore (file tree - only relative to cwd) {{{1
 fu s:plore_unfold(dir, depth, at)
@@ -371,8 +370,8 @@ fu s:plore(bang, dir)
   sy match Statement /[^ /]\+\//
   sy match Structure /[^ *]\+\*/
   sy match Comment /`---/
-  nn <buffer> zp $h:<C-U>bel vert ped <cfile><CR><C-W>48<Bar>0
-  nn <buffer> zP $h:<C-U>bel ped <cfile><CR><C-W>48_0
+  nn <buffer> zp $h:bel vert ped <cfile><CR><C-W>48<Bar>0
+  nn <buffer> zP $h:bel ped <cfile><CR><C-W>48_0
   let &ul = pul
   setl nomod
 endf
@@ -436,7 +435,6 @@ endf
 com! -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
 
 " navigate undo tree visually {{{1
-" FIXME: do apply without switching buffer
 fu s:eundotree_pr(nodes, cur, depth)
   let d = a:depth+1
   let ind = repeat('  ', d)
@@ -455,8 +453,11 @@ fu s:eundotree()
   cal s:eundotree_pr(x.entries, x.seq_cur, 0)
   1d
   setl noma
-  /(
-  exe 'no <buffer> <CR> :<C-U>'.b.'bufdo undo <C-R>=getline(".")<CR><CR><C-^>:setl ma<CR>I[<Esc>/(<CR>xf)x/[<CR>r(A)<Esc>^:setl noma<CR>'
+  try
+    /(
+  cat
+  endt
+  exe 'nn <buffer> zp :'.b.'bufdo undo <C-R>=getline(".")<CR><CR><C-^>:setl bh= ma<CR>I[<Esc>/(<CR>xf)x/[<CR>r(A)<Esc>^:setl bh=wipe noma<CR>'
 endf
 com! Eundotree cal <SID>eundotree()
 
