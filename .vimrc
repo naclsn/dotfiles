@@ -8,7 +8,7 @@ el
   se udir=~/.vim/cache/undo//
 en
 se ssop=blank,buffers,folds,globals,resize,sesdir,slash,terminal,unix,winsize,winpos
-au SourcePost Session*.vim if has_key(g:,'Run')|cal execute(g:Run)|en
+au SourcePost Session*.vim if has_key(g:,'Run') |cal execute(g:Run) |en
 au BufEnter * se fo-=o
 
 colo slate
@@ -17,9 +17,9 @@ filet on
 filet plugin on
 
 au FileType c,py sy keyword Title self
-hi clear MatchParen | hi link MatchParen Title
-hi clear diffRemoved | hi link diffRemoved Identifier
-hi clear diffAdded | hi link diffAdded Special
+hi clear MatchParen |hi link MatchParen Title
+hi clear diffRemoved |hi link diffRemoved Identifier
+hi clear diffAdded |hi link diffAdded Special
 hi Normal ctermfg=white ctermbg=black
 if has_key(g:, 'terminal_ansi_colors')
   let c = matchstr(execute('hi Normal'), 'guibg=\S\+')[6:]
@@ -27,7 +27,7 @@ if has_key(g:, 'terminal_ansi_colors')
   exe 'hi Terminal guibg='.c
   unl c
 en
-au FileType xxd nn <C-A> geebi0x<Esc><C-A>b"_2xe|nn <C-X> geebi0x<Esc><C-X>b"_2xe
+au FileType xxd nn <C-A> geebi0x<Esc><C-A>b"_2xe |nn <C-X> geebi0x<Esc><C-X>b"_2xe
 
 nn <C-C> :<C-U>q!<CR>
 nn <C-N> :<C-U>bn<CR>
@@ -95,15 +95,15 @@ map Zu <C-U>Z
 map Zz zzZ
 
 " random commands {{{1
-"com!                               Scratch  let ft=&ft|sil %y f|ene|pu f|0d _|let &ft=ft|unlet ft
-"com! -nargs=+ -complete=command    Less     let l=execute(<q-args>)|ene|setl bt=nofile nobl noswf|f [less] <args>|cal setline(1, split(l, '\n'))
-"com!                               Watch    setl ar|au CursorHold <buffer> checkt
-"com!                               ClipEdit ene|setl bh=wipe bt=nofile nobl noswf spell wrap|pu +|0d _|no <buffer> <C-S> :<C-U>%y +<CR>
+"com!                               Scratch  let ft=&ft |sil %y f |ene |pu f |0d _ |let &ft=ft |unlet ft
+"com! -nargs=+ -complete=command    Less     let l=execute(<q-args>) |ene |setl bt=nofile nobl noswf |f [less] <args> |cal setline(1, split(l, '\n'))
+"com!                               Watch    setl ar |au CursorHold <buffer> checkt
+"com!                               ClipEdit ene |setl bh=wipe bt=nofile nobl noswf spell wrap |pu + |0d _ |no <buffer> <C-S> :<C-U>%y +<CR>
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
-com! -nargs=* -complete=file -bang GitDiff  ene|setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf|f [git-diff] <args>|cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>))|no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com! -nargs=*                      GitLog   ene|setl bh=wipe bt=nofile fdm=syntax ft=todo      nobl noswf|f [git-log] <args> |cal setline(1, systemlist('git log '.<q-args>))|nn <buffer> zp :bel vert ped <C-R><C-W><lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @%')<CR><C-W>56<lt>Bar>
-com! -nargs=* -complete=file       GitShow  ene|setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf|f [git-show] <args>|cal setline(1, systemlist('git show '.<q-args>))
+com! -nargs=* -complete=file -bang GitDiff  ene |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf |f [git-diff] <args> |cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>)) |no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
+com! -nargs=*                      GitLog   ene |setl bh=wipe bt=nofile fdm=syntax ft=todo      nobl noswf |f [git-log] <args> |cal setline(1, systemlist('git log '.<q-args>)) |nn <buffer> zp :bel vert ped <C-R><C-W><lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @%')<CR><C-W>56<lt>Bar>
+com! -nargs=* -complete=file       GitShow  ene |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf |f [git-show] <args> |cal setline(1, systemlist('git show '.<q-args>))
 
 abc
 ca lang se wrap! spell! spl
@@ -183,11 +183,11 @@ endfo
 
 " sneak movement (multi-char and multi-line 't'/'f') {{{1
 fu s:neak(d)
-  redr|ec '('.a:d.')'
+  redr |ec '('.a:d.')'
   let l = [92, 86]
   for k in range(abs(a:d))
-    if add(l, getchar())[-1] < 32 || 126 < l[-1]|retu|en
-    if 39 == l[-1]|cal add(l, 39)|en
+    if add(l, getchar())[-1] < 32 || 126 < l[-1] |retu |en
+    if 39 == l[-1] |cal add(l, 39) |en
   endfo
   let s = "cal search('".join(map(l, 'nr2char(v:val)'), '')."', "
   let g:eak = s.(a:d < 0 ? "'sb', line('w0'))" : "'sz', line('w$'))")
@@ -224,8 +224,8 @@ fu s:omment(ty='')
   let e = getpos("']")
   let p = matchlist(&cms, '^\(.*\)%s\(.*\)$')
   if 'char' == a:ty && len(p) && len(p[2])
-    let l = getline(e[1]) | cal setline(e[1], l[:e[2]-1].p[2].l[e[2]:])
-    let l = getline(s[1]) | cal setline(s[1], l[:s[2]-2].p[1].l[s[2]-1:])
+    let l = getline(e[1]) |cal setline(e[1], l[:e[2]-1].p[2].l[e[2]:])
+    let l = getline(s[1]) |cal setline(s[1], l[:s[2]-2].p[1].l[s[2]-1:])
   el
     let b = matchstr(&com, ':\(//\|--\|"\|#\|;\|%\)')[1:]
     let a = ''
@@ -263,7 +263,7 @@ fu s:lignby(ty='')
     retu 'g@'
   en
   let pat = input('align pattern: ')
-  if !len(pat) | retu | en
+  if !len(pat) |retu |en
   let st = getpos("'[")[1]
   let ed = getpos("']")[1]
   let far = 0
@@ -271,12 +271,12 @@ fu s:lignby(ty='')
   let offsets = []
   for k in range(st, ed)
     let cur = add(offsets, match(add(lines, getline(k))[-1], pat))[-1]
-    if far < cur | let far = cur | en
+    if far < cur |let far = cur |en
   endfo
   for k in range(st, ed)
     let ln = remove(lines, 0)
     let off = remove(offsets, 0)
-    if -1 != off | cal setline(k, ln[:off-1].repeat(' ', far-off).ln[off:]) | en
+    if -1 != off |cal setline(k, ln[:off-1].repeat(' ', far-off).ln[off:]) |en
   endfo
 endfu
 nn <expr> g= <SID>lignby()
@@ -304,12 +304,14 @@ fu s:plore_unfold(dir, depth, at)
 endf
 fu s:plore_dotdotdot()
   if '...' == getline('.')[-3:]
+    let pmod = &mod
     let ln = line('.')
     let ed = <SID>plore_unfold(matchstr(getline(ln-1), ' (.*)$')[2:-2], indent('.')/&ts-1, ln+1)
     d2
     norm k
-    if ln+1 != ed | exec ln.','.(ed-2) 'foldc!' | en
+    if ln+1 != ed |exec ln.','.(ed-2) 'foldc!' |en
     norm zvj
+    if !pmod |setl nomod |en
   en
 endf
 fu s:plore_apply()
@@ -318,12 +320,12 @@ fu s:plore_apply()
   let scb = []
   for k in range(1, len(lns)-1)
     let m = matchlist(lns[k], '\t\+\(.\{-}\)\( --\d* (\(.*\))\)\?$')
-    if !len(m) || '...' == m[1] | con | en
-    if '`---' == m[1] | cal remove(path, -1) | con | en
+    if !len(m) || '...' == m[1] |con |en
+    if '`---' == m[1] |cal remove(path, -1) |con |en
     let name = '/' == m[1][-1:] || '*' == m[1][-1:] ? m[1][:-2] : m[1]
     let full = join(path,'').name
-    if '/' == m[1][-1:] | cal add(path, m[1]) | en
-    if m[3] == full | con | en
+    if '/' == m[1][-1:] |cal add(path, m[1]) |en
+    if m[3] == full |con |en
     if len(m[3])
       let ln = len(name) ? "rename('".m[3]."', '".full."')" : "delete('".m[3]."'".('/' == m[1][-1:] ? ", 'rf')" : ")")
     el
@@ -332,9 +334,9 @@ fu s:plore_apply()
     cal add(scb, ln)
     echom ln
   endfo
-  if !len(scb) | setl nomod | retu | en
+  if !len(scb) |setl nomod |retu |en
   if 1 == confirm('do?', "&Yes\n&No", 2)
-    for s in scb | exe 'cal' s | endfo
+    for s in scb |exe 'cal' s |endfo
     let pul = &ul
     setl ul=-1
     exe "norm a \<BS>\<Esc>"
@@ -347,14 +349,14 @@ fu s:plore_apply()
 endf
 fu s:plore(bang, dir)
   if !len(a:dir) && 'splore://' == @%[:8]
-    if !a:bang | retu | en
+    if !a:bang |retu |en
     let d = @%[9:]
     %d
   el
     let d = trim(expand(len(a:dir) ? a:dir : '.'), '/\', 2).'/'
     try
       exe 'b' 'splore://'.d
-      if a:bang | %d | el | retu | en
+      if a:bang |%d |el |retu |en
     cat
       ene
       exe 'f' 'splore://'.d
@@ -390,8 +392,8 @@ fu s:ebuffers_apply(bufdo)
       let nn = matchstr(nls[k], '"[^"]\+"')
       if matchstr(l, '"[^"]\+"') != nn
         exe 'b' nr '|f' nn[1:-2]
-        if @# != @% | sil! bw # | en
-        if filereadable(@%) | setl mod | en
+        if @# != @% |sil! bw# |en
+        if filereadable(@%) |setl mod |en
       en
       let k+= 1
     el
@@ -399,12 +401,12 @@ fu s:ebuffers_apply(bufdo)
       let c.= nr
     en
   endfo
-  if d | exe c | en
+  if d |exe c |en
 endf
 fu s:ebuffers(bang)
   let pnr = bufnr()
   let pls = split(execute('ls'.a:bang), '\n')
-  bel 10sp|ene|setl bh=wipe bt=nofile cul nobl noswf
+  bel 10sp |ene |setl bh=wipe bt=nofile cul nobl noswf
   exe 'f [Buffer List'.a:bang.']'
   let pul = &ul
   setl ul=-1
@@ -426,7 +428,7 @@ com! -bang Ebuffers cal <SID>ebuffers('<bang>')
 
 " edit a variable (eg ':Eva Run') {{{1
 fu s:evariable(name)
-  bel 10sp|ene|setl bh=wipe bt=nofile nobl noswf
+  bel 10sp |ene |setl bh=wipe bt=nofile nobl noswf
   exe 'f [Edit Variable' a:name.']'
   cal setline(1, split(get(g:, a:name, ''), '\n'))
   let nr = bufnr()
@@ -448,7 +450,7 @@ endf
 fu s:eundotree()
   let x = undotree()
   let b = bufnr()
-  abo 20vs|ene|setl bh=wipe bt=nofile nobl noswf nonu nornu
+  abo 20vs |ene |setl bh=wipe bt=nofile nobl noswf nonu nornu
   exe 'f [undotree -' bufname(b).']'
   cal s:eundotree_pr(x.entries, x.seq_cur, 0)
   1d
@@ -556,15 +558,15 @@ au FileType ansimple cal <SID>ansimple_ft()
 " surveil (update a copy-buffer and filter with command) {{{1
 fu s:urveil(buf, com='%!cat')
   let nr = bufnr(a:buf)
-  if bufnr() == nr|bel 30vs|en
-  ene|setl bt=nofile noswf
+  if bufnr() == nr |bel 30vs |en
+  ene |setl bt=nofile noswf
   exe 'f [surveil -' a:buf.']' escape(a:com, '%#\$!<*')
   let menr = bufnr()
   let b:urveil = a:com
   exe 'aug surveil'.menr
-  exe 'au surveil'.menr 'BufWritePost <buffer='.nr.'> let b:w=win_findbuf('.menr.')|if len(b:w)|cal deletebufline('.menr.',1,"$")|cal setbufline('.menr.',1,getbufline('.nr.',1,"$"))|cal win_execute(b:w[0],"noau ".getbufvar('.menr.',"urveil"))|en|unl b:w'
+  exe 'au surveil'.menr 'BufWritePost <buffer='.nr.'> let b:w=win_findbuf('.menr.') |if len(b:w) |cal deletebufline('.menr.',1,"$") |cal setbufline('.menr.',1,getbufline('.nr.',1,"$")) |cal win_execute(b:w[0],"noau ".getbufvar('.menr.',"urveil")) |en |unl b:w'
   aug END
-  exe 'au BufDelete <buffer> ++once au! surveil'.menr.'|aug! surveil'.menr
+  exe 'au BufDelete <buffer> ++once au! surveil'.menr.' |aug! surveil'.menr
 endf
 com! -nargs=+ -complete=buffer Surveil cal <SID>urveil(<f-args>)
 

@@ -1,5 +1,6 @@
-PS1='\e[33m\u\e[m'$(printf %${SHLVL:-1}s|tr \  :)'\e[36m\w\e[m\$\n  '
+PS1='\e[33m\u\e[m'$(printf %${SHLVL:-1}s |tr \  :)'\e[36m\w\e[m\$\n  '
 HISTCONTROL=ignoreboth
+HISTTIMEFORMAT=%T+
 
 expath(){ [[ :$PATH: == *:$1:* ]]||export PATH=$1:$PATH;}
 expath ~/.local/bin
@@ -28,22 +29,22 @@ alias              s='git status'
 alias          reset='stty sane -ixon'
 alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
-alias          today="$EDITOR \"+cd ~/.local/share/today|cal map(glob('*.md',1,1),'execute(''bad ''.v:val)')|e "'`date +%Y-%m-%d`.md|se spell wrap"' # inspired by https://git.sr.ht/~sotirisp/today
+alias          today="$EDITOR \"+cd ~/.local/share/today |cal map(glob('*.md',1,1),'execute(''bad ''.v:val)') |e "'`date +%Y-%m-%d`.md |se spell wrap"' # inspired by https://git.sr.ht/~sotirisp/today
 alias             xo='xdg-open 2>/dev/null'
 
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'
 bind -x       '"\eq":r=`treest`;READLINE_LINE=${r:-$READLINE_LINE};READLINE_POINT=${#READLINE_LINE}'
 bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`cat $t`;rm $t;READLINE_POINT=${#READLINE_LINE}' # for some unknown reason, this is not a useless use of cat
-bind -x       '"\ey":printf %s "$READLINE_LINE" | xclip -sel c'
+bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
 
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
 
 command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
-which_include()(n=$1;shift;find $(echo|${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` 2>&1|awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
-grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@"|${CC:-cpp} -dM - 2>&1|grep "$n")
-include_tree()(cpp -H "$@" 2>&1>/dev/null|grep --color=never '^\.\+ [^/]')
+which_include()(n=$1;shift;find $(echo |${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` |&awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
+grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@" |${CC:-cpp} -dM - |&grep "$n")
+include_tree()(cpp -H "$@" 2>&1>/dev/null |grep --color=never '^\.\+ [^/]')
 ccdo()(c=$1;shift;if [ -f "$c" ];then cc -x c "$c" -o /tmp/ccdo "$@";else cc -x c -<<<$c -o /tmp/ccdo "$@";fi&&/tmp/ccdo)
 unset which # fedora
 
@@ -53,9 +54,9 @@ reset
 ok() { # inspired by https://github.com/ErrorNoInternet/ok
   db=~/.cache/ok
   case ${1##*-} in
-    h*) echo Usage: ok '[help|list|merge|reset|clear|show]'>&2;;
+    h*) echo Usage: ok '[help|list|merge|reset|clear|show]' >&2;;
     l*) ${PAGER:-less} "$db";;
-    m*) cat "$db" "$2" | sort -n >"$db";;
+    m*) cat "$db" "$2" |sort -n >"$db";;
     r*|c*) rm -f "$db";;
     s*)
       touch "$db"
@@ -77,7 +78,7 @@ __jabs_git() { echo git-$1; }
 __jabs_man() {
   if [ 2 = $# ]
     then echo "$2($1)"
-    else echo "$1`man -k ^$1\$ 2>/dev/null | awk '{printf$2}' | sed 's/)(/,/g' || echo '(man)'`"
+    else echo "$1`man -k ^$1\$ 2>/dev/null |awk '{printf$2}' |sed 's/)(/,/g' || echo '(man)'`"
   fi
 }
 __jabs_less() { echo ${1##*/}; }
@@ -97,7 +98,7 @@ __jabs_run() {
 }
 
 __jabs() {
-  jobs | while read spec status comm args
+  jobs |while read spec status comm args
     do
       comm=${comm##*/}
       type -t __jabs_$comm >/dev/null && comm=`__jabs_$comm $args`
