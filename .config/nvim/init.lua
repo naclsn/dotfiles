@@ -3,7 +3,7 @@ vim.cmd.so '~/.vimrc'
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'neovim/nvim-lspconfig'
-    use 'nvim-treesitter/nvim-treesitter'
+    --use 'nvim-treesitter/nvim-treesitter'
 end)
 
 --[[require('nvim-treesitter.configs').setup {
@@ -44,6 +44,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+        -- whever, I hate nvim anyways
+        if '' == vim.bo[ev.buf].formatexpr
+          then vim.keymap.set('n', 'gq', vim.lsp.buf.format, opts)
+        end
 
         vim.keymap.set('n', '<space>k', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', '<space>r', vim.lsp.buf.rename, opts)
@@ -52,3 +56,5 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<space>=', vim.lsp.buf.format, opts)
     end,
 })
+
+vim.g.zig_fmt_autosave = 0

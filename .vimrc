@@ -1,5 +1,5 @@
 lan C
-se ai bs= cot=menuone,noselect cul et fdl=0 fdm=marker ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -102,7 +102,7 @@ map Zz zzZ
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
 com! -nargs=* -complete=file -bang GitDiff  ene |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf |f [git-diff] <args> |cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>)) |no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com! -nargs=*                      GitLog   ene |setl bh=wipe bt=nofile fdm=syntax ft=todo      nobl noswf |f [git-log] <args> |cal setline(1, systemlist('git log '.<q-args>)) |nn <buffer> zp :bel vert ped <C-R><C-W><lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @%')<CR><C-W>56<lt>Bar>
+com! -nargs=*                      GitLog   ene |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl noswf |f [git-log] <args>  |cal setline(1, systemlist('git log '.<q-args>)) |nn <buffer> zp :cal cursor(search('commit', 'bcW'), 8)<CR>:bel vert ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR><C-W>56<lt>Bar>
 com! -nargs=* -complete=file       GitShow  ene |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf |f [git-show] <args> |cal setline(1, systemlist('git show '.<q-args>))
 
 abc
@@ -398,7 +398,7 @@ fu s:ebuffers_apply(bufdo)
       let k+= 1
     el
       let d = 1
-      let c.= nr
+      let c.= ' '.nr
     en
   endfo
   if d |exe c |en

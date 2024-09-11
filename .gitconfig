@@ -17,6 +17,7 @@
 	root = rev-parse --show-toplevel
 	desc = branch --edit-description
 	clone1 = clone --depth 1
+	cloc = !f()(wc -l `git ls-files $1` | sort -n)";"f
 [init]
 	defaultBranch = main
 [credential]
