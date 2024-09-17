@@ -67,7 +67,7 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
   unset db
 }
 
-# jobs tabs (jabs)
+# jobs tabs (jabs) {{{
 bind -x       '"\e0":fg&>/dev/null'
 bind -x       '"\e-":fg -&>/dev/null'
 for n in {1..9}
@@ -112,3 +112,4 @@ __jabs() {
 }
 
 PS1='$(__jabs)'$PS1
+# }}}

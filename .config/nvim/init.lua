@@ -24,7 +24,7 @@ for _, it in pairs {
     'elmls',
     'erlangls',
     'jdtls',
-    'tsserver',
+    'ts_ls', --'tsserver',
     'lua_ls',
     'nim_langserver',
     'pylsp',
