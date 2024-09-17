@@ -4,6 +4,8 @@ se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
   se udir=~/.vim/cache/nundo//
+  aun PopUp
+  au! nvim_popupmenu
 el
   se udir=~/.vim/cache/undo//
 en
