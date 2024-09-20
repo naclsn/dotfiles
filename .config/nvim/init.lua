@@ -19,18 +19,27 @@ vim.cmd.hi 'link @punctuation NormalNC']]
 
 --do return end
 
-for _, it in pairs {
-    'clangd',
-    'elmls',
-    'erlangls',
-    'jdtls',
-    'ts_ls', --'tsserver',
-    'lua_ls',
-    'nim_langserver',
-    'pylsp',
-    'rust_analyzer',
-    'zls',
-} do require('lspconfig')[it].setup {} end
+for it, settings in pairs {
+    clangd= {},
+    elmls= {},
+    erlangls= {},
+    jdtls= {},
+    ts_ls= {},
+    lua_ls= {},
+    nim_langserver= {},
+    basedpyright= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
+        reportAny= 'none',
+        reportImplicitOverride= 'information',
+        reportMissingTypeStubs= 'warning',
+        reportOptionalMemberAccess= 'warning',
+        reportUninitializedInstanceVariable= 'none',
+        reportUnreachable= 'unreachable',
+        reportUnusedCallResult= 'none',
+        reportUnusedExpression= 'none',
+    } } } },
+    rust_analyzer= {},
+    zls= {},
+} do require('lspconfig')[it].setup {settings= settings} end
 
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
