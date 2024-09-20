@@ -31,6 +31,8 @@ if has_key(g:, 'terminal_ansi_colors')
 en
 au FileType xxd nn <C-A> geebi0x<Esc><C-A>b"_2xe |nn <C-X> geebi0x<Esc><C-X>b"_2xe
 
+nm <C-J> :<C-U>tabn<CR>
+nm <C-K> :<C-U>tabN<CR>
 nn <C-C> :<C-U>q!<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
@@ -39,8 +41,6 @@ nn <C-S> :<C-U>up<CR>
 nm U u
 nn + :<C-U>.+
 nn - :<C-U>.-
-
-nm <C-J> :<C-U>py print()<C-B>
 
 if has('nvim')
   map <space>t :<C-U>vert abo ter<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
