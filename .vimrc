@@ -320,25 +320,33 @@ fu s:plore_apply()
   let lns = getline(1, '$')
   let path = [resolve(getcwd().'/'.lns[0]).'/']
   let scb = []
+  let eds = []
   for k in range(1, len(lns)-1)
     let m = matchlist(lns[k], '\t\+\(.\{-}\)\( --\d* (\(.*\))\)\?$')
     if !len(m) || '...' == m[1] |con |en
     if '`---' == m[1] |cal remove(path, -1) |con |en
     let name = '/' == m[1][-1:] || '*' == m[1][-1:] ? m[1][:-2] : m[1]
-    let full = join(path,'').name
+    let full = join(path, '').name
     if '/' == m[1][-1:] |cal add(path, m[1]) |en
     if m[3] == full |con |en
+    let ed = '/\V'.escape(lns[k], '\/')
     if len(m[3])
       let ln = len(name) ? "rename('".m[3]."', '".full."')" : "delete('".m[3]."'".('/' == m[1][-1:] ? ", 'rf')" : ")")
+      let ed.= len(name) ? '/s/ (.*)$/ ('.escape(full, '\/').')' : '/d'
     el
       let ln = '/' == m[1][-1:] ? "mkdir('".full."'".(name =~ '/' ? ", 'p')" : ")") : "writefile([], '".full."')"
+      let ed.= '/s/\s*$/ -- ('.escape(full, '\/').')'
     en
     cal add(scb, ln)
+    cal add(eds, ed)
     echom ln
   endfo
   if !len(scb) |setl nomod |retu |en
   if 1 == confirm('do?', "&Yes\n&No", 2)
     for s in scb |exe 'cal' s |endfo
+    let pos = getpos('.')
+    for s in eds |exe s |endfo
+    cal setpos('.', pos)
     let pul = &ul
     setl ul=-1
     exe "norm a \<BS>\<Esc>"
@@ -365,7 +373,7 @@ fu s:plore(bang, dir)
     endt
   en
   let pul = &ul
-  setl bt=acwrite cole=3 et fdm=marker fdt=repeat('\|\ \ ',indent(v:foldstart)/&ts).matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
+  setl bt=acwrite cole=3 et fdl=0 fdm=marker fdt=repeat('\|\ \ ',indent(v:foldstart)/&ts).matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
   au BufWriteCmd <buffer> cal <SID>plore_apply()
   cal setline(1, d)
   cal <SID>plore_unfold(resolve(getcwd().'/'.d), 0, 1)
