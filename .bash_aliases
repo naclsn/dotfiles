@@ -21,7 +21,7 @@ alias             la='ls -FXxA'
 alias             ll='ls -FXgo'
 alias              l='ls -FXx'
 alias           tree='tree --dirsfirst'
-alias            tre='treest -C'
+alias            tre='treest'
 alias           info='info --vi-keys'
 alias             db='gdb -q --args'
 alias             py='python3'
@@ -41,6 +41,7 @@ bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
 [ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
 
+# some functions {{{
 command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
 which_include()(n=$1;shift;find $(echo |${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` |&awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
 grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@" |${CC:-cpp} -dM - |&grep "$n")
@@ -66,6 +67,12 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
   esac
   unset db
 }
+
+spce () {
+  PROJ=${PROJ:-~/Documents/Projects/}
+  cd `[ -n "$1" ] && find "$PROJ" -maxdepth 1 -name "*$1*" -type d || echo "$PROJ"`
+}
+# }}}
 
 # jobs tabs (jabs) {{{
 bind -x       '"\e0":fg&>/dev/null'

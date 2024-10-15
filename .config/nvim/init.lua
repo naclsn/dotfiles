@@ -30,8 +30,11 @@ for it, settings in pairs {
     basedpyright= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
         reportImplicitOverride= 'information',
+        reportIncompatibleVariableOverride= 'warning',
+        reportMissingModuleSource= 'warning',
         reportMissingTypeStubs= 'warning',
         reportOptionalMemberAccess= 'warning',
+        reportOptionalSubscript= 'warning',
         reportUninitializedInstanceVariable= 'none',
         reportUnreachable= 'unreachable',
         reportUnusedCallResult= 'none',
@@ -54,7 +57,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         -- whever, I hate nvim anyways
-        if '' == vim.bo[ev.buf].formatexpr
+        if 'rust' == vim.bo[ev.buf].ft
           then vim.keymap.set('n', 'gq', vim.lsp.buf.format, opts)
         end
 

@@ -38,6 +38,8 @@ nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
 nn <C-S> :<C-U>up<CR>
 
+map! <C-Space> <Nop>
+
 nm U u
 nn + :<C-U>.+
 nn - :<C-U>.-
@@ -284,7 +286,7 @@ endfu
 nn <expr> g= <SID>lignby()
 xn <expr> g= <SID>lignby()
 
-" splore (file tree - only relative to cwd) {{{1
+" splore (file tree - no over-the-network) {{{1
 fu s:plore_unfold(dir, depth, at)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
@@ -318,7 +320,7 @@ fu s:plore_dotdotdot()
 endf
 fu s:plore_apply()
   let lns = getline(1, '$')
-  let path = [resolve(getcwd().'/'.lns[0]).'/']
+  let path = [lns[0]]
   let scb = []
   let eds = []
   for k in range(1, len(lns)-1)
@@ -357,26 +359,21 @@ fu s:plore_apply()
     echom 'didn''t'
   en
 endf
-fu s:plore(bang, dir)
-  if !len(a:dir) && 'splore://' == @%[:8]
-    if !a:bang |retu |en
-    let d = @%[9:]
-    %d
-  el
-    let d = trim(expand(len(a:dir) ? a:dir : '.'), '/\', 2).'/'
-    try
-      exe 'b' 'splore://'.d
-      if a:bang |%d |el |retu |en
-    cat
-      ene
-      exe 'f' 'splore://'.d
-    endt
+fu s:plore(dir)
+  "let prefix = 'splore://'
+  let prefix = ''
+  let d = fnamemodify(simplify(a:dir.'/'), ':p')
+  if bufexists(prefix.d) && bufnr(prefix.d) != bufnr()
+    exe 'b' prefix.d
+    retu
   en
+  exe 'f' prefix.d
+  %d
   let pul = &ul
   setl bt=acwrite cole=3 et fdl=0 fdm=marker fdt=repeat('\|\ \ ',indent(v:foldstart)/&ts).matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
   au BufWriteCmd <buffer> cal <SID>plore_apply()
   cal setline(1, d)
-  cal <SID>plore_unfold(resolve(getcwd().'/'.d), 0, 1)
+  cal <SID>plore_unfold(d, 0, 1)
   au CursorMoved <buffer> cal <SID>plore_dotdotdot()
   sy match Conceal / --\d* (.*)$/ conceal
   sy match Statement /[^ /]\+\//
@@ -387,8 +384,12 @@ fu s:plore(bang, dir)
   let &ul = pul
   setl nomod
 endf
-com! -complete=dir -nargs=? -bang Splore cal <SID>plore(<bang>0, <q-args>)
+com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 exe 'hi Folded ctermbg=NONE guibg=NONE' execute('hi Statement')[20:]
+aug FileExplorer
+  au!
+  au BufEnter * if isdirectory(@%) && 1 == getbufinfo(@%)[0].linecount |cal <SID>plore(@%) |en
+aug END
 
 " buffer pick/drop/rename {{{1
 fu s:ebuffers_apply(bufdo)
@@ -581,14 +582,18 @@ endf
 com! -nargs=+ -complete=buffer Surveil cal <SID>urveil(<f-args>)
 
 " netrw, I don't like you :< {{{1
-let g:netrw_banner      = 0
-let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
-let g:netrw_preview     = 1
-let g:netrw_winsize     = 25
-aug netrw_mapping
-  au FileType netrw sil! unm <buffer> s
-  au FileType netrw sil! unm <buffer> S
-aug END
+"let g:netrw_banner      = 0
+"let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
+"let g:netrw_preview     = 1
+"let g:netrw_winsize     = 25
+"aug netrw_mapping
+"  au FileType netrw sil! unm <buffer> s
+"  au FileType netrw sil! unm <buffer> S
+"aug END
+for n in ['gzip', 'netrw', 'tar', 'zip']
+  let g:loaded_{n} = 1
+  let g:loaded_{n}Plugin = 1
+endfo
 
 " modeline {{{1
 " vim: se fdm=marker fdl=0 ts=2:
