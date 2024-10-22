@@ -68,9 +68,14 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
   unset db
 }
 
-spce () {
+spce() {
   PROJ=${PROJ:-~/Documents/Projects/}
-  cd `[ -n "$1" ] && find "$PROJ" -maxdepth 1 -name "*$1*" -type d || echo "$PROJ"`
+  [ -n "$1" ] && set -- `find $PROJ -maxdepth 1 -name "*$1*" -type d`
+  case $# in
+    0) cd $PROJ;;
+    1) cd $1;;
+    *) select c; do cd $c; break; done;;
+  esac
 }
 # }}}
 
@@ -99,8 +104,8 @@ __jabs_daety() {
 }
 __jabs_run() {
     case $1 in
-        *.c) echo ${1%.c} $2;;
-        *) echo $1;;
+      *.c) echo ${1%.c} $2;;
+      *) echo $1;;
     esac
 }
 

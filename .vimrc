@@ -5,7 +5,7 @@ se dir=~/.vim/cache/swap//
 if has('nvim')
   se udir=~/.vim/cache/nundo//
   aun PopUp
-  au! nvim_popupmenu
+  "au! nvim_popupmenu
 el
   se udir=~/.vim/cache/undo//
 en
