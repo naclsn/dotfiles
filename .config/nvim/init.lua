@@ -30,11 +30,13 @@ for it, settings in pairs {
     basedpyright= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
         reportImplicitOverride= 'information',
+        reportImplicitStringConcatenation= 'warning',
         reportIncompatibleVariableOverride= 'warning',
         reportMissingModuleSource= 'warning',
         reportMissingTypeStubs= 'warning',
         reportOptionalMemberAccess= 'warning',
         reportOptionalSubscript= 'warning',
+        reportTypeCommentUsage= 'information',
         reportUninitializedInstanceVariable= 'none',
         reportUnreachable= 'unreachable',
         reportUnusedCallResult= 'none',

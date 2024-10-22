@@ -113,6 +113,7 @@ abc
 ca lang se wrap! spell! spl
 ca scra se bt=nofile ft
 ca hl se hls!
+ca vb vert sb
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
