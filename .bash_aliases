@@ -69,14 +69,18 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
 }
 
 spce() {
-  PROJ=${PROJ:-~/Documents/Projects/}
-  [ -n "$1" ] && set -- `find $PROJ -maxdepth 1 -name "*$1*" -type d`
+  local PROJ=${PROJ:-~/Documents/Projects}
+  [ -n "$1" ] && set -- `find $PROJ -mindepth 1 -maxdepth 1 -name "*$1*" -type d`
   case $# in
     0) cd $PROJ;;
     1) cd $1;;
     *) select c; do cd $c; break; done;;
   esac
 }
+__spce() {
+  local PROJ=${PROJ:-~/Documents/Projects}
+  COMPREPLY=(`find $PROJ -mindepth 1 -maxdepth 1 -name "*$2*" -type d -printf '%f '`)
+} && complete -F __spce spce
 # }}}
 
 # jobs tabs (jabs) {{{
