@@ -71,7 +71,7 @@ fu s:Syntax()
   sy match    vimotesNum       contained /0o\?\o\+\|0x\h\+\|0b[01]\+\|\d\+\(\.\d\+\)\?/
   sy match    vimotesStr       contained /'[^']*\('\|$\)\|"\(\\"\|[^"]\)*\("\|$\)/ contains=@NoSpell
   sy match    vimotesCall      contained /\<\h\w*\ze\s*(/ contains=@NoSpell
-  sy match    vimotesVar       contained /\([$@&]\|[bgls]:\|\<\h\)\w*/ contains=@NoSpell
+  sy match    vimotesVar       contained /\([$@&]\|[abglsv]:\|\<\h\)\w*/ contains=@NoSpell
   sy match    vimotesOp        contained /[-+/*%.<=>&|!]\|\<in\>/
   sy region   vimotesCommand   contained matchgroup=vimotesKeyword start=/^\v\s*(\d*Echo|break|call|echo|echom|else|elseif|endfor|endfunc|endif|endwhile|for|func|if|return|while)/ skip=/\n\s*\\/ end=/$/ keepend contains=vimotesLineC,@vimotesExpr,vimotesComment1
   sy region   vimotesLet       contained matchgroup=vimotesKeyword start=/^\s*[Ll]et/ skip=/\n\s*\\/ end=/$/ keepend contains=vimotesLineC,vimotesLetCom,@vimotesExpr,vimotesComment1
@@ -106,8 +106,7 @@ fu s:FileType()
   if exists('b:did_ftplugin') |retu |en
   let b:did_ftplugin = 1
   let b:undo_ftplugin = 'setl cole< com< cms< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO'
-  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" ofu=s:Complete syn=vimotes
-  " TODO: setl tfu
+  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" ofu=s:Complete syn=vimotes tfu=s:Tag
   com -buffer -nargs=1 -complete=expression -range=0 -addr=other Echo   cal s:Echo(<count>, <args>)
   com -buffer -nargs=+ -complete=command    -bang                Let    cal s:Let(<bang>0, <f-args>)
   com -buffer                               -bang                Source cal s:Source(<bang>0)
@@ -115,16 +114,26 @@ fu s:FileType()
   if !exists('b:did_indent')
     let b:did_indent = 1
     let b:undo_indent = 'setl inde< indk<'
-    setl inde={n->indent(n)+((getline(n)=~'^\\v\\s*(if\|elseif\|for\|while\|func)')-(getline('.')=~'^\\s*end'))*&ts}(prevnonblank(v:lnum-1)) indk+=0=end
+    setl inde=s:Indent() indk+=0=end
   en
 endf
 
 fu s:Complete(findstart, base)
   if a:findstart
-    retu match(getline('.')[:col('.')-2], '\($\|[bgls]:\|\<\h\)\w*')
+    retu match(getline('.')[:col('.')-2], '\($\|[bgv]:\|\<\h\)\w*')-1
   el
-    retu sort(filter('$' == a:base[0] ? keys(environ()) : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base==v:val[:'..(len(a:base)-1)..']'))
+    let e = '$' == a:base[0]
+    retu sort(filter(e ? keys(environ()) : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base['..e..':]==v:val[:'..(len(a:base)-1-e)..']'))
   en
+endf
+
+fu s:Tag(pattern, flags, info)
+  retu v:null " TODO
+endf
+
+fu s:Indent()
+  let n = prevnonblank(v:lnum-1)
+  return indent(n) + ((getline(n) =~ '^\\v\\s*(if\|elseif\|for\|while\|func)') - (getline('.') =~ '^\\s*end'))*&ts
 endf
 
 " autocommands {{{1
