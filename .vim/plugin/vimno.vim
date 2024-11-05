@@ -62,9 +62,6 @@ fu s:Syntax()
   sy spell toplevel
   sy sync fromstart
   " TODO: Conceal for Echo ids
-  sy match    vimnoComment1  /\(^\|\s\)"\{1,2}\( .*\|$\)/ contains=vimnoTodo
-  sy region   vimnoComments  start=/"""\\/ end=/"""/ contains=vimnoTodo
-  sy keyword  vimnoTodo      contained TODO FIXME XXX NOTE
   sy match    vimnoHeading   /^#\{1,4} .*/ contains=vimnoBold,vimnoCode,vimnoItalic,vimnoLink,vimnoMaths,vimnoStrike,vimnoUnderline
   sy match    vimnoListMark  /^\s*\(\a\|\d\+\)\. /
   sy match    vimnoBold      /\V**\S\(\.\{-}\S\)\?**/
@@ -90,8 +87,9 @@ fu s:Syntax()
   sy region   vimnoShellStr  contained start=/"/ skip=/\\"/ end=/"/ contains=@NoSpell,vimnoShellVar
   sy match    vimnoShellVar  contained /$\h\w*\|${\h\w\+}/ contains=@NoSpell
   sy match    vimnoShellOp   contained /\s[-+]\{1,2}\S\+\|[<|&>]/ contains=@NoSpell
-  hi def link vimnoComment1  Comment
-  hi def link vimnoComments  Comment
+  sy match    vimnoComment1  /\(^\|\s\)"\{1,2}\( .*\|$\)/ contains=vimnoTodo
+  sy region   vimnoComments  start=/"""\\/ end=/"""/ contains=vimnoTodo
+  sy keyword  vimnoTodo      contained TODO FIXME XXX NOTE
   hi def link vimnoHeading   Title
   hi def link vimnoListMark  Statement
   hi def link vimnoPreDelim  Special
@@ -110,6 +108,9 @@ fu s:Syntax()
   hi def link vimnoShellStr  String
   hi def link vimnoShellVar  Identifier
   hi def link vimnoShellOp   Operator
+  hi def link vimnoComment1  Comment
+  hi def link vimnoComments  Comment
+  hi def link vimnoTodo      Todo
 endf
 
 " filetype {{{1
