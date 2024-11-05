@@ -1,5 +1,5 @@
 " Vim filetype plugin for (TODO).
-" Last Change:	2024 Nov 3
+" Last Change:	2024 Nov 4
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -11,7 +11,6 @@ let g:loaded_vimotes = 1
 
 if !exists('g:vimotes_state') |let g:vimotes_state = expand('~/.cache/vimotes/') |en
 if '/' != g:vimotes_state[-1:] |let g:vimotes_state..= '/' |en
-cal mkdir(g:vimotes_state, 'p')
 
 " s: functions {{{1
 fu s:Echo(n, val)
@@ -26,30 +25,35 @@ fu s:Echo(n, val)
 endf
 
 fu s:Let(bang, var, eq, ...)
-  if !a:bang && '>' == a:var[0] && filereadable(g:vimotes_state..a:var[1:]) |retu |en
+  if '>' == a:var[0]
+    let d = g:vimotes_state..substitute(expand('%:p'), '/', '%', 'g')..'/'
+    cal mkdir(d, 'p')
+    let d..= a:var[1+('$'==a:var[1]):]
+    exe 'let' substitute(a:var[1:], '\.', '_', 'g') '= d'
+  en
+  if !a:bang && '>' == a:var[0] && filereadable(d) |retu |en
   let com = join(a:000)
   echom com
   let r = '!' == com[0] ? system(com[1:]) : execute(com)
   echo r
-  if '>' == a:var[0]
-    cal writefile(split(r, "\n"), g:vimotes_state..a:var[1:])
-  el
-    exe 'let' a:var a:eq 'trim(r)'
-  en
+  if '>' == a:var[0] |cal writefile(split(r, "\n"), d) |el |exe 'let' a:var a:eq 'trim(r)' |en
 endf
 
 fu s:Source(bang)
+  let p = getpos('.')
   if a:bang
     g/^{{{vimotes.*/+,/^}}}$/-so
-    ''
   el
     +?^{{{vimotes.*?+;/^}}}$/-so
   en
+  cal setpos('.', p)
 endf
 
 " syntax {{{1
 fu s:Syntax()
+  if exists('b:current_syntax') |retu |en
   sy spell toplevel
+  sy sync fromstart
   " TODO: Conceal for Echo ids
   sy match    vimotesComment1  /\(^\|\s\)"\{1,2}\( .*\|$\)/ contains=vimotesTodo
   sy region   vimotesComments  start=/"""\\/ end=/"""/ contains=vimotesTodo
@@ -64,21 +68,21 @@ fu s:Syntax()
   sy match    vimotesStrike    /\V~~\S\(\.\{-}\S\)\?~~/
   sy match    vimotesUnderline /\V__\S\(\.\{-}\S\)\?__/
   sy region   vimotesPre       matchgroup=vimotesPreDelim start=/^{{{.*/ end=/^}}}$/ contains=@NoSpell
-  sy region   vimotesPreV      matchgroup=vimotesPreDelim start=/^{{{vimotes.*/ end=/^}}}$/ contains=@NoSpell,@vimotesExpr,vimotesComment1,vimotesCommand,vimotesLet,vimotesResult
+  sy region   vimotesPreV      matchgroup=vimotesPreDelim start=/^{{{vimotes.*/ end=/^}}}$/ contains=@NoSpell,@vimotesExpr,vimotesComment1,vimotesCommand,vimotesLet,vimotesShell,vimotesResult
   sy region   vimotesResult    contained matchgroup=vimotesComment1 start=/^\s* "|/ end=/$/ contains=@NoSpell
   sy match    vimotesLineC     contained /^\s*\\/
   sy cluster  vimotesExpr      contains=vimotesNum,vimotesStr,vimotesCall,vimotesVar,vimotesOp
   sy match    vimotesNum       contained /0o\?\o\+\|0x\h\+\|0b[01]\+\|\d\+\(\.\d\+\)\?/
   sy match    vimotesStr       contained /'[^']*\('\|$\)\|"\(\\"\|[^"]\)*\("\|$\)/ contains=@NoSpell
-  sy match    vimotesCall      contained /\<\h\w*\ze\s*(/ contains=@NoSpell
-  sy match    vimotesVar       contained /\([$@&]\|[abglsv]:\|\<\h\)\w*/ contains=@NoSpell
-  sy match    vimotesOp        contained /[-+/*%.<=>&|!]\|\<in\>/
-  sy region   vimotesCommand   contained matchgroup=vimotesKeyword start=/^\v\s*(\d*Echo|break|call|echo|echom|else|elseif|endfor|endfunc|endif|endwhile|for|func|if|return|while)/ skip=/\n\s*\\/ end=/$/ keepend contains=vimotesLineC,@vimotesExpr,vimotesComment1
-  sy region   vimotesLet       contained matchgroup=vimotesKeyword start=/^\s*[Ll]et/ skip=/\n\s*\\/ end=/$/ keepend contains=vimotesLineC,vimotesLetCom,@vimotesExpr,vimotesComment1
-  sy region   vimotesLetCom    contained matchgroup=vimotesKeyword start=/!/ skip=/\n\s*\\/ end=/$/ contains=@NoSpell,vimotesLineC,vimotesLetComStr,vimotesLetComVar,vimotesLetComOp,vimotesStr
-  sy region   vimotesLetComStr contained start=/"/ skip=/\\"/ end=/"/ contains=@NoSpell,vimotesLetComVar
-  sy match    vimotesLetComVar contained /$\h\w*\|${\h\w\+}/ contains=@NoSpell
-  sy match    vimotesLetComOp  contained /[-+]\{1,2}\S\+\|[<|&>]/ contains=@NoSpell
+  sy match    vimotesCall      contained /\([abglstvw]:\|\<\h\)\(\w\|{[^}]\+}\)*\ze\s*(/ contains=@NoSpell
+  sy match    vimotesVar       contained /\([$@&]\|[abglstvw]:\|\<\h\)\(\w\|{[^}]\+}\)*/ contains=@NoSpell
+  sy match    vimotesOp        contained /[-+/*%.<=>&{|}!]\|\<in\>/
+  sy region   vimotesCommand   contained matchgroup=vimotesKeyword start=/^\v\s*(\d*Echo|break|call|const|continue|echo|echom|else|elseif|endfor|endfunc|endif|endwhile|for|func|if|lockvar|return|unlet|unlockvar|while)!?/ skip=/\n\s*\\/ end=/$/ keepend contains=vimotesLineC,@vimotesExpr,vimotesComment1
+  sy region   vimotesLet       contained matchgroup=vimotesKeyword start=/^\s*[Ll]et!\?/ skip=/\n\s*\\/ end=/$/ keepend contains=vimotesLineC,vimotesShell,@vimotesExpr,vimotesComment1
+  sy region   vimotesShell     contained matchgroup=vimotesKeyword start=/!/ skip=/\n\s*\\/ end=/$/ contains=@NoSpell,vimotesLineC,vimotesShellStr,vimotesShellVar,vimotesShellOp,vimotesStr
+  sy region   vimotesShellStr  contained start=/"/ skip=/\\"/ end=/"/ contains=@NoSpell,vimotesShellVar
+  sy match    vimotesShellVar  contained /$\h\w*\|${\h\w\+}/ contains=@NoSpell
+  sy match    vimotesShellOp   contained /\s[-+]\{1,2}\S\+\|[<|&>]/ contains=@NoSpell
   hi def link vimotesComment1  Comment
   hi def link vimotesComments  Comment
   hi def link vimotesHeading   Title
@@ -96,17 +100,17 @@ fu s:Syntax()
   hi def link vimotesCall      Function
   hi def link vimotesVar       Identifier
   hi def link vimotesOp        Operator
-  hi def link vimotesLetComStr String
-  hi def link vimotesLetComVar Identifier
-  hi def link vimotesLetComOp  Operator
+  hi def link vimotesShellStr  String
+  hi def link vimotesShellVar  Identifier
+  hi def link vimotesShellOp   Operator
 endf
 
 " filetype {{{1
 fu s:FileType()
   if exists('b:did_ftplugin') |retu |en
   let b:did_ftplugin = 1
-  let b:undo_ftplugin = 'setl cole< com< cms< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO'
-  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" ofu=s:Complete syn=vimotes tfu=s:Tag
+  let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO'
+  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d*).\  ofu=s:Complete syn=vimotes tfu=s:Tag
   com -buffer -nargs=1 -complete=expression -range=0 -addr=other Echo   cal s:Echo(<count>, <args>)
   com -buffer -nargs=+ -complete=command    -bang                Let    cal s:Let(<bang>0, <f-args>)
   com -buffer                               -bang                Source cal s:Source(<bang>0)
@@ -120,7 +124,7 @@ endf
 
 fu s:Complete(findstart, base)
   if a:findstart
-    retu match(getline('.')[:col('.')-2], '\($\|[bgv]:\|\<\h\)\w*')-1
+    retu match(getline('.')[:col('.')-2], '\($\|[bgtvw]:\|\<\h\)\w*')-1
   el
     let e = '$' == a:base[0]
     retu sort(filter(e ? keys(environ()) : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base['..e..':]==v:val[:'..(len(a:base)-1-e)..']'))

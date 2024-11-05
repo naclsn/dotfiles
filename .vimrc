@@ -1,16 +1,17 @@
 lan C
-se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo+=1cjr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
+  se rtp^=~/.vim/
   se udir=~/.vim/cache/nundo//
   aun PopUp
   "au! nvim_popupmenu
 el
   se udir=~/.vim/cache/undo//
 en
-se ssop=blank,buffers,folds,globals,resize,sesdir,slash,terminal,unix,winsize,winpos
-au SourcePost Session*.vim if has_key(g:,'Run') |cal execute(g:Run) |en
+se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
+au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au BufEnter * se fo-=o
 
 colo slate
@@ -185,6 +186,7 @@ for [o,c] in pairs
     exe 'xn <expr> Z'.s '<SID>urround("'.escape(o,'"').'","'.escape(c,'"').'")'
   endfo
 endfo
+unl o c s oo cc ss
 
 " sneak movement (multi-char and multi-line 't'/'f') {{{1
 fu s:neak(d)
@@ -216,6 +218,7 @@ en
 for r in ['t','T','f','F']
   exe 'nn '.r.' :unl! g:eak g:kae<CR>'.r
 endfo
+unl r
 no <expr> ; get(g:,'eak',';')
 no <expr> , get(g:,'kae',',')
 
@@ -540,7 +543,7 @@ for kv in km
     exe 'lm' w[1].w[0] u
   en
 endfo
-unl km k v w
+unl km kv k v u w
 
 " ansimple (handle a restricted few escape sequences) {{{1
 fu! s:ansimple_ft()
@@ -595,6 +598,7 @@ for n in ['gzip', 'netrw', 'tar', 'zip']
   let g:loaded_{n} = 1
   let g:loaded_{n}Plugin = 1
 endfo
+unl n
 
 " modeline {{{1
 " vim: se fdm=marker fdl=0 ts=2:

@@ -43,6 +43,7 @@ for it, conf in pairs {
         reportUnreachable= 'unreachable',
         reportUnusedCallResult= 'none',
         reportUnusedExpression= 'none',
+        reportWildcardImportFromLibrary= 'information',
     } } } } },
     rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
     zls= {},
