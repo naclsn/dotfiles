@@ -31,11 +31,13 @@ for it, conf in pairs {
     nim_langserver= {},
     basedpyright= { settings= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
+        reportDeprecated= 'information',
         reportImplicitOverride= 'information',
         reportImplicitStringConcatenation= 'warning',
         reportIncompatibleVariableOverride= 'warning',
         reportMissingModuleSource= 'warning',
         reportMissingTypeStubs= 'warning',
+        reportOptionalCall= 'warning',
         reportOptionalMemberAccess= 'warning',
         reportOptionalSubscript= 'warning',
         reportTypeCommentUsage= 'information',

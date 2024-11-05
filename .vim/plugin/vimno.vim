@@ -66,7 +66,7 @@ fu s:Syntax()
   sy region   vimnoComments  start=/"""\\/ end=/"""/ contains=vimnoTodo
   sy keyword  vimnoTodo      contained TODO FIXME XXX NOTE
   sy match    vimnoHeading   /^#\{1,4} .*/ contains=vimnoBold,vimnoCode,vimnoItalic,vimnoLink,vimnoMaths,vimnoStrike,vimnoUnderline
-  sy match    vimnoListMark  /^\s*\(\a\|\d*\)\. /
+  sy match    vimnoListMark  /^\s*\(\a\|\d\+\)\. /
   sy match    vimnoBold      /\V**\S\(\.\{-}\S\)\?**/
   sy match    vimnoCode      /\V``\S\(\.\{-}\S\)\?``/ contains=@NoSpell
   sy match    vimnoItalic    +\V//\S\(\.\{-}\S\)\?//+
@@ -117,7 +117,7 @@ fu s:FileType()
   if exists('b:did_ftplugin') |retu |en
   let b:did_ftplugin = 1
   let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO'
-  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d*).\  ofu=s:Complete syn=vimno tfu=s:Tag
+  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d\\+).\  ofu=s:Complete syn=vimno tfu=s:Tag
   com -buffer -nargs=1 -complete=expression -range=0 -addr=other Echo   cal s:Echo(<count>, <args>)
   com -buffer -nargs=+ -complete=command    -bang                Let    cal s:Let(<bang>0, <f-args>)
   com -buffer                               -bang                Source cal s:Source(<bang>0)
