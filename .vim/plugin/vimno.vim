@@ -2,11 +2,11 @@
 " This is a short single file with filetype/indent/syntax/omnifunc/tagfunc.
 "
 " TODO: example + light doc for :Echo :Let :Source and jobs.
-" TODO: conceal Echo ids
+" TODO: conceal/comment Echo ids
 " TODO: tagfunc
 " TODO: jobs
 "
-" Last Change:	2024 Nov 5
+" Last Change:	2024 Nov 6
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -72,7 +72,7 @@ fu s:Syntax()
   sy match    vimnoStrike    /\V~~\S\(\.\{-}\S\)\?~~/
   sy match    vimnoUnderline /\V__\S\(\.\{-}\S\)\?__/
   sy region   vimnoPre       matchgroup=vimnoPreDelim start=/^{{{.*/ end=/^}}}$/ contains=@NoSpell
-  sy region   vimnoPreV      matchgroup=vimnoPreDelim start=/^{{{vimno.*/ end=/^}}}$/ contains=@NoSpell,@vimnoExpr,vimnoComment1,vimnoCommand,vimnoLet,vimnoShell,vimnoResult
+  sy region   vimnoPreV      matchgroup=vimnoPreDelim start=/^{{{-\?vimno.*/ end=/^}}}$/ contains=@NoSpell,@vimnoExpr,vimnoComment1,vimnoCommand,vimnoLet,vimnoShell,vimnoResult
   sy region   vimnoResult    contained matchgroup=vimnoComment1 start=/^\s* "|/ end=/$/ contains=@NoSpell
   sy match    vimnoLineC     contained /^\s*\\/
   sy cluster  vimnoExpr      contains=vimnoNum,vimnoStr,vimnoCall,vimnoVar,vimnoOp
@@ -145,7 +145,7 @@ endf
 
 fu s:Indent()
   let n = prevnonblank(v:lnum-1)
-  return indent(n) + ((getline(n) =~ '^\\v\\s*(if\|elseif\|for\|while\|func)') - (getline('.') =~ '^\\s*end'))*&ts
+  return indent(n) + ((getline(n) =~ '\v^\s*<(if|elseif|for|while|func)>') - (getline('.') =~ '^\s*\<end\>'))*&ts
 endf
 
 " autocommands {{{1
