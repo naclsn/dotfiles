@@ -70,7 +70,7 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
 
 spce() {
   local PROJ=${PROJ:-~/Documents/Projects}
-  [ -n "$1" ] && set -- `find $PROJ -mindepth 1 -maxdepth 1 -name "*$1*" -type d`
+  [ -n "$1" ] && set -- `find $PROJ -mindepth 1 -maxdepth 1 -name "*$1*" -type d |sort`
   case $# in
     0) cd $PROJ;;
     1) cd $1;;

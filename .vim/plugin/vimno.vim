@@ -28,7 +28,7 @@ fu s:Echo(n, val)
   exe 's/^\s*\zs\d*/'..n
   if a:n |sil /^\(\s*\\\)\@!/;/^\(\s*"| \)\@!/-d |sil - |en
   let l = 3 == type(a:val) ? a:val : split(a:val, "\n")
-  cal append('.', map(l, ''''..i..' "| ''..v:val'))
+  cal append('.', map(l, ''''..i..' "| ''..v:val->trim("", 2)'))
 endf
 
 fu s:Let(bang, var, eq, ...)
@@ -49,9 +49,9 @@ endf
 fu s:Source(bang)
   let p = getpos('.')
   if a:bang
-    g/^{{{vimno.*/+,/^}}}$/-so
+    g/^{{{-\?vimno.*/+,/^}}}$/-so
   el
-    +?^{{{vimno.*?+;/^}}}$/-so
+    +?^{{{-\=vimno.*?+;/^}}}$/-so
   en
   cal setpos('.', p)
 endf
@@ -118,7 +118,7 @@ fu s:FileType()
   if exists('b:did_ftplugin') |retu |en
   let b:did_ftplugin = 1
   let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO'
-  setl cole=3 com=b:\"\",b:\",fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d\\+).\  ofu=s:Complete syn=vimno tfu=s:Tag
+  setl cole=3 com=b:\"\",b:\",b:\"\|,fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d\\+).\  ofu=s:Complete syn=vimno tfu=s:Tag
   com -buffer -nargs=1 -complete=expression -range=0 -addr=other Echo   cal s:Echo(<count>, <args>)
   com -buffer -nargs=+ -complete=command    -bang                Let    cal s:Let(<bang>0, <f-args>)
   com -buffer                               -bang                Source cal s:Source(<bang>0)
