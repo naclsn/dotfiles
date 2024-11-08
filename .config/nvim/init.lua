@@ -40,6 +40,7 @@ for it, conf in pairs {
         reportOptionalCall= 'warning',
         reportOptionalMemberAccess= 'warning',
         reportOptionalSubscript= 'warning',
+        reportPrivateUsage= 'warning',
         reportTypeCommentUsage= 'information',
         reportUninitializedInstanceVariable= 'none',
         reportUnreachable= 'unreachable',
