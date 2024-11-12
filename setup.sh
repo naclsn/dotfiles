@@ -1,5 +1,5 @@
 #!/bin/sh
-has() { c=`command -v $1` && printf "%-8s is %s\n" $1 $c || { echo no $1; exit; }; }
+has() { c=`command -v $1` && printf "%-8s is %s\n" $1 $c || { echo no $1; exit 1; }; }
 has find
 has ln
 has mkdir
@@ -20,7 +20,7 @@ Usage:
 DOC
 fi
 
-find . -type f -path ./.\* -printf '%h %p\n' -o -name .git -prune | while read dir rel
+find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
   do
     rel=${rel#./}
     abs=`realpath $rel`
