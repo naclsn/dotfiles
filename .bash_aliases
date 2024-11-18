@@ -67,20 +67,36 @@ ok() { # inspired by https://github.com/ErrorNoInternet/ok
   esac
   unset db
 }
+# }}}
 
+# spaces (spce) {{{
+SPCE_PROJ=${SPCE_PROJ:-~/Documents/Projects}
 spce() {
-  local PROJ=${PROJ:-~/Documents/Projects}
-  [ -n "$1" ] && set -- `find $PROJ -mindepth 1 -maxdepth 1 -name "*$1*" -type d |sort`
+  [ -n "$1" ] && set -- $SPCE_PROJ/*${1%/}*/
   case $# in
-    0) cd $PROJ;;
+    0) cd $SPCE_PROJ;;
     1) cd $1;;
     *) select c; do cd $c; break; done;;
   esac
 }
+
+spces() {
+  [ -z "$1" ] && set -- $SPCE_PROJ/*/
+  for n in ${@#$SPCE_PROJ}
+    do if [ -d $SPCE_PROJ/$n/.git ]
+      then
+        printf '\n[%s]\n' $n
+        git -C $SPCE_PROJ/$n status
+    fi
+  done
+}
+
+spcew() (spce && sed -n '/^#/d;/---/!p;//q' wip)
+
 __spce() {
-  local PROJ=${PROJ:-~/Documents/Projects}
-  COMPREPLY=(`find $PROJ -mindepth 1 -maxdepth 1 -name "*$2*" -type d -printf '%f '`)
-} && complete -F __spce spce
+  local full=($SPCE_PROJ/*/)
+  COMPREPLY=(`compgen -W "${full[*]#$SPCE_PROJ/}" -- $2`)
+} && complete -F __spce spce spces
 # }}}
 
 # jobs tabs (jabs) {{{
@@ -107,10 +123,10 @@ __jabs_daety() {
   fi
 }
 __jabs_run() {
-    case $1 in
-      *.c) echo ${1%.c} $2;;
-      *) echo $1;;
-    esac
+  case $1 in
+    *.c) echo ${1%.c} $2;;
+    *) echo $1;;
+  esac
 }
 
 __jabs() {
@@ -129,3 +145,5 @@ __jabs() {
 
 PS1='$(__jabs)'$PS1
 # }}}
+
+# vim: se fdm=marker fdl=0 ts=2:
