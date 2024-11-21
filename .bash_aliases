@@ -1,4 +1,4 @@
-PS1='\e[33m\u\e[m'$(printf %${SHLVL:-1}s |tr \  :)'\e[36m\w\e[m\$\n  '
+PS1='\e]2;${PWD##*/}\e\\\e[33m\u\e[m'$(printf %${SHLVL:-1}s |tr \  :)'\e[36m\w\e[m\$\n  '
 HISTCONTROL=ignoreboth
 HISTTIMEFORMAT=%T+
 
@@ -42,7 +42,7 @@ bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
 [ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
 
 # some functions {{{
-command_not_found_handle(){ echo "$1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
+command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
 which_include()(n=$1;shift;find $(echo |${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` |&awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
 grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@" |${CC:-cpp} -dM - |&grep "$n")
 include_tree()(cpp -H "$@" 2>&1>/dev/null |grep --color=never '^\.\+ [^/]')

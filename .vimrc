@@ -1,5 +1,5 @@
 lan C
-se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 udf wim=longest:full,full wmnu wop=pum
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -61,7 +61,7 @@ el
       tno <C-H> <BS>
       tno <C-N> <Down>
       tno <C-P> <Up>
-    elseif &sh =~ 'powershell\|pwsh'
+    elsei &sh =~ 'powershell\|pwsh'
       cal term_sendkeys('', '$_psss=@{EditMode="Emacs";Colors=@{Operator="$([char]27)[m";Parameter="$([char]27)[m"}};set-psreadlineoption @_psss'."\r")
     en
   endf
@@ -335,6 +335,7 @@ fu s:plore_apply()
     let full = join(path, '').name
     if '/' == m[1][-1:] |cal add(path, m[1]) |en
     if m[3] == full |con |en
+    " TODO/FIXME: this breaks when indentation was changed in editing (does it?)
     let ed = '/\V'.escape(lns[k], '\/')
     if len(m[3])
       let ln = len(name) ? "rename('".m[3]."', '".full."')" : "delete('".m[3]."'".('/' == m[1][-1:] ? ", 'rf')" : ")")
