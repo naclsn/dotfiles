@@ -2,11 +2,11 @@
 " This is a short single file with filetype/indent/syntax/omnifunc/tagfunc.
 "
 " TODO: example + light doc for :Echo :Let :Source and jobs.
-" TODO: conceal/comment Echo ids
+" TODO: comment Echo ids
 " TODO: tagfunc
 " TODO: jobs
 "
-" Last Change:	2024 Nov 6
+" Last Change:	2024 Nov 16
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -21,8 +21,11 @@ if '/' != g:vimno_state[-1:] |let g:vimno_state..= '/' |en
 
 " s: functions {{{1
 fu s:Echo(n, val)
+  "" Echos in the document itself; the line with the `Echo` itself is prefixed
+  "" with a (hopefully unique) number after first run, which is used to locate
+  "" itself on other runs. Output is prefixed with same indentation and '"| '.
   echom a:val
-  let n = a:n ?? (line('.')+localtime())%9999
+  let n = a:n ?? (line('.')+localtime())%10000
   exe '-5/^\s*'..(a:n ? n : '')..'Ec\(ho\)\?/'
   let i = matchstr(getline('.'), '^\s*')
   exe 's/^\s*\zs\d*/'..n
@@ -32,26 +35,31 @@ fu s:Echo(n, val)
 endf
 
 fu s:Let(bang, var, eq, ...)
-  if '>' == a:var[0]
-    let d = g:vimno_state..substitute(expand('%:p'), '/', '%', 'g')..'/'
-    cal mkdir(d, 'p')
-    let d..= a:var[1+('$'==a:var[1]):]
-    exe 'let' substitute(a:var[1:], '\.', '_', 'g') '= d'
-  en
-  if !a:bang && '>' == a:var[0] && filereadable(d) |retu |en
+  "" Similar to :let however the result is stored in a file by the var's name;
+  "" the variable will contain the full file path. If the file already existed
+  "" it needs `Let!` to force re-computation.
+  ""  0. if value starts with !, uses system()
+  ""  0. if value starts with :, uses execute()
+  ""  0. otherwise it is a normal expression, uses eval()
+  let d = g:vimno_state..substitute(expand('%:p'), '/', '%', 'g')..'/'
+  cal mkdir(d, 'p')
+  let d..= a:var[1+('$'==a:var[0]):]
+  exe 'let' substitute(a:var, '\.', '_', 'g') '= d'
+  if !a:bang && filereadable(d) |retu |en
   let com = join(a:000)
   echom com
-  let r = '!' == com[0] ? system(com[1:]) : execute(com)
+  let r = '!' == com[0] ? system(com[1:]) : ':' == com[0] ? execute(com[1:]) : eval(com)
   echo r
-  if '>' == a:var[0] |cal writefile(split(r, "\n"), d) |el |exe 'let' a:var a:eq 'trim(r)' |en
+  cal writefile(split(r, "\n"), d)
 endf
 
 fu s:Source(bang)
+  "" Sources the current (or with `Source!`, every) `{{{vimno }}}` block(s).
   let p = getpos('.')
   if a:bang
-    g/^{{{-\?vimno.*/+,/^}}}$/-so
+    g/^{{{vimno.*/+,/^}}}$/-so
   el
-    +?^{{{-\=vimno.*?+;/^}}}$/-so
+    +?^{{{vimno.*?+;/^}}}$/-so
   en
   cal setpos('.', p)
 endf
@@ -61,7 +69,7 @@ fu s:Syntax()
   if exists('b:current_syntax') |retu |en
   sy spell toplevel
   sy sync fromstart
-  " TODO: Conceal for Echo ids
+  " TODO: Comment for Echo ids
   sy match    vimnoHeading   /^#\{1,4} .*/ contains=vimnoBold,vimnoCode,vimnoItalic,vimnoLink,vimnoMaths,vimnoStrike,vimnoUnderline
   sy match    vimnoListMark  /^\s*\(\a\|\d\+\)\. /
   sy match    vimnoBold      /\V**\S\(\.\{-}\S\)\?**/
@@ -132,10 +140,10 @@ endf
 
 fu s:Complete(findstart, base)
   if a:findstart
-    retu match(getline('.')[:col('.')-2], '\($\|[bgtvw]:\|\<\h\)\w*')-1
+    retu match(getline('.')[:col('.')-2], '\(\$\|[bgtvw]:\|\<\h\)\w*$')
   el
     let e = '$' == a:base[0]
-    retu sort(filter(e ? keys(environ()) : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base['..e..':]==v:val[:'..(len(a:base)-1-e)..']'))
+    retu sort(filter(e ? map(keys(environ()), '''$''..v:val') : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base==v:val[:'..(len(a:base)-1)..']'))
   en
 endf
 
