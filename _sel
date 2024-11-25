@@ -1,8 +1,7 @@
 _sel() {
  PS1='`jobs|tr -cd [`'$PS1
- alias s=git\ status
- alias py=python3
- export MANOPT=--nj\ --nh LESS=FR EDITOR=vim VIMINIT='sil! ru defaults.vim
+ alias s=git\ status py=python3
+ export _SEL=_sel MANOPT=--nj\ --nh LESS=FR EDITOR=vim VIMINIT='sil! ru defaults.vim
   se hid isf-== ls=2 tm=0 noto ttimeout ttm=0 wmnu ai et sw=0 ts=4 nu rnu nowrap mouse=nv cul
   nn <C-N> :bn<CR>
   nn <C-P> :bp<CR>
@@ -14,4 +13,4 @@ _sel() {
   cno <C-X> <C-A>'
  command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
  bind -x'"\ez":fg&>/dev/null'
-}
+}; [ _sel = "`command -v $_SEL`" ] && _sel
