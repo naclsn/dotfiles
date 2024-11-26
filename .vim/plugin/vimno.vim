@@ -1,16 +1,18 @@
 " Vim filetype plugin for interactive notes. Somewhat like a minimal org mode.
 " This is a short single file with filetype/indent/syntax/omnifunc/tagfunc.
 "
-" TODO: example + light doc for :Echo :Let :Source and jobs.
-" TODO: comment Echo ids
-" TODO: tagfunc
-" TODO: jobs
-"
-" Last Change:	2024 Nov 16
+" Last Change:	2024 Nov 26
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
+" TODO: example
+" TODO: fix Source and make it work with |if_tcl.txt| |if_lua.txt|
+"       |if_perl.txt| |if_pyth.txt| |if_ruby.txt| |if_mzsch.txt|
+" TODO: comment Echo/Let ids and !.. :.. syntaxes
+" TODO: fix @Spell/@NoSpell situation
+" TODO: tagfunc
+" TODO: jobs
 
 " g: variables {{{1
 if &cp || exists('g:loaded_vimno') |fini |en
@@ -20,37 +22,45 @@ if !exists('g:vimno_state') |let g:vimno_state = expand('~/.cache/vimno/') |en
 if '/' != g:vimno_state[-1:] |let g:vimno_state..= '/' |en
 
 " s: functions {{{1
-fu s:Echo(n, val)
+fu s:Echo(n, ...)
   "" Echos in the document itself; the line with the `Echo` itself is prefixed
   "" with a (hopefully unique) number after first run, which is used to locate
   "" itself on other runs. Output is prefixed with same indentation and '"| '.
-  echom a:val
-  let n = a:n ?? (line('.')+localtime())%10000
-  exe '-5/^\s*'..(a:n ? n : '')..'Ec\(ho\)\?/'
-  let i = matchstr(getline('.'), '^\s*')
-  exe 's/^\s*\zs\d*/'..n
-  if a:n |sil /^\(\s*\\\)\@!/;/^\(\s*"| \)\@!/-d |sil - |en
-  let l = 3 == type(a:val) ? a:val : split(a:val, "\n")
-  cal append('.', map(l, ''''..i..' "| ''..v:val->trim("", 2)'))
-endf
-
-fu s:Let(bang, var, eq, ...)
-  "" Similar to :let however the result is stored in a file by the var's name;
-  "" the variable will contain the full file path. If the file already existed
-  "" it needs `Let!` to force re-computation.
   ""  0. if value starts with !, uses system()
   ""  0. if value starts with :, uses execute()
   ""  0. otherwise it is a normal expression, uses eval()
-  let d = g:vimno_state..substitute(expand('%:p'), '/', '%', 'g')..'/'
-  cal mkdir(d, 'p')
-  let d..= a:var[1+('$'==a:var[0]):]
-  exe 'let' substitute(a:var, '\.', '_', 'g') '= d'
-  if !a:bang && filereadable(d) |retu |en
-  let com = join(a:000)
-  echom com
-  let r = '!' == com[0] ? system(com[1:]) : ':' == com[0] ? execute(com[1:]) : eval(com)
+  let c = join(a:000)
+  let r = '!' == c[0] ? system(c[1:]) : ':' == c[0] ? execute(c[1:]) : eval(c)
   echo r
-  cal writefile(split(r, "\n"), d)
+  let n = a:n ?? (line('.')+localtime())%10000
+  exe '-5/^\s*'..(a:n ? n : '')..'\vEcho?|Let!/'
+  let i = matchstr(getline('.'), '^\s*')
+  exe 's/^\s*\zs\d*/'..n
+  if a:n |sil /^\(\s*\\\)\@!/;/^\(\s*"| \)\@!/-d |sil - |en
+  let l = 3 == type(r) ? r : split(r, "\n")
+  cal append('.', map(l, '"'..i..' \"| "..v:val->trim("", 2)'))
+endf
+
+fu s:Let(bang, n, var, eq, ...)
+  "" Similar to :let however the result is stored in a file by the var's name;
+  "" the variable will contain the full file path. If the file already existed
+  "" do :cal var->delete(). `Let!` will also `Echo`. See g:vimno_state as well
+  "" as $VIMNO_CACHE.
+  ""  0. if value starts with !, uses system()
+  ""  0. if value starts with :, uses execute()
+  ""  0. otherwise it is a normal expression, uses eval()
+  let d = $VIMNO_CACHE..'/'
+  let d..= a:var['$'==a:var[0]:]
+  exe 'let' substitute(a:var, '[./]', '_', 'g') '= d'
+  if filereadable(d) |retu |en
+  cal mkdir(fnamemodify(d, ':h'), 'p')
+  let c = join(a:000)
+  echom c
+  let r = '!' == c[0] ? system(c[1:]) : ':' == c[0] ? execute(c[1:]) : eval(c)
+  let g:l = split(r, "\n")
+  cal writefile(g:l, d)
+  if a:bang |cal s:Echo(a:n, 'g:l') |el |echo r |en
+  unl g:l
 endf
 
 fu s:Source(bang)
@@ -59,7 +69,7 @@ fu s:Source(bang)
   if a:bang
     g/^{{{vimno.*/+,/^}}}$/-so
   el
-    +?^{{{vimno.*?+;/^}}}$/-so
+    +?\v^{{{-=(vimno|py(thon)?).*?+;/^}}}$/-so
   en
   cal setpos('.', p)
 endf
@@ -69,7 +79,6 @@ fu s:Syntax()
   if exists('b:current_syntax') |retu |en
   sy spell toplevel
   sy sync fromstart
-  " TODO: Comment for Echo ids
   sy match    vimnoHeading   /^#\{1,4} .*/ contains=vimnoBold,vimnoCode,vimnoItalic,vimnoLink,vimnoMaths,vimnoStrike,vimnoUnderline
   sy match    vimnoListMark  /^\s*\(\a\|\d\+\)\. /
   sy match    vimnoBold      /\V**\S\(\.\{-}\S\)\?**/
@@ -90,7 +99,7 @@ fu s:Syntax()
   sy match    vimnoVar       contained /\([$@&]\|[abglstvw]:\|\<\h\)\(\w\|{[^}]\+}\)*/ contains=@NoSpell
   sy match    vimnoOp        contained /[-+/*%.<=>&{|}!]\|\<in\>/
   sy region   vimnoCommand   contained matchgroup=vimnoKeyword start=/^\v\s*(\d*Echo|break|call|const|continue|echo|echom|else|elseif|endfor|endfunc|endif|endwhile|for|func|if|lockvar|return|unlet|unlockvar|while)!?/ skip=/\n\s*\\/ end=/$/ keepend contains=vimnoLineC,@vimnoExpr,vimnoComment1
-  sy region   vimnoLet       contained matchgroup=vimnoKeyword start=/^\s*[Ll]et!\?/ skip=/\n\s*\\/ end=/$/ keepend contains=vimnoLineC,vimnoShell,@vimnoExpr,vimnoComment1
+  sy region   vimnoLet       contained matchgroup=vimnoKeyword start=/^\v\s*(\d*Let|let)!?/ skip=/\n\s*\\/ end=/$/ keepend contains=vimnoLineC,vimnoShell,@vimnoExpr,vimnoComment1
   sy region   vimnoShell     contained matchgroup=vimnoKeyword start=/!/ skip=/\n\s*\\/ end=/$/ contains=@NoSpell,vimnoLineC,vimnoShellStr,vimnoShellVar,vimnoShellOp,vimnoStr
   sy region   vimnoShellStr  contained start=/"/ skip=/\\"/ end=/"/ contains=@NoSpell,vimnoShellVar
   sy match    vimnoShellVar  contained /$\h\w*\|${\h\w\+}/ contains=@NoSpell
@@ -119,18 +128,22 @@ fu s:Syntax()
   hi def link vimnoComment1  Comment
   hi def link vimnoComments  Comment
   hi def link vimnoTodo      Todo
+  " includes
+  sy include  @python        syntax/python.vim
+  sy region   vimnoPrePy     matchgroup=vimnoPreDelim start=/^{{{\v-?py(thon)?.*/ end=/^}}}$/ contains=@python
 endf
 
 " filetype {{{1
 fu s:FileType()
   if exists('b:did_ftplugin') |retu |en
   let b:did_ftplugin = 1
-  let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO'
+  let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO |unl $VIMNO_CACHE'
   setl cole=3 com=b:\"\",b:\",b:\"\|,fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d\\+).\  ofu=s:Complete syn=vimno tfu=s:Tag
-  com -buffer -nargs=1 -complete=expression -range=0 -addr=other Echo   cal s:Echo(<count>, <args>)
-  com -buffer -nargs=+ -complete=command    -bang                Let    cal s:Let(<bang>0, <f-args>)
-  com -buffer                               -bang                Source cal s:Source(<bang>0)
+  com -buffer -nargs=1 -complete=expression       -range=0 -addr=other Echo   cal s:Echo  (         <count>, <f-args>)
+  com -buffer -nargs=+ -complete=command    -bang -range=0 -addr=other Let    cal s:Let   (<bang>0, <count>, <f-args>)
+  com -buffer                               -bang                      Source cal s:Source(<bang>0)
   nn <buffer> gO :<C-U>lv /^#\{1,4} [^#]\+/j % <Bar>lop<CR>
+  let $VIMNO_CACHE = g:vimno_state..substitute(expand('%:p'), '/', '%', 'g')
   if !exists('b:did_indent')
     let b:did_indent = 1
     let b:undo_indent = 'setl inde< indk<'
@@ -143,7 +156,7 @@ fu s:Complete(findstart, base)
     retu match(getline('.')[:col('.')-2], '\(\$\|[bgtvw]:\|\<\h\)\w*$')
   el
     let e = '$' == a:base[0]
-    retu sort(filter(e ? map(keys(environ()), '''$''..v:val') : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base==v:val[:'..(len(a:base)-1)..']'))
+    retu sort(filter(e ? map(keys(environ()), '"$"..v:val') : map(split(execute('let'), "\n"), 'split(v:val)[0]'), 'a:base==v:val[:'..(len(a:base)-1)..']'))
   en
 endf
 
@@ -153,7 +166,7 @@ endf
 
 fu s:Indent()
   let n = prevnonblank(v:lnum-1)
-  return indent(n) + ((getline(n) =~ '\v^\s*<(if|elseif|for|while|func)>') - (getline('.') =~ '^\s*\<end\>'))*&ts
+  return indent(n) + ((getline(n) =~ '\v^\s*<(if|elseif|for|while|func)>|:\s\*$') - (getline('.') =~ '^\s*\<end\>'))*&ts
 endf
 
 " autocommands {{{1
