@@ -1,7 +1,7 @@
 " Vim filetype plugin for interactive notes. Somewhat like a minimal org mode.
 " This is a short single file with filetype/indent/syntax/omnifunc/tagfunc.
 "
-" Last Change:	2024 Nov 26
+" Last Change:	2024 Nov 27
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -20,6 +20,10 @@ let g:loaded_vimno = 1
 
 if !exists('g:vimno_state') |let g:vimno_state = expand('~/.cache/vimno/') |en
 if '/' != g:vimno_state[-1:] |let g:vimno_state..= '/' |en
+
+" NOTE: this is a vim default, in that nvim only has perl/pyth/ruby
+if !exists('g:avail_ifs') |let g:avail_ifs = split('tcl lua pe[rl] py[thon] rub[y] mz[scheme]') |en
+cal map(g:avail_ifs, '"]" == v:val[-1:] ? substitute(v:val, ''\v(\w+)\[(\w*)]'', ''\1\2|\1'', "") : v:val')
 
 " s: functions {{{1
 fu s:Echo(n, ...)
@@ -64,19 +68,43 @@ fu s:Let(bang, n, var, eq, ...)
 endf
 
 fu s:Source(bang)
-  "" Sources the current (or with `Source!`, every) `{{{vimno }}}` block(s).
-  let p = getpos('.')
+  th 'NIY: wip'
+  "" Sources the current (or with `Source!`, every) `{{{xlang }}}` block(s).
+  "" # leading char # 1st :So!  # :Source   # :Source!  #
+  "" | '!'          | O         | O         | O         |  " always sourced
+  "" | '+'          | O         | O         | -         |  " at 1st :So! only
+  "" | '-' or none  | -         | O         | -         |  " manually only
+  "" | any other    | -         | -         | -         |  " never sourced
+  let i = getpos('.')
+  let l = 'vimno|'..join(g:avail_ifs, '|')
   if a:bang
-    g/^{{{vimno.*/+,/^}}}$/-so
+    let c = exists('b:did_vimno_first_source') ? '!' : '[!+]'
+    let b:did_vimno_first_source = 1
+    cal cursor(1, 1)
+    wh search('^{{{\v'..c..'%('..l..')>.*')
+      let p = getpos('.')[1]
+      let q = search('/^}}}$/')
+      if !q |th 'no ending }}}' |en
+      let n = " TODO(wip)
+      if n
+        cal append(p, n..' <<')
+        let q+= 1
+      en
+      exe p ',' q 'so'
+      if n| exe p 'd'| en
+      cal cursor(1, q)
+    endw
   el
     +?\v^{{{-=(vimno|py(thon)?).*?+;/^}}}$/-so
+    " TODO(wip)
   en
-  cal setpos('.', p)
+  cal setpos('.', i)
 endf
 
 " syntax {{{1
 fu s:Syntax()
   if exists('b:current_syntax') |retu |en
+  sy clear
   sy spell toplevel
   sy sync fromstart
   sy match    vimnoHeading   /^#\{1,4} .*/ contains=vimnoBold,vimnoCode,vimnoItalic,vimnoLink,vimnoMaths,vimnoStrike,vimnoUnderline
@@ -89,7 +117,7 @@ fu s:Syntax()
   sy match    vimnoStrike    /\V~~\S\(\.\{-}\S\)\?~~/
   sy match    vimnoUnderline /\V__\S\(\.\{-}\S\)\?__/
   sy region   vimnoPre       matchgroup=vimnoPreDelim start=/^{{{.*/ end=/^}}}$/ contains=@NoSpell
-  sy region   vimnoPreV      matchgroup=vimnoPreDelim start=/^{{{-\?vimno.*/ end=/^}}}$/ contains=@NoSpell,@vimnoExpr,vimnoComment1,vimnoCommand,vimnoLet,vimnoShell,vimnoResult
+  sy region   vimnoPreV      matchgroup=vimnoPreDelim start=/^{{{[!+-]\?vimno\>.*/ end=/^}}}$/ contains=@NoSpell,@vimnoExpr,vimnoComment1,vimnoCommand,vimnoLet,vimnoShell,vimnoResult
   sy region   vimnoResult    contained matchgroup=vimnoComment1 start=/^\s* "|/ end=/$/ contains=@NoSpell
   sy match    vimnoLineC     contained /^\s*\\/
   sy cluster  vimnoExpr      contains=vimnoNum,vimnoStr,vimnoCall,vimnoVar,vimnoOp
@@ -128,16 +156,22 @@ fu s:Syntax()
   hi def link vimnoComment1  Comment
   hi def link vimnoComments  Comment
   hi def link vimnoTodo      Todo
-  " includes
-  sy include  @python        syntax/python.vim
-  sy region   vimnoPrePy     matchgroup=vimnoPreDelim start=/^{{{\v-?py(thon)?.*/ end=/^}}}$/ contains=@python
+  for i in ['python|py'] "g:avail_ifs TODO/FIXME: why does it only work for the first one?
+    let n = split(i, '|')[0]
+    try
+      exe 'sy include @'..n 'syntax/'..n..'.vim'
+    cat /E484:/
+      con
+    endt
+    exe 'sy region vimnoPreIF'..n 'matchgroup=vimnoPreDelim start=/^{{{\v[!+-]?%('..i..')>.*/ end=/^}}}$/ contains=@'..n
+  endfo
 endf
 
 " filetype {{{1
 fu s:FileType()
   if exists('b:did_ftplugin') |retu |en
   let b:did_ftplugin = 1
-  let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |nun <buffer> gO |unl $VIMNO_CACHE'
+  let b:undo_ftplugin = 'setl cole< com< cms< flp< ofu< syn< tfu< |delc -buffer Echo |delc -buffer Let |delc -buffer Source |sil! nun <buffer> gO |unl $VIMNO_CACHE'
   setl cole=3 com=b:\"\",b:\",b:\"\|,fb:.,b:\\ cms=\"\"\"\\%s\"\"\" flp=^\\v\\s*(\\a\|\\d\\+).\  ofu=s:Complete syn=vimno tfu=s:Tag
   com -buffer -nargs=1 -complete=expression       -range=0 -addr=other Echo   cal s:Echo  (         <count>, <f-args>)
   com -buffer -nargs=+ -complete=command    -bang -range=0 -addr=other Let    cal s:Let   (<bang>0, <count>, <f-args>)
