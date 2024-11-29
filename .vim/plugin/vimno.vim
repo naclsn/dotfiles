@@ -6,6 +6,7 @@
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
+"
 " TODO: example
 " TODO: fix Source and make it work with |if_tcl.txt| |if_lua.txt|
 "       |if_perl.txt| |if_pyth.txt| |if_ruby.txt| |if_mzsch.txt|
@@ -22,8 +23,8 @@ if !exists('g:vimno_state') |let g:vimno_state = expand('~/.cache/vimno/') |en
 if '/' != g:vimno_state[-1:] |let g:vimno_state..= '/' |en
 
 " NOTE: this is a vim default, in that nvim only has perl/pyth/ruby
-if !exists('g:avail_ifs') |let g:avail_ifs = split('tcl lua pe[rl] py[thon] rub[y] mz[scheme]') |en
-cal map(g:avail_ifs, '"]" == v:val[-1:] ? substitute(v:val, ''\v(\w+)\[(\w*)]'', ''\1\2|\1'', "") : v:val')
+if !exists('g:vimno_avail_ifs') |let g:vimno_avail_ifs = split('tcl lua pe[rl] py[thon] rub[y] mz[scheme]') |en
+cal map(g:vimno_avail_ifs, '"]" == v:val[-1:] ? substitute(v:val, ''\v(\w+)\[(\w*)]'', ''\1\2|\1'', "") : v:val')
 
 " s: functions {{{1
 fu s:Echo(n, ...)
@@ -76,7 +77,7 @@ fu s:Source(bang)
   "" | '-' or none  | -         | O         | -         |  " manually only
   "" | any other    | -         | -         | -         |  " never sourced
   let i = getpos('.')
-  let l = 'vimno|'..join(g:avail_ifs, '|')
+  let l = 'vimno|'..join(g:vimno_avail_ifs, '|')
   if a:bang
     let c = exists('b:did_vimno_first_source') ? '!' : '[!+]'
     let b:did_vimno_first_source = 1
@@ -156,7 +157,7 @@ fu s:Syntax()
   hi def link vimnoComment1  Comment
   hi def link vimnoComments  Comment
   hi def link vimnoTodo      Todo
-  for i in ['python|py'] "g:avail_ifs TODO/FIXME: why does it only work for the first one?
+  for i in ['python|py'] "g:vimno_avail_ifs TODO/FIXME: why does it only work for the first one?
     let n = split(i, '|')[0]
     try
       exe 'sy include @'..n 'syntax/'..n..'.vim'
