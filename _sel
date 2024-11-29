@@ -12,7 +12,8 @@ _sel() {
   cno <C-D> <Del>
   cno <C-F> <Right>
   cno <C-O> <C-F>
-  cno <C-X> <C-A>'
+  cno <C-X> <C-A>
+  com! -range=% Clup <line1>,<line2>w !nc -q0 ${SSH_CLIENT\%\% *} 12700'
  command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;reset;return 127;}
- `command -v bind||echo :` -x'"\ez":fg&>/dev/null'
+ bind -x'"\ez":fg&>/dev/null'
 }; [ _sel = "`command -v $_SEL`" ] && _sel
