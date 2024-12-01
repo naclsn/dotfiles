@@ -1,5 +1,6 @@
 vim.cmd.so '~/.vimrc'
 
+-- TODO: (#1229) swich over to lazy, or other, or plain (most likely)
 require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'neovim/nvim-lspconfig'
