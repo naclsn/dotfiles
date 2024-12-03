@@ -91,7 +91,7 @@ spces() {
   done
 }
 
-spcew() (spce && sed -n '/^#/d;/---/!p;//q' wip)
+spcew() (spce && sed -n '/---/q;s/^\([^ ]\+\).*/\1/;//!d;p' wip)
 
 __spce() {
   local full=($SPCE_PROJ/*/)

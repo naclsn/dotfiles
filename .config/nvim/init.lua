@@ -33,6 +33,7 @@ for it, conf in pairs {
     basedpyright= { settings= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
         reportDeprecated= 'information',
+        reportExplicitAny= 'none',
         reportImplicitOverride= 'information',
         reportImplicitStringConcatenation= 'warning',
         reportIncompatibleVariableOverride= 'warning',
@@ -43,6 +44,7 @@ for it, conf in pairs {
         reportOptionalSubscript= 'warning',
         reportPrivateUsage= 'warning',
         reportTypeCommentUsage= 'information',
+        reportUnannotatedClassAttribute= 'none',
         reportUninitializedInstanceVariable= 'none',
         reportUnreachable= 'unreachable',
         reportUnusedCallResult= 'none',
