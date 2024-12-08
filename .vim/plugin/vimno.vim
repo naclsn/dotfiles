@@ -84,7 +84,7 @@ fu s:Source(bang)
     cal cursor(1, 1)
     wh search('^{{{\v'..c..'%('..l..')>.*')
       let p = getpos('.')[1]
-      let q = search('/^}}}$/')
+      let q = search('/^}}}$/') " {{{
       if !q |th 'no ending }}}' |en
       let n = " TODO(wip)
       if n
@@ -178,6 +178,7 @@ fu s:FileType()
   com -buffer -nargs=+ -complete=command    -bang -range=0 -addr=other Let    cal s:Let   (<bang>0, <count>, <f-args>)
   com -buffer                               -bang                      Source cal s:Source(<bang>0)
   nn <buffer> gO :<C-U>lv /^#\{1,4} [^#]\+/j % <Bar>lop<CR>
+  " TODO: mouai :/ use au BufEnter/Leave or something
   let $VIMNO_CACHE = g:vimno_state..substitute(expand('%:p'), '/', '%', 'g')
   if !exists('b:did_indent')
     let b:did_indent = 1
