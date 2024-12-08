@@ -2,6 +2,10 @@ PS1='\e]2;${PWD##*/}\e\\\e[33m\u\e[m'$(printf %${SHLVL:-1}s |tr \  :)'\e[36m\w\e
 HISTCONTROL=ignoreboth
 HISTTIMEFORMAT=%T+
 
+[ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
+[ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
+command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
+
 expath(){ [[ :$PATH: == *:$1:* ]]||export PATH=$1:$PATH;}
 expath ~/.local/bin
 expath ~/.cargo/bin
@@ -20,53 +24,27 @@ alias             ls='ls --color=auto'
 alias             la='ls -FXxA'
 alias             ll='ls -FXgo'
 alias              l='ls -FXx'
-alias           tree='tree --dirsfirst'
-alias            tre='treest'
-alias           info='info --vi-keys'
 alias             db='gdb -q --args'
 alias             py='python3'
 alias              s='git status'
 alias          reset='stty sane -ixon'
-alias         xargsa='xargs -d\\n -a'
 alias         xclipp='xclip -sel c'
-alias          today="$EDITOR \"+cd ~/.local/share/today |cal map(glob('*.md',1,1),'execute(''bad ''.v:val)') |e "'`date +%Y-%m-%d`.md |se spell wrap"' # inspired by https://git.sr.ht/~sotirisp/today
 alias             xo='xdg-open 2>/dev/null'
 
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'
-bind -x       '"\eq":r=`treest`;READLINE_LINE=${r:-$READLINE_LINE};READLINE_POINT=${#READLINE_LINE}'
+bind -x       '"\eq":treest'
 bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`cat $t`;rm $t;READLINE_POINT=${#READLINE_LINE}' # for some unknown reason, this is not a useless use of cat
 bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
-
-[ -z "$LS_COLORS" ] && eval "$($(command -v dircolors) -b)"
-[ -n "$DISPLAY" ] && command -v xrdb >/dev/null && xrdb -merge ~/.Xdefaults
-
-# some functions {{{
-command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
-which_include()(n=$1;shift;find $(echo |${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` |&awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
-grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@" |${CC:-cpp} -dM - |&grep "$n")
-include_tree()(cpp -H "$@" 2>&1>/dev/null |grep --color=never '^\.\+ [^/]')
-ccdo()(c=$1;shift;if [ -f "$c" ];then cc -x c "$c" -o /tmp/ccdo "$@";else cc -x c -<<<$c -o /tmp/ccdo "$@";fi&&/tmp/ccdo)
-unset which # fedora
 
 set -b
 reset
 
-ok() { # inspired by https://github.com/ErrorNoInternet/ok
-  db=~/.cache/ok
-  case ${1##*-} in
-    h*) echo Usage: ok '[help|list|merge|reset|clear|show]' >&2;;
-    l*) ${PAGER:-less} "$db";;
-    m*) cat "$db" "$2" |sort -n >"$db";;
-    r*|c*) rm -f "$db";;
-    s*)
-      touch "$db"
-      echo OK count: `wc -l <"$db"`
-      ;;
-    *) echo `date +%s` "`history -p !-2`" >>"$db"; history -d -1;;
-  esac
-  unset db
-}
+# small c helpers (todo: put somewhere else maybe) {{{
+which_include()(n=$1;shift;find $(echo |${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` |&awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
+grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@" |${CC:-cpp} -dM - |&grep "$n")
+include_tree()(cpp -H "$@" 2>&1>/dev/null |grep --color=never '^\.\+ [^/]')
+ccdo()(c=$1;shift;if [ -f "$c" ];then cc -x c "$c" -o /tmp/ccdo "$@";else cc -x c -<<<$c -o /tmp/ccdo "$@";fi&&/tmp/ccdo)
 # }}}
 
 # spaces (spce) {{{
@@ -121,6 +99,10 @@ __jabs_daety() {
     then __jabs_${1##*/} "$*"
     else echo $1
   fi
+}
+__jabs_tmux() {
+  # TODO: maybe, idk
+  printf tmux
 }
 __jabs_run() {
   case $1 in
