@@ -78,7 +78,7 @@ fu s:TimetDay(day)
   retu r
 endf
 
-com! -nargs=+ TimetDay ec s:TimetDay(<q-args>)
+com! -nargs=? TimetDay ec s:TimetDay(<q-args>)
 
 " autocommands {{{1
 aug timet
