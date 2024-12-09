@@ -9,7 +9,7 @@ has readlink
 echo ---
 
 if [ %$1 = %-h ]
-  then cat <<-'DOC'; exit
+  then cat <<-'DOC'; exit 1
 Usage: one of
   -h: help
   -l: list
@@ -20,9 +20,17 @@ Usage: one of
   (none): setup all
 DOC
 fi
-[ 1 -eq $# ] && set -- -o "$1"
+[ 1 -eq $# ] && [ ${1#-} = $1 ] && set -- -o $1
+[ %$1 = %-o ] && if [ -f $2 ]
+  then
+    abs=`command realpath $2`
+    set -- -o ${abs#`command realpath ${0%/*}`/}
+  else
+    echo no such file $2
+    exit 1
+fi
 
-command find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
+command find ${0%/*} -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
   do
     rel=${rel#./}
     abs=`command realpath $rel`
@@ -49,7 +57,7 @@ command find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while
 
     if [ -e ~/$rel ]
       then
-        [ %$1 = %-o ] && echo file exists
+        [ %$1 = %-o ] && echo file exists $2
       else
         echo ln -s "$abs" ~/$rel
         [ %$1 = %-n ] || command ln -s "$abs" ~/$rel
