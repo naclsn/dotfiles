@@ -1,7 +1,7 @@
 " 'Tracks' time lost in Vim based on autocommands
 " VimEnter/VimLeave, VimSuspend/VimResume and FocusGained/FocusLost
 "
-" Last Change:	2024 Dec 08
+" Last Change:	2024 Dec 09
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -23,7 +23,7 @@ fu s:log_event(ev)
   cal writefile([getcwd().."\t"..a:ev.."\t"..strftime('%H:%M:%S')], g:timet_state..strftime('%Y-%m-%d'), 'a')
 endf
 
-fu s:TimetDay(day)
+fu TimetDay(day)
   ""
   "" If an argument is given it should be a %Y-%m-%d however:
   ""  0. if it's '%m-%d' then %Y is taken from current year
@@ -78,7 +78,25 @@ fu s:TimetDay(day)
   retu r
 endf
 
-com! -nargs=? TimetDay ec s:TimetDay(<q-args>)
+fu s:present_time(sec)
+  if a:sec < 60
+    retu a:sec..'s'
+  en
+  let min = a:sec/60 + (30 < a:sec%60)
+  if min < 60
+    retu min..'min'
+  en
+  retu (min/60)..':'..(min%60)
+endf
+
+fu s:present_timet_day(day)
+  let r = TimetDay(a:day)
+  for k in sort(keys(r))
+    ec s:present_time(r[k].active_time) "\t-" k
+  endfo
+endf
+
+com! -nargs=? TimetDay cal s:present_timet_day(<q-args>)
 
 " autocommands {{{1
 aug timet

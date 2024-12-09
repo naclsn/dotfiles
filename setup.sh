@@ -10,26 +10,28 @@ echo ---
 
 if [ %$1 = %-h ]
   then cat <<-'DOC'; exit
-Usage:
+Usage: one of
   -h: help
-  -l: list (implies -n, but does not create dirs)
-  -n: nothing (may still create dirs)
+  -l: list
+  -n: nothing
   -f: force (rm -f existing ones)
-  -o: only (next arg is a local file name/path)
-  (none): setup
+  -o: only (next arg is a local file)
+  (one arg): same as only
+  (none): setup all
 DOC
 fi
+[ 1 -eq $# ] && set -- -o "$1"
 
-find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
+command find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
   do
     rel=${rel#./}
-    abs=`realpath $rel`
+    abs=`command realpath $rel`
 
     if [ %$1 = %-l ]
       then
         if [ -e ~/$rel ]
           then
-            case `readlink ~/$rel` in
+            case `command readlink ~/$rel` in
               '') msg=unlinked;;
               $abs) msg=linked;;
               *) msg=other;;
@@ -42,12 +44,14 @@ find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read di
 
     [ %$1 = %-o ] && ! [ $rel = $2 ] && continue
 
-    [ -d ~/$dir ] || mkdir -p ~/$dir
-    [ %$1 = %-f ] && rm -f ~/$rel
+    [ %$1 = %-n ] || [ -d ~/$dir ] || command mkdir -p ~/$dir
+    [ %$1 = %-f ] && command rm -f ~/$rel
 
-    if ! [ -e ~/$rel ]
+    if [ -e ~/$rel ]
       then
+        [ %$1 = %-o ] && echo file exists
+      else
         echo ln -s "$abs" ~/$rel
-        [ %$1 = %-n ] || ln -s "$abs" ~/$rel
+        [ %$1 = %-n ] || command ln -s "$abs" ~/$rel
     fi
 done
