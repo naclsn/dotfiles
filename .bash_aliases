@@ -38,9 +38,9 @@ bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITO
 bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
 
 set -b
-reset
+stty sane -ixon
 
-# small c helpers (todo: put somewhere else maybe) {{{
+# small c helpers (todo: put somewhere else) {{{
 which_include()(n=$1;shift;find $(echo |${CC:-cpp} -v - `[ -n "$1" ]&&printf \ -I%s "$@"` |&awk '/^#include </{f=1;next};/^End/{f=0}f') -name "$n")
 grep_macro()(n=$1;shift;printf '#include<%s>\n' "$@" |${CC:-cpp} -dM - |&grep "$n")
 include_tree()(cpp -H "$@" 2>&1>/dev/null |grep --color=never '^\.\+ [^/]')

@@ -118,7 +118,10 @@ fu s:Syntax()
   sy match    vimnoStrike    /\V~~\S\(\.\{-}\S\)\?~~/
   sy match    vimnoUnderline /\V__\S\(\.\{-}\S\)\?__/
   sy region   vimnoPre       matchgroup=vimnoPreDelim start=/^{{{.*/ end=/^}}}$/ contains=@NoSpell
-  sy region   vimnoPreV      matchgroup=vimnoPreDelim start=/^{{{[!+-]\?vimno\>.*/ end=/^}}}$/ contains=@NoSpell,@vimnoExpr,vimnoComment1,vimnoCommand,vimnoLet,vimnoShell,vimnoResult
+  sy region   vimnoPreSh     matchgroup=vimnoPreDelim start=/^{{{\v(ba|z|k|da|)sh>.*/ end=/^}}}$/ keepend contains=@NoSpell,vimnoShLine
+  sy region   vimnoPreVn     matchgroup=vimnoPreDelim start=/^{{{[!+-]\?vimno\>.*/ end=/^}}}$/ contains=@NoSpell,@vimnoExpr,vimnoComment1,vimnoCommand,vimnoLet,vimnoShell,vimnoResult
+  sy include  @sh syntax/sh.vim
+  sy region   vimnoShLine    contained matchgroup=vimnoComment1 start=/^\S*[#$] / end=/$/ contains=@sh
   sy region   vimnoResult    contained matchgroup=vimnoComment1 start=/^\s* "|/ end=/$/ contains=@NoSpell
   sy match    vimnoLineC     contained /^\s*\\/
   sy cluster  vimnoExpr      contains=vimnoNum,vimnoStr,vimnoCall,vimnoVar,vimnoOp

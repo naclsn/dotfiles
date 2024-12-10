@@ -1,7 +1,8 @@
 # my bit of config - sel
 _sel() {
- [ -z ${PS1#?} ]&&PS1='\u@\h:\w\$ '
+ [ -z "${PS1#?}" ]&&PS1='\u@\h:\w\$ '
  (command -v tr|:)&&PS1=${SHLVL%1}'`jobs|tr -cd [`'$PS1
+ stty sane -ixon
  alias l='command ls --color -FXx' ll=l\ -go py=python3 reset='stty sane -ixon' s=git\ status
  export _SEL=_sel EDITOR=vim LESS=FR MANOPT=--nj\ --nh VIMINIT='sil! ru defaults.vim
   se hid isf-== ls=2 tm=0 noto ttimeout ttm=0 wmnu ai et sw=0 ts=4 nu rnu nowrap mouse=nv cul
@@ -14,6 +15,6 @@ _sel() {
   cno <C-O> <C-F>
   cno <C-X> <C-A>
   com! -range=% Clup <line1>,<line2>w !nc -q0 ${SSH_CLIENT\%\% *} 12700'
- command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;reset;return 127;}
+ command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon;return 127;}
  bind -x'"\ez":fg&>/dev/null'
 }; [ _sel = "`command -v $_SEL`" ] && _sel
