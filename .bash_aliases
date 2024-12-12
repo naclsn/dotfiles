@@ -30,6 +30,7 @@ alias              s='git status'
 alias          reset='stty sane -ixon'
 alias         xclipp='xclip -sel c'
 alias             xo='xdg-open 2>/dev/null'
+alias        println='printf %s\\n'
 
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'

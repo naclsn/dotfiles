@@ -91,9 +91,12 @@ endf
 
 fu s:present_timet_day(day)
   let r = TimetDay(a:day)
+  let t = 0
   for k in sort(keys(r))
+    let t+= r[k].active_time
     ec s:present_time(r[k].active_time) "\t-" k
   endfo
+  ec 'Total' s:present_time(t)
 endf
 
 com! -nargs=? TimetDay cal s:present_timet_day(<q-args>)

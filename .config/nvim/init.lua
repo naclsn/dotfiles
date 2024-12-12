@@ -35,6 +35,7 @@ for it, conf in pairs {
         reportDeprecated= 'information',
         reportExplicitAny= 'none',
         reportImplicitOverride= 'information',
+        reportImplicitRelativeImport= 'warning',
         reportImplicitStringConcatenation= 'warning',
         reportIncompatibleVariableOverride= 'warning',
         reportMissingModuleSource= 'warning',
