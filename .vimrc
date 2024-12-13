@@ -7,14 +7,16 @@ if has('nvim')
   se udir=~/.vim/cache/nundo//
   aun PopUp
   au! nvim_popupmenu
+  colo vim
 el
   se udir=~/.vim/cache/undo//
+  colo default
 en
 se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
 au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au BufEnter * se fo-=o
 
-colo slate
+"colo slate
 sy on
 filet on
 filet plugin on
@@ -23,7 +25,7 @@ au FileType c,py sy keyword Title self
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
 hi clear diffAdded |hi link diffAdded Special
-hi Normal ctermfg=white ctermbg=black
+"hi Normal ctermfg=white ctermbg=black
 if has_key(g:, 'terminal_ansi_colors')
   let c = matchstr(execute('hi Normal'), 'guibg=\S\+')[6:]
   let g:terminal_ansi_colors = [c]+g:terminal_ansi_colors[1:]

@@ -124,7 +124,8 @@ exe 'hi Folded ctermbg=NONE guibg=NONE' execute('hi Statement')[20:]
 " autocommands {{{1
 aug FileExplorer
   au!
-  au BufEnter * if isdirectory(@%) && 1 == getbufinfo(@%)[0].linecount |cal <SID>plore(@%) |en
+  " TODO/FIXME: is broken (problem in s:plore - overall, bad handling of buffers)
+  au BufEnter * if isdirectory(@%) && 1 == line('$') |cal <SID>plore(@%) |en
 aug END
 
 " vim: se fdm=marker fdl=0 ts=2:

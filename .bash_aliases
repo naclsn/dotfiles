@@ -9,6 +9,7 @@ command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane 
 expath(){ [[ :$PATH: == *:$1:* ]]||export PATH=$1:$PATH;}
 expath ~/.local/bin
 expath ~/.cargo/bin
+expath ~/.go/bin
 expath ~/.nimble/bin
 expath ~/.npm-global/bin
 expath ./node_modules/.bin
