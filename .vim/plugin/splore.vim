@@ -1,6 +1,6 @@
 " A (to me) more natural alt to netrw (no over-the-network tho)
 "
-" Last Change:	2024 Nov 28
+" Last Change:	2024 Dec 14
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -13,7 +13,7 @@ if &cp || exists('g:loaded_splore') |fini |en
 let g:loaded_splore = 1
 
 " s: functions {{{1
-fu s:plore_unfold(dir, depth, at)
+fu s:unfold(dir, depth, at)
   let dir = '/' != a:dir[strlen(a:dir)-1] ? a:dir.'/' : a:dir
   let depth = a:depth+1
   let at = a:at
@@ -21,7 +21,8 @@ fu s:plore_unfold(dir, depth, at)
   let k = 0
   for e in readdir(dir, {e -> '.' != e && '..' != e})
     let k+= 1
-    if isdirectory(dir.e) && '.git' != e && '.svn' != e
+    " TODO: filtering maybe
+    if isdirectory(dir.e)
       cal append(at, [p.e.'/ --'.depth.' ('.dir.e.')', p."\t..." , p.'`---'])
       let at+= 3
     el
@@ -33,11 +34,11 @@ fu s:plore_unfold(dir, depth, at)
   retu at
 endf
 
-fu s:plore_dotdotdot()
-  if '...' == getline('.')[-3:]
+fu s:dotdotdot()
+  if 'n' == mode() && '...' == getline('.')[-3:]
     let pmod = &mod
     let ln = line('.')
-    let ed = <SID>plore_unfold(matchstr(getline(ln-1), ' (.*)$')[2:-2], indent('.')/&ts-1, ln+1)
+    let ed = s:unfold(matchstr(getline(ln-1), ' (.*)$')[2:-2], indent('.')/&ts-1, ln+1)
     d2
     norm k
     if ln+1 != ed |exec ln.','.(ed-2) 'foldc!' |en
@@ -46,47 +47,79 @@ fu s:plore_dotdotdot()
   en
 endf
 
-fu s:plore_apply()
+fu s:dircontent(dir)
+  "" 0 if empty, 1 if only dir, 2 if has files
+  let ls = readdir(a:dir)
+  if empty(ls) |retu 0 |en
+  for n in ls
+    let f = a:dir..'/'..n
+    if filereadable(f) || isdirectory(f) && 2 == s:dircontent(f) |retu 2 |en
+  endfo
+  retu 1
+endf
+
+fu s:apply()
   let lns = getline(1, '$')
   let path = [lns[0]]
-  let scb = []
+  let syscoms = []
   let eds = []
+
   for k in range(1, len(lns)-1)
-    let m = matchlist(lns[k], '\t\+\(.\{-}\)\( --\d* (\(.*\))\)\?$')
+    let m = matchlist(lns[k], '\v\t+(.{-})( --(\d*) \((.*)\))?$')
     if !len(m) || '...' == m[1] |con |en
     if '`---' == m[1] |cal remove(path, -1) |con |en
-    let name = '/' == m[1][-1:] || '*' == m[1][-1:] ? m[1][:-2] : m[1]
-    let full = join(path, '').name
-    if '/' == m[1][-1:] |cal add(path, m[1]) |en
-    if m[3] == full |con |en
-    " TODO/FIXME: this breaks when indentation was changed in editing (does it?)
-    let ed = '/\V'.escape(lns[k], '\/')
-    if len(m[3])
-      let ln = len(name) ? "rename('".m[3]."', '".full."')" : "delete('".m[3]."'".('/' == m[1][-1:] ? ", 'rf')" : ")")
-      let ed.= len(name) ? '/s/ (.*)$/ ('.escape(full, '\/').')' : '/d'
+
+    let entry = m[1] " eg. 'exe*' or 'dir/' or 'file'
+    let pfull = m[4] " hidden in ' -- (<pfull>)'
+    let wasdir = !empty(m[3])
+
+    let isdir = '/' == entry[-1:]
+    let isexe = '*' == entry[-1:]
+    let name = isdir || isexe ? entry[:-2] : entry
+
+    let full = join(path, '')..name
+    let quoted = substitute(full, "'", "''", 'g') " for use in 'sys' (function calls -> expressions)
+    let escaped = escape(full, '\/&') " for use in 'ed' (:s commands using /)
+
+    if isdir |cal add(path, entry) |en
+    if pfull == full |con |en
+
+    let ed = '/\V'..escape(lns[k], '\/')
+    if empty(pfull)
+      " brand new path
+      let frags = filter(split(name, '/'), '!empty(v:val)')
+      let sys = isdir ? "mkdir('"..quoted.."'"..(1 < len(frags) ? ", 'p')" : ")") : "writefile([], '"..quoted.."')"
+      if 1 < len(frags) |echom 'TODO: make updating edit for new directory with more than one fragment' |en " (TODO)
+      let ed..= '/s/\s*$/ --'..(isdir ? len(path)-1 : '')..' ('..escaped..')'
     el
-      let ln = '/' == m[1][-1:] ? "mkdir('".full."'".(name =~ '/' ? ", 'p')" : ")") : "writefile([], '".full."')"
-      let ed.= '/s/\s*$/ -- ('.escape(full, '\/').')'
+      " edit or deletion
+      let pquoted = substitute(pfull, "'", "''", 'g')
+      let sys = empty(name) ? "delete('"..pquoted.."'"..(wasdir ? [", 'd')", ", 'rf')", ')'][s:dircontent(pfull)] : ')') : "rename('"..pquoted.."', '"..quoted.."')"
+      let ed..= empty(name) ? '/d' : '/s/ (.*)$/ ('..escaped..')'
     en
-    cal add(scb, ln)
+
+    " TODO: if isexe, and applicable, chmod +x (getfperm, setfperm)
+
+    cal add(syscoms, sys)
     cal add(eds, ed)
-    echom ln
+    echom sys
   endfo
-  if !len(scb) |setl nomod |retu |en
-  if 1 == confirm('do?', "&Yes\n&No", 2)
-    for s in scb |exe 'cal' s |endfo
-    let pos = getpos('.')
-    for s in eds |exe s |endfo
-    cal setpos('.', pos)
-    let pul = &ul
-    setl ul=-1
-    exe "norm a \<BS>\<Esc>"
-    let &ul = pul
-    setl nomod
-    echom 'done'
-  el
-    echom 'didn''t'
-  en
+
+  if !len(syscoms) |setl nomod |retu |en
+  if 1 != confirm('do?', "&Yes\n&No", 2) |echom 'didn''t' |retu |en
+
+  for s in syscoms |exe 'cal' s |endfo
+
+  let pos = getpos('.')
+  for s in eds |exe s |endfo
+  cal setpos('.', pos)
+
+  let pul = &ul
+  setl ul=-1
+  exe "norm a \<BS>\<Esc>"
+  let &ul = pul
+  setl nomod
+  echom 'done'
 endf
 
 fu s:plore(dir)
@@ -101,10 +134,10 @@ fu s:plore(dir)
   %d
   let pul = &ul
   setl bt=acwrite cole=3 et fdl=0 fdm=marker fdt=repeat('\|\ \ ',indent(v:foldstart)/&ts).matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=/\ --,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
-  au BufWriteCmd <buffer> cal <SID>plore_apply()
+  au BufWriteCmd <buffer> cal s:apply()
   cal setline(1, d)
-  cal <SID>plore_unfold(d, 0, 1)
-  au CursorMoved <buffer> cal <SID>plore_dotdotdot()
+  cal s:unfold(d, 0, 1)
+  au CursorMoved <buffer> cal s:dotdotdot()
   sy match Conceal / --\d* (.*)$/ conceal
   sy match Statement /[^ /]\+\//
   sy match Structure /[^ *]\+\*/
