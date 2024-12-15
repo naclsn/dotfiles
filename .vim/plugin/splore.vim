@@ -152,7 +152,7 @@ endf
 com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 
 " TODO: this is discussable, not everybody want something like that-
-exe 'hi Folded ctermbg=NONE guibg=NONE' execute('hi Statement')[20:]
+hi Folded ctermbg=NONE guibg=NONE
 
 " autocommands {{{1
 aug FileExplorer
