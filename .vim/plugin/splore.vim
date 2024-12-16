@@ -1,6 +1,6 @@
 " A (to me) more natural alt to netrw (no over-the-network tho)
 "
-" Last Change:	2024 Dec 14
+" Last Change:	2024 Dec 16
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -12,7 +12,11 @@
 if &cp || exists('g:loaded_splore') |fini |en
 let g:loaded_splore = 1
 
-" TODO: setting to have only the command, to not have the :hi Folded
+" XXX: idk
+"if exists('g:splore_hifolded') |hi Folded ctermbg=NONE guibg=NONE |en
+hi Folded ctermbg=NONE guibg=NONE
+
+if !exists('g:splore_autocmd') |let g:splore_autocmd = 1 |en
 
 " s: functions {{{1
 fu s:dircontent(dir)
@@ -69,6 +73,7 @@ fu s:dotdotdot()
   if 'n' == mode() && '...' == getline('.')[-3:]
     let pmod = &mod
     let ln = line('.')
+    " FIXME: don't use indent
     let ed = s:unfold(matchstr(getline(ln-1), ' (.*)$')[2:-2], indent('.')/&ts-1, ln+1)
     d2
     norm! k
@@ -185,21 +190,22 @@ fu s:plore(dir)
   en
   exe 'f' prefix..d
 
-  %d
   let pul = &ul
+  " TODO: fix indentexpr, add formatexpr
   setl bt=acwrite cole=3 et fdl=0 fdm=marker fdt=repeat('\|\ \ ',indent(v:foldstart)/&ts).matchstr(getline(v:foldstart),'\\t\\+\\zs.*\\ze\ --').'\ +'.(v:foldend-v:foldstart-1) fen fmr=\ --0,--- ft=splore inde=indent(v:lnum-1)+((getline(v:lnum-1)=~'\ --\\d\\+\ (.*)$')-(getline(v:lnum)=~'`---'))*&ts indk=/,o,0=`-- inex=matchstr(getline('.'),'\ (\\zs.*\\ze)$') lcs=tab:\|\  list noet noswf sw=0 ts=3 ul=-1
+  %d
   cal setline(1, d)
   cal s:unfold(d, 0, 1)
 
   au BufWriteCmd <buffer> cal s:apply()
   au CursorMoved <buffer> cal s:dotdotdot()
 
-  sy match Title /\%1l.*/
   sy match Conceal /--\d* (.*)$/ conceal
-  sy match Statement /^\t*.\{-}\/\ze\(@ -> \| --\)/
-  sy match Structure /^\t*.\{-}\*\ze\(@ -> \| --\)/
-  sy match String /@ -> .\{-}\ze --/
+  sy match Statement /^\t*.\{-}\/\ze\(@\%[ -> ]\| --\|$\)/
+  sy match Structure /^\t*.\{-}\*\ze\(@\%[ -> ]\| --\|$\)/
+  sy match String /@ -> .\{-}\ze\( --\|$\)/
   sy match Comment /`---/
+  sy match Title /\%1l.*/
 
   nn <buffer> zp $h:bel vert ped  <cfile><CR><C-W>48<Bar>0
   nn <buffer> zP $h:bel      ped  <cfile><CR><C-W>48_0
@@ -208,16 +214,16 @@ fu s:plore(dir)
   setl nomod
 endf
 
+" TODO: use as a command would :new
 com! -complete=dir -nargs=1 Splore cal <SID>plore(<q-args>)
 
-" TODO: this is discussable, not everybody want something like that-
-hi Folded ctermbg=NONE guibg=NONE
-
 " autocommands {{{1
-aug FileExplorer
-  au!
-  " TODO/FIXME: is broken (problem in s:plore - overall, bad handling of buffers)
-  au BufEnter * if isdirectory(@%) && 1 == line('$') |cal <SID>plore(@%) |en
-aug END
+if g:splore_autocmd
+  aug FileExplorer
+    au!
+    " TODO/FIXME: is broken (problem in s:plore - overall, bad handling of buffers)
+    au BufEnter * if isdirectory(@%) && 1 == line('$') |cal <SID>plore(@%) |en
+  aug END
+en
 
 " vim: se fdm=marker fdl=0 ts=2:

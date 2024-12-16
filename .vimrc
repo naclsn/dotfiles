@@ -7,16 +7,16 @@ if has('nvim')
   se udir=~/.vim/cache/nundo//
   aun PopUp
   au! nvim_popupmenu
-  colo vim
+  "colo vim
 el
   se udir=~/.vim/cache/undo//
-  colo default
+  "colo default
 en
 se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
 au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au BufEnter * se fo-=o
 
-"colo slate
+colo slate
 sy on
 filet on
 filet plugin on
