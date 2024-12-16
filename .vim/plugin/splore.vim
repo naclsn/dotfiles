@@ -26,14 +26,14 @@ fu s:dircontent(dir)
   retu 1
 endf
 
-fu s:readlink(path, recursive)
+fu s:readlink(lnk, recursive)
   "" ``recursive`` should be eg '' or '-m'
-  sil retu system(join(['readlink', a:recursive, shellescape(a:path)]))[:-2]
+  sil retu system(join(['readlink', a:recursive, shellescape(a:lnk)]))[:-2]
 endf
 
-fu s:writelink(path, target, force)
+fu s:writelink(lnk, target, force)
   "" ``force`` should be '' or '-f'
-  sil cal system(join(['ln', a:force, '-s', shellescape(a:target), shellescape(a:path)]))
+  sil cal system(join(['ln', a:force, '-s', shellescape(a:target), shellescape(a:lnk)]))
 endf
 
 fu s:unfold(dir, depth, at)
@@ -117,7 +117,7 @@ fu s:apply()
           " TODO: updating edits
           cont
         en
-        echom "mkdir('"..join(path, '')..join(frags[:-2], '/').."'"..(2 < len(frags) ? ", 'p'" : '')..')'
+        echom "mkdir('"..join(isdir && islnk ? path[:-2] : path, '')..join(frags[:-2], '/').."'"..(2 < len(frags) ? ", 'p'" : '')..')'
       en
       let name = frags[-1]
 
