@@ -5,7 +5,6 @@ _sel() {
  stty sane -ixon
  alias l='command ls --color -FXx' ll=l\ -go py=python3 reset='stty sane -ixon' s=git\ status
  export _SEL=_sel EDITOR=vim LESS=FR MANOPT=--nj\ --nh VIMINIT='sil! ru defaults.vim
-  se hid isf-== ls=2 tm=0 to wmnu ai et sw=0 ts=4 nu rnu nowrap mouse=nv cul
   nn <C-N> :bn<CR>
   nn <C-P> :bp<CR>
   cno <C-A> <Home>
@@ -14,6 +13,7 @@ _sel() {
   cno <C-F> <Right>
   cno <C-O> <C-F>
   cno <C-X> <C-A>
+  se hid isf-== ls=2 tm=0 to wmnu ai et sw=0 ts=4 nu rnu nowrap so=0 mouse=nv cul
   com! -range=% Clup <line1>,<line2>w !nc -q0 ${SSH_CLIENT\%\% *} 12700'
  command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon;return 127;}
  bind -x'"\ez":fg&>/dev/null'

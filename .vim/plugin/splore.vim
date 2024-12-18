@@ -1,12 +1,57 @@
 " A (to me) more natural alt to netrw (no over-the-network tho)
 "
-" Last Change:	2024 Dec 16
+" FS tree is presented as plain text and relying on Vim folds for dirs.
+"   zo  open fold
+"   zc  close fold
+"   zM  close all folds recursively
+"   and so on-
+"   also:  zp or zP  open in preview window
+" Initially dirs only contain a "..." entry which will be automatically
+" expanded when the cursor moves onto it.
+"
+" All the book-keeping is kept in a syntax-concealed part past the entry;
+" all lines end with " -- (..)".  For dirs, the depth as a number follows
+" the "--".  This means that a line without this part is a new entry new.
+" Another consequence is that lines fully deleted from the buffer are
+" "out if sight - out of mind".
+"
+" Edit the buffer and save your changes like you would any other.  Upon
+" saving, the book-keeping should be updated correctly.  Outside of unexpected
+" jank/hacks, the following transactions should be explicitly supported and
+" well behaved:
+"
+"   CREATE: by adding a line in the intended fold
+"     * new plain file: "name"
+"     * new plain executable file: "name*"
+"     * new dir: "name/"
+"     * new link: "name@ -> target" (creates the target file if doesn't exist)
+"     * new link to dir: "name/@ -> target" (+ dir target if doesn't exist)
+"     * new link to executable: "name*@ -> target" (same)
+"     * any above through longer path: "path/to/file*@ -> target"
+"
+"   UPDATE: by changing the entry, keeping the concealed " -- (..)" part
+"     * renaming any without changing type
+"     * re-targeting link
+"     * adding/removing executable (directly or through link) XXX: removing NIY
+"     * empty plain file -> dir XXX: NIY
+"     * empty plain file -> link XXX: NIY
+"     * empty dir (or contains only empty dirs) -> file XXX: NIY
+"     * empty dir (or contains only empty dirs) -> link XXX: NIY
+"     * link -> file XXX: NIY
+"     * link -> dir XXX: NIY
+"
+"   DELETE: by deleting the entry, keeping the concealed " -- (..)" part
+"     * file
+"     * link (to anything); only deletes the link itself
+"     * dir if empty or if it contains only empty dirs recursively
+"
+" Last Change:	2024 Dec 17
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
 "
-" TODO: doc-ish, how to (gotchas), and many hidden fixmes
+" TODO: todos
 
 " g: variables {{{1
 if &cp || exists('g:loaded_splore') |fini |en
@@ -19,6 +64,11 @@ hi Folded ctermbg=NONE guibg=NONE
 if !exists('g:splore_autocmd') |let g:splore_autocmd = 1 |en
 
 " s: functions {{{1
+fu s:trace(f, ...)
+  echom a:f a:000
+  cal call(a:f, a:000)
+endf
+
 fu s:dircontent(dir)
   "" 0 if empty, 1 if only dir, 2 if has files
   let ls = readdir(a:dir)
@@ -110,7 +160,7 @@ fu s:apply()
     "let escaped = escape(full, '\/&') " for use in :/ and :s commands
 
     if isdir |cal add(path, entry) |en
-    if pfull == full && !islnk |con |en
+    if pfull == full && !islnk |con |en " XXX: will not be enough when enabling more trans
 
     "let ed = '/\V'..escape(lns[k], '\/')
     if empty(pfull)
@@ -118,37 +168,43 @@ fu s:apply()
       let frags = filter(split(name, '/'), '!empty(v:val)')
       if 1 < len(frags)
         if isdir && !islnk
-          echom "mkdir('"..full.."'"..", 'p')"
+          cal s:trace('mkdir', full, 'p')
           " TODO: updating edits
           cont
         en
-        echom "mkdir('"..join(isdir && islnk ? path[:-2] : path, '')..join(frags[:-2], '/').."'"..(2 < len(frags) ? ", 'p'" : '')..')'
+        cal s:trace('mkdir', join(isdir && islnk ? path[:-2] : path, '')..join(frags[:-2], '/'), 2 < len(frags) ? 'p' : '')
       en
       let name = frags[-1]
 
       if islnk
-        echom "writelink('"..full.."', '"..target.."')"
+        cal s:trace('s:writelink', full, target, '')
         let full = '/' != target[0] ? fnamemodify(full, ':h')..'/'..target : target
         if '' != getftype(full) |cont |en
       en
 
-      echom isdir ? "mkdir('"..full.."')" : "writefile([], '"..full.."')"
+      ev isdir ? s:trace('mkdir', full) : s:trace('writefile', [], full)
 
-      "if 1 < len(frags) |echom 'TODO: make updating edit for new directory with more than one fragment' |en " (TODO)
+      " TODO: make updating edit for new directory with more than one fragment
       "let ed..= '/s/\s*$/ --'..(isdir ? len(path)-1 : '')..' ('..escaped..')'
 
     el
       " edition or deletion
+
+      " TODO: enable trans:
+      "   empty file to dir or link
+      "   empty (recurse) dir to file or link
+      "   link to dir or file
+
       if empty(name)
-        echom "delete('"..pfull..(wasdir && !islnk ? [", 'd'", ", 'rf'", ''][s:dircontent(pfull)] : '')..')'
+        cal s:trace('delete', pfull, wasdir && !islnk ? ['d', 'rf', ''][s:dircontent(pfull)] : '')
       elsei pfull == full && islnk
         let ptarget = s:readlink(full, '')
         if ptarget != target
-          echom "writelink('"..full.."', '"..target.."'"..(empty(ptarget) ? '' : ", '-f'")..')'
+          cal s:trace('s:writelink', full, target, empty(ptarget) ? '' : '-f')
         en
       el
         " TODO: handle renaming dir that where unfolded- somehow-
-        echom "rename('"..pfull.."', '"..full.."')"
+        cal s:trace('rename', pfull, full)
       en
 
       " more of TODO: edits
@@ -157,8 +213,8 @@ fu s:apply()
 
     if isexe
       let perm = getfperm(full)
-      if !empty(perm) && 'x' != getfperm(dir..e)[2]
-        echom "setfperm('"..join([perm[:1], perm[3:4], perm[6:7], ''], 'x').."')"
+      if '-' == perm[2]
+        cal s:trace('setfperm', full, join([perm[:1], perm[3:4], perm[6:7], ''], 'x'))
       en
     en
 
