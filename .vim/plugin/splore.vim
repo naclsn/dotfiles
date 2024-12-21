@@ -16,14 +16,14 @@
 " "out if sight - out of mind".
 "
 " Edit the buffer and save your changes like you would any other.  Upon
-" saving, the book-keeping should be updated correctly.  Outside of unexpected
-" jank/hacks, the following transactions should be explicitly supported and
-" well behaved:
+" saving, the book-keeping should be updated correctly.  Changes are applied
+" to the FS sequentially and in order.  Outside of unexpected jank/hacks, the
+" following transactions should be explicitly supported and well behaved:
 "
 "   CREATE: by adding a line in the intended fold
 "     * new plain file: "name"
 "     * new plain executable file: "name*"
-"     * new dir: "name/"
+"     * new dir: "name/" (remember to also append a "`---" line after it!)
 "     * new link: "name@ -> target" (creates the target file if doesn't exist)
 "     * new link to dir: "name/@ -> target" (+ dir target if doesn't exist)
 "     * new link to executable: "name*@ -> target" (same)
@@ -32,7 +32,7 @@
 "   UPDATE: by changing the entry, keeping the concealed " -- (..)" part
 "     * renaming any without changing type
 "     * re-targeting link
-"     * adding/removing executable (directly or through link) XXX: removing NIY
+"     * adding/removing executable (directly or through link)
 "     * empty plain file -> dir XXX: NIY
 "     * empty plain file -> link XXX: NIY
 "     * empty dir (or contains only empty dirs) -> file XXX: NIY
@@ -43,15 +43,17 @@
 "   DELETE: by deleting the entry, keeping the concealed " -- (..)" part
 "     * file
 "     * link (to anything); only deletes the link itself
-"     * dir if empty or if it contains only empty dirs recursively
+"     * dir if empty or if it contains only empty dirs recursively (remember
+"       to also delete the "`---" line after it!)
 "
-" Last Change:	2024 Dec 17
+" Last Change:	2024 Dec 21
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
 "
-" TODO: todos
+" FIXME: moving broken links doesn't work
+"        link won't update if target type changes
 
 " g: variables {{{1
 if &cp || exists('g:loaded_splore') |fini |en
@@ -65,8 +67,7 @@ if !exists('g:splore_autocmd') |let g:splore_autocmd = 1 |en
 
 " s: functions {{{1
 fu s:trace(f, ...)
-  echom a:f a:000
-  cal call(a:f, a:000)
+  echom a:f a:000 '=>' call(a:f, a:000)
 endf
 
 fu s:dircontent(dir)
@@ -118,14 +119,13 @@ fu s:unfold(dir, depth, at)
   retu at
 endf
 
-" TODO: maybe wacky, FIXME
 fu s:dotdotdot()
   if 'n' == mode() && '...' == getline('.')[-3:]
     let pmod = &mod
     let ln = line('.')
-    " FIXME: don't use indent
+    " FIXME: maybe don't use indent, get depth from / --(\d*) /
     let ed = s:unfold(matchstr(getline(ln-1), ' (.*)$')[2:-2], indent('.')/&ts-1, ln+1)
-    d2
+    .,+d _
     norm! k
     if ln+1 != ed |exec ln..','..(ed-2) 'foldc!' |en
     norm! zvj
@@ -136,10 +136,10 @@ endf
 fu s:apply()
   let lns = getline(1, '$')
   let path = [lns[0]]
-  "let eds = []
+  let eds = []
 
   for k in range(1, len(lns)-1)
-    let m = matchlist(lns[k], '\v\t+(.{-})( --(\d*) \((.*)\))?$')
+    let m = matchlist(lns[k], '\v\t*(.{-})( ?--(\d*) \((.*)\))?$')
     if !len(m) || '...' == m[1] |con |en
     if '`---' == m[1] |cal remove(path, -1) |con |en
 
@@ -157,20 +157,27 @@ fu s:apply()
     let name = trim(isexe ? entry[:-2] : entry, '/', 2)
 
     let full = join(path, '')..name
-    "let escaped = escape(full, '\/&') " for use in :/ and :s commands
+    let escaped = escape(full, '\/&') " for use in :/ and :s commands
+
+    " fix (some of the) indentation if not as expected
+    let depth = len(path)
+    if !empty(name) && ("\t" != lns[k][depth-1] || name[0] != lns[k][depth])
+      cal add(eds, k+1..'s/\t*/'..repeat('\t', depth))
+    en
 
     if isdir |cal add(path, entry) |en
     if pfull == full && !islnk |con |en " XXX: will not be enough when enabling more trans
 
-    "let ed = '/\V'..escape(lns[k], '\/')
     if empty(pfull)
       " brand new path
+
       let frags = filter(split(name, '/'), '!empty(v:val)')
       if 1 < len(frags)
+        " TODO: edits should unfold each fragment
         if isdir && !islnk
           cal s:trace('mkdir', full, 'p')
-          " TODO: updating edits
-          cont
+          cal add(eds, k+1..'s/$/ --0'..len(path)..' ('..escaped..')')
+          con
         en
         cal s:trace('mkdir', join(isdir && islnk ? path[:-2] : path, '')..join(frags[:-2], '/'), 2 < len(frags) ? 'p' : '')
       en
@@ -179,61 +186,57 @@ fu s:apply()
       if islnk
         cal s:trace('s:writelink', full, target, '')
         let full = '/' != target[0] ? fnamemodify(full, ':h')..'/'..target : target
-        if '' != getftype(full) |cont |en
+        if '' != getftype(full) |con |en
       en
 
       ev isdir ? s:trace('mkdir', full) : s:trace('writefile', [], full)
-
-      " TODO: make updating edit for new directory with more than one fragment
-      "let ed..= '/s/\s*$/ --'..(isdir ? len(path)-1 : '')..' ('..escaped..')'
-
+      cal add(eds, k+1..'s/$/ -- ('..escaped..')')
     el
       " edition or deletion
+
+      if empty(name)
+        cal s:trace('delete', pfull, wasdir && !islnk ? ['d', 'rf', ''][s:dircontent(pfull)] : '')
+        cal add(eds, k+1..'d')
+        con
+      en
 
       " TODO: enable trans:
       "   empty file to dir or link
       "   empty (recurse) dir to file or link
       "   link to dir or file
 
-      if empty(name)
-        cal s:trace('delete', pfull, wasdir && !islnk ? ['d', 'rf', ''][s:dircontent(pfull)] : '')
-      elsei pfull == full && islnk
+      if pfull == full && islnk
         let ptarget = s:readlink(full, '')
         if ptarget != target
           cal s:trace('s:writelink', full, target, empty(ptarget) ? '' : '-f')
         en
       el
         " TODO: handle renaming dir that where unfolded- somehow-
+        " FIXME: cannot rename broken links!? it fails with '=> -1'
         cal s:trace('rename', pfull, full)
-      en
-
-      " more of TODO: edits
-      "let ed..= empty(name) ? '/d' : '/s/ (.*)$/ ('..escaped..')'
-    en
-
-    if isexe
-      let perm = getfperm(full)
-      if '-' == perm[2]
-        cal s:trace('setfperm', full, join([perm[:1], perm[3:4], perm[6:7], ''], 'x'))
+        cal add(eds, k+1..'s/ (.*)$/ ('..escaped..')')
       en
     en
 
-    " maybe more of TODO: edits
-    "cal add(eds, ed)
+    if isdirectory(full) |con |en
+    let perm = getfperm(full)
+    if 'x-'[isexe] == perm[2]
+      cal s:trace('setfperm', full, join([perm[:1], perm[3:4], perm[6:7], ''], '-x'[isexe]))
+    en
   endfo
-
-  retu
-  " XXX(wip): dead code
-
-  let pos = getpos('.')
-  for s in eds |exe s |endfo
-  cal setpos('.', pos)
 
   let pul = &ul
   setl ul=-1
-  exe "norm! a \<BS>\<Esc>"
-  let &ul = pul
-  setl nomod
+  let pos = getpos('.')
+  1
+  try
+    for s in eds |echo s |exe s |endfo
+  fina
+    cal setpos('.', pos)
+    "exe "norm! a \<BS>\<Esc>"
+    let &ul = pul
+    setl nomod
+  endt
 endf
 
 fu s:plore(dir)
