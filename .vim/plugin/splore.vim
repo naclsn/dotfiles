@@ -230,7 +230,7 @@ fu s:apply()
   let pos = getpos('.')
   1
   try
-    for s in eds |echo s |exe s |endfo
+    for s in reverse(eds) |echo s |exe s |endfo
   fina
     cal setpos('.', pos)
     "exe "norm! a \<BS>\<Esc>"
