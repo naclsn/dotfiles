@@ -17,14 +17,15 @@ expath ./node_modules/.bin
 export        EDITOR=`command -v nvim || echo vim`
 export          LESS='FiR --mouse --wheel-lines=3 --use-color'
 export        MANOPT='--nj --nh'
+export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules
 
 alias           grep='grep --color=auto'
 alias             ls='ls --color=auto'
-alias             la='ls -FXxA'
-alias             ll='ls -FXgo'
-alias              l='ls -FXx'
+alias              l='ls -FX'
+alias             la='l -A'
+alias             ll='l -go'
 alias             db='gdb -q --args'
 alias             py='python3'
 alias              s='git status'
@@ -104,12 +105,19 @@ __jabs_daety() {
 }
 __jabs_tmux() {
   # TODO: maybe, idk
-  printf tmux
+  echo tmux
 }
 __jabs_run() {
   case $1 in
     *.c) echo ${1%.c} $2;;
     *) echo $1;;
+  esac
+}
+__jabs_poetry() {
+  echo poy-$1
+  case $1 in
+    run) echo $2;;
+    *) ;;
   esac
 }
 

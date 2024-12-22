@@ -143,6 +143,7 @@ fu s:Syntax()
   hi def link vimnoListMark  Statement
   hi def link vimnoPreDelim  Special
   hi def      vimnoBold      cterm=bold          gui=bold
+  hi def link vimnoCode      Special
   hi def      vimnoItalic    cterm=italic        gui=italic
   hi def link vimnoLink      Underlined
   hi def      vimnoStrike    cterm=strikethrough gui=strikethrough

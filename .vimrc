@@ -21,7 +21,9 @@ sy on
 filet on
 filet plugin on
 
-au FileType c,py sy keyword Title self
+au FileType c,python sy keyword Title self
+au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
+au FileType python if expand('<afile>') =~ 'pyi$' |nn gq :!black --quiet --pyi %<CR> |el |nn gq :!black --quiet -l<C-R>=&tw??78<CR> %<CR> |en
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
 hi clear diffAdded |hi link diffAdded Special

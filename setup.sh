@@ -1,11 +1,12 @@
 #!/bin/sh
+cd "${0%/*}"
 has() { c=`command -v $1` && printf "%-8s is %s\n" $1 $c || { echo no $1; exit 1; }; }
 has find
 has ln
 has mkdir
+has readlink
 has realpath
 has rm
-has readlink
 echo ---
 
 if [ %$1 = %-h ]
@@ -24,13 +25,13 @@ fi
 [ %$1 = %-o ] && if [ -f $2 ]
   then
     abs=`command realpath $2`
-    set -- -o ${abs#`command realpath ${0%/*}`/}
+    set -- -o ${abs#`command realpath $PWD`/}
   else
     echo no such file $2
     exit 1
 fi
 
-command find ${0%/*} -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
+command find . -name .git -prune -o -type f -path ./.\* -printf '%h %p\n' |while read dir rel
   do
     rel=${rel#./}
     abs=`command realpath $rel`
