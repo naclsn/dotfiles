@@ -5,6 +5,7 @@
 "   :GVG[raph] <filename.gv> rankdir=LR [and other attr]
 "
 " This will load the buffer in the back and set it to receive updates.
+" (Personal choice: <bang> will set colors to some light on gray.)
 "
 "   :GVC[luster] c1 label=yey\ how\ you? [other attr]
 "   :GVN[ode] n1 in=c1 label=% [other attr]
@@ -26,7 +27,12 @@
 " If python "xdot" is installed, this will open it in an other window
 " and it should get updated as the buffer is edited:
 "
-"   :GVX[dot]
+"   :GVX[dot]! " doesn't background if no <bang>
+"
+" (Lastly, if using the GVG! colors, here's a patch to maybe apply:
+"  ~/.local/lib/python3.00/site-packages/xdot/ui/window.py:583
+"       window.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.2, .2, .2))
+"  in "class DotWindow", after "window = self")
 "
 " Last Change:	2024 Dec 27
 " Maintainer:	a b <a.b@c.d>
@@ -56,7 +62,7 @@ fu s:update(at, l)
 endf
 
 " command functions {{{2
-fu s:GVGraph(...)
+fu s:GVGraph(gray, ...)
   "" some attrs:
   ""  0. rankdir=LR|TB
   ""  0. rank=same
@@ -64,13 +70,18 @@ fu s:GVGraph(...)
   let name = g:gvbuf->bufname()
   if name !~ '.gv$'
     unl g:gvbuf
-    th "buffer name doesn't end in '.gv': '"..name..", refusing to edit!"
+    th "buffer name doesn't end in '.gv': '"..name..", refusing to edit in case that's a mistake-"
   en
   ev g:gvbuf->bufload()
 
   if 1 == g:gvbuf->getbufinfo()[0].linecount
     ev (['digraph {'] +
       \ s:attrs('    ', a:000[1:]) +
+      \ (a:gray ? [
+        \ '    bgcolor="#333333"',
+        \ '    color="#eeeeee" fontcolor="#eeeeee"',
+        \ '    node [color="#eeeeee" fontcolor="#eeeeee"]',
+        \ '    edge [color="#eeeeee" fontcolor="#eeeeee"]'] : []) +
       \ ['', '}'])
       \ ->setbufline(g:gvbuf, 1)
   en
@@ -121,13 +132,20 @@ fu s:GVEdge(from, to, ...)
 endf
 
 " completion {{{2
+let s:colors = 'black red green yellow blue magenta cyan gray white transparent \#333333 \#eeeeee'->split()
+let s:arrows = 'box crow diamond dot ediamond empty halfopen inv invdot invempty invodot none normal obox odiamond odot open tee vee'->split()
 let s:compl_map = #{
+  \ arrowhead: s:arrows,
+  \ arrowtail: s:arrows,
+  \ bgcolor: s:colors,
   \ class: 0,
-  \ in: {-> s:lines()
-  \   ->filter('v:val =~ "^    subgraph cluster_"')
-  \   ->map('v:val->matchstr(''_\zs\w\+'')')},
+  \ color: s:colors,
+  \ fillcolor: s:colors,
+  \ fontcolor: s:colors,
+  \ in: {-> s:lines()->filter('v:val =~ "^    subgraph cluster_"')->map('v:val->matchstr(''_\zs\w\+'')')},
   \ label: {lead -> glob(lead..'*', 1, 1)->map('v:val->fnameescape()')},
   \ margin: 0,
+  \ pad: 0,
   \ rank: 'same min source max sink'->split(),
   \ rankdir: 'TB BT LR RL'->split(),
   \ shape: 'assembly box box3d cds circle component cylinder diamond doublecircle doubleoctagon egg ellipse fivepoverhang folder hexagon house insulator invhouse invtrapezium invtriangle larrow lpromoter none note noverhang octagon oval parallelogram pentagon plain plaintext point polygon primersite promoter proteasesite proteinstab rarrow record rect rectangle restrictionsite ribosite rnastab rpromoter septagon signature square star tab terminator threepoverhang trapezium triangle tripleoctagon underline utr'->split(),
@@ -162,11 +180,11 @@ fu s:compl(lead, _line, _pos)
 endf
 
 " commands {{{1
-com -bar -nargs=* -complete=file               GVGraph   cal s:GVGraph  (<f-args>)
-com -bar -nargs=+ -complete=customlist,s:compl GVCluster cal s:GVCluster(<f-args>)
-com -bar -nargs=+ -complete=customlist,s:compl GVNode    cal s:GVNode   (<f-args>)
-com -bar -nargs=+ -complete=customlist,s:compl GVEdge    cal s:GVEdge   (<f-args>)
+com -bang -bar -nargs=* -complete=file               GVGraph   cal s:GVGraph  (<bang>0, <f-args>)
+com       -bar -nargs=+ -complete=customlist,s:compl GVCluster cal s:GVCluster(<f-args>)
+com       -bar -nargs=+ -complete=customlist,s:compl GVNode    cal s:GVNode   (<f-args>)
+com       -bar -nargs=+ -complete=customlist,s:compl GVEdge    cal s:GVEdge   (<f-args>)
 
-com -bar GVXdot cal system('python3 -m xdot '..g:gvbuf->bufname()->shellescape()..' &')
+com -bang -bar GVXdot cal system('python3 -m xdot '..g:gvbuf->bufname()->shellescape()..'&'[<bang>1])
 
 " vim: se fdm=marker fdl=0 ts=2:
