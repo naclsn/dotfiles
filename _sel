@@ -13,8 +13,7 @@ _sel(){
   cno <C-F> <Right>
   cno <C-O> <C-F>
   cno <C-X> <C-A>
-  se hid isf-== ls=2 tm=0 to wmnu ai et sw=0 ts=4 nu rnu nowrap so=0 mouse=nv cul dir=/tmp/swf//
-  com! -range=% Clup <line1>,<line2>w !nc -q0 ${SSH_CLIENT\%\% *} 12700'
+  se hid isf-== ls=2 noto ttimeout ttm=100 wmnu ai et sw=0 ts=4 nu rnu nowrap so=0 mouse=nv cul dir=/tmp/swf//'
  command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;reset;return 127;}
  bind -x'"\ez":fg&>/dev/null'
 };[ _sel = "`command -v $_SEL`" ]&&_sel

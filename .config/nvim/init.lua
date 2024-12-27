@@ -53,6 +53,7 @@ for it, conf in pairs {
         reportWildcardImportFromLibrary= 'information',
     } } } } },
     rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
+    ruby_lsp= {},
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
 

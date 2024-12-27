@@ -4,20 +4,13 @@
 	name = Grenier Celestin
 	email = celestin.grenier@hotmail.com
 [alias]
-	sha = rev-parse HEAD
-	url = "!git remote get-url origin|sed 's,^\\(ssh://\\)\\?git@\\([a-zA-Z.-]\\+\\):\\(\\([0-9]\\+/\\)\\|\\([^0-9][^/]\\+\\)\\),https://\\2/\\5,'"
-	ls = branch -vv
 	cd = checkout
-	stat = log --stat
-	graph = log --oneline --graph --decorate #--simplify-by-decoration
-	add-ignore = "!git status --porcelain|sed '/.gitignore/d;s/^?? //p;d'>>.gitignore"
-	irt = !f()(git for-each-ref --format='printf "%%s:%%5d-:+%%d\\\\n" %(refname:short) `git rev-list --left-right --count 'refs/$1'...%(refname)`' refs/${2:-heads}|sh|column -ts:)";"f
+	ls = branch -vv
 	amend = commit --amend --no-edit
+	graph = log --oneline --graph --decorate
+	url = "!f()(git remote get-url ${1:-origin}|sed 's,^\\(ssh://\\)\\?git@\\([a-zA-Z.-]\\+\\):\\(\\([0-9]\\+/\\)\\|\\([^0-9][^/]\\+\\)\\),https://\\2/\\5,');f"
+	sha = rev-parse HEAD
 	root = rev-parse --show-toplevel
-	desc = branch --edit-description
-	clone1 = clone --depth 1
-	cloc = !f()(wc -l `git ls-files $1` | sort -n)";"f
-	showup = show ..@{upstream}
 [init]
 	defaultBranch = main
 [credential]

@@ -7,6 +7,7 @@ HISTTIMEFORMAT=%T+
 command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;stty sane -ixon 2>/dev/null;return 127;}
 
 expath(){ [[ :$PATH: == *:$1:* ]]||export PATH=$1:$PATH;}
+unpath(){ export PATH=${PATH/${1//\//\\\/}:/};}
 expath ~/.local/bin
 expath ~/.cargo/bin
 expath ~/.go/bin
