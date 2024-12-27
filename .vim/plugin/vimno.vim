@@ -26,7 +26,7 @@ if '/' != g:vimno_state[-1:] |let g:vimno_state..= '/' |en
 if !exists('g:vimno_avail_ifs') |let g:vimno_avail_ifs = split('tcl lua pe[rl] py[thon] rub[y] mz[scheme]') |en
 cal map(g:vimno_avail_ifs, '"]" == v:val[-1:] ? substitute(v:val, ''\v(\w+)\[(\w*)]'', ''\1\2|\1'', "") : v:val')
 
-" command functions {{{1
+" command functions {{{2
 fu s:Echo(n, ...)
   "" Echos in the document itself; the line with the `Echo` itself is prefixed
   "" with a (hopefully unique) number after first run, which is used to locate

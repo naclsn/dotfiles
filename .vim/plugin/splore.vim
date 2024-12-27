@@ -4,8 +4,10 @@
 "   zo  open fold
 "   zc  close fold
 "   zM  close all folds recursively
+"   gf  open file at cursor line
+"   <C-W>f  same but in new window
 "   and so on-
-"   also:  zp or zP  open in preview window
+"   also:  zp  open in preview window
 " Initially dirs only contain a "..." entry which will be automatically
 " expanded when the cursor moves onto it.
 "
@@ -46,7 +48,7 @@
 "     * dir if empty or if it contains only empty dirs recursively (remember
 "       to also delete the "`---" line after it!)
 "
-" Last Change:	2024 Dec 21
+" Last Change:	2024 Dec 27
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -266,9 +268,8 @@ fu s:plore(dir)
   sy match Comment /`---/
   sy match Title /\%1l.*/
 
-  nn <buffer> zp $h:bel vert ped  <cfile><CR><C-W>48<Bar>0
-  nn <buffer> zP $h:bel      ped  <cfile><CR><C-W>48_0
-  nn <buffer> zx $h:sil !xdg-open <cfile><CR><Esc><Esc>0
+  nn <buffer> zp :ped <C-R>=getline('.')->matchstr(' --\d* (\zs.*\ze)')->fnamemodify(':~:.')<CR> <Bar>cd .<CR>
+  nn <buffer> zx :sil !xdg-open <C-R>=getline('.')->matchstr(' --\d* (\zs.*\ze)')->fnamemodify(':~:.')<CR> &<CR>
   let &ul = pul
   setl nomod
 endf
