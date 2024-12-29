@@ -39,16 +39,22 @@
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
+"
+" TODO: fix completion based on in-gv attrs values (doesn't appear at all)
+"       ensure consistent undo / have a way to GVU or to edit last thingy
 
 " s: functions {{{1
 fu s:attrs(ind, l)
-  let l = a:l->mapnew({_, attr -> a:ind..attr->substitute('\w\+=\zs.*', '\=''"''..escape(submatch(0)->expand(), ''"'')..''"''', '')})
-  retu empty(a:ind) ? empty(l) ? '' : ' ['..join(l)..']' : l
+  let l:l = a:l
+    \ ->mapnew({_, attr -> a:ind..attr->substitute('\w\+=\zs.*', '\=''"''..escape(submatch(0)->expand(), ''"'')..''"''', '')})
+    \ ->filter('v:val !~ "^in="')
+    \ ->sort()
+  retu empty(a:ind) ? empty(l:l) ? '' : ' ['..join(l:l)..']' : l
 endf
 
 fu s:indexafter(l, fst, snd)
-  let at = a:l->index(a:fst)+1
-  retu at + a:l[at:]->index(a:snd)
+  let l:at = a:l->index(a:fst)+1
+  retu l:at + a:l[l:at:]->index(a:snd)
 endf
 
 fu s:lines()
@@ -62,21 +68,21 @@ fu s:update(at, l)
 endf
 
 " command functions {{{2
-fu s:GVGraph(gray, ...)
+fu s:GVGraph(gray, name='%', ...)
   "" some attrs:
   ""  0. rankdir=LR|TB
   ""  0. rank=same
-  let g:gvbuf = empty(a:000) ? bufnr() : bufadd(a:000[0])
-  let name = g:gvbuf->bufname()
-  if name !~ '.gv$'
+  let g:gvbuf = '%' == a:name ? bufnr() : a:name->bufadd()
+  let l:name = g:gvbuf->bufname()
+  if l:name !~ '.gv$'
     unl g:gvbuf
-    th "buffer name doesn't end in '.gv': '"..name..", refusing to edit in case that's a mistake-"
+    th "name doesn't end in '.gv': '"..l:name.."', refusing to edit in case that's a mistake"
   en
   ev g:gvbuf->bufload()
 
   if 1 == g:gvbuf->getbufinfo()[0].linecount
     ev (['digraph {'] +
-      \ s:attrs('    ', a:000[1:]) +
+      \ s:attrs('    ', a:000) +
       \ (a:gray ? [
         \ '    bgcolor="#333333"',
         \ '    color="#eeeeee" fontcolor="#eeeeee"',
@@ -91,11 +97,18 @@ fu s:GVCluster(name, ...)
   "" some attrs:
   ""  0. label
   ""  0. rank
-  let at = s:indexafter(s:lines(),
+  if a:name !~ '^\h\w*$'
+    th "GVCluster needs a cluster name first; got '"..a:name.."'"
+  en
+  if -1 != s:lines()->match('^    subgraph cluster_'..a:name)
+    th "cluster '"..a:name.."' already exists"
+  en
+
+  let l:at = s:indexafter(s:lines(),
     \ 'digraph {',
     \ '')+1
 
-  cal s:update(at,
+  cal s:update(l:at,
     \ ['    subgraph cluster_'..a:name..' {'] +
     \ s:attrs('        ', a:000) +
     \ ['    }', ''])
@@ -109,14 +122,24 @@ fu s:GVNode(name, ...)
   ""  0. shape
   ""  0. class
   ""  0. style
-  let cluster = a:000->match('^in=')
-  let at = cluster < 0
+  if a:name !~ '^\h\w*$'
+    th "GVNode needs a node name first; got '"..a:name.."'"
+  en
+  if -1 != s:lines()->match('^\v    (    )?'..a:name..'+($| [)')
+    th "node '"..a:name.."' already exists"
+  en
+  let l:cluster = a:000->matchstr('^in=\zs.*')[3:]
+  if !empty(l:cluster) && l:cluster !~ '^\h\w*$'
+    th "GVNode's `in=` needs a cluster name; got '"..l:cluster.."'"
+  en
+
+  let l:at = empty(cluster)
     \ ? g:gvbuf->getbufinfo()[0].linecount-1
     \ : s:indexafter(s:lines(),
-    \   '    subgraph cluster_'..a:000[cluster][len('in='):]..' {',
+    \   '    subgraph cluster_'..cluster..' {',
     \   '    }')
 
-  cal s:update(at,
+  cal s:update(l:at,
     \ [(cluster < 0 ? '    ' : '        ')..a:name..s:attrs('', a:000)])
 endf
 
@@ -125,9 +148,13 @@ fu s:GVEdge(from, to, ...)
   ""  0. label
   ""  0. class
   ""  0. style
-  let at = g:gvbuf->getbufinfo()[0].linecount-1
+  if a:from !~ '^\h\w*$' || a:to !~ '^\h\w*$'
+    th "GVEdge needs two node names first; got '"..a:from.."' and '"..a:to.."'"
+  en
 
-  cal s:update(at,
+  let l:at = g:gvbuf->getbufinfo()[0].linecount-1
+
+  cal s:update(l:at,
     \ ['    '..a:from..' -> '..a:to..s:attrs('', a:000)])
 endf
 
@@ -144,6 +171,7 @@ let s:compl_map = #{
   \ fontcolor: s:colors,
   \ in: {-> s:lines()->filter('v:val =~ "^    subgraph cluster_"')->map('v:val->matchstr(''_\zs\w\+'')')},
   \ label: {lead -> glob(lead..'*', 1, 1)->map('v:val->fnameescape()')},
+  \ layout: 'circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi'->split(),
   \ margin: 0,
   \ pad: 0,
   \ rank: 'same min source max sink'->split(),
@@ -153,30 +181,30 @@ let s:compl_map = #{
   \ tooltip: {lead -> glob(lead..'*', 1, 1)->map('v:val->fnameescape()')}}
 
 fu s:compl(lead, _line, _pos)
-  let attr = a:lead->matchstr('^\w\+\ze=.*')
+  let l:attr = a:lead->matchstr('^\w\+\ze=.*')
 
-  let F = s:compl_map->get(attr)
-  let t = type(F)
-  let r = (t
-    \   ? (3 == t ? F : F(a:lead[len(attr)+1:]->expand()))->mapnew('attr.."="..v:val')
+  let F = s:compl_map->get(l:attr)
+  let t = type(l:F)
+  let r = (l:t
+    \   ? (3 == l:t ? l:F : l:F(a:lead[len(l:attr)+1:]->expand()))->mapnew('l:attr.."="..v:val')
     \   : s:compl_map->keys()->map('v:val.."="'))
     \ ->sort()
 
-  if '=' != a:lead[len(attr)]
+  if '=' != a:lead[len(l:attr)]
     ev r->extend(s:lines()
       \   ->filter('v:val =~ ''^\v    (    )?\w+($| [)''')
       \   ->map('v:val->matchstr(''\w\+'')')
       \   ->sort(), 0)
   el
-    let pat = '\v<'..attr..'>\="([^\\"]|.*)"'
+    let l:pat = '\v<'..l:attr..'>\="([^\\"]|.*)"'
     ev r->extend(s:lines()
-      \   ->filter('v:val =~ pat')
-      \   ->map('v:val->matchlist(pat)[1]'), 0)
+      \   ->filter('v:val =~ l:pat')
+      \   ->map('v:val->matchlist(l:pat)[1]'), 0)
       \ ->sort()->uniq()
   en
 
-  let n = a:lead->len()-1
-  retu empty(a:lead) ? r : r->filter('v:val[:n] == a:lead')
+  let l:n = a:lead->len()-1
+  retu empty(a:lead) ? r : r->filter('v:val[:l:n] == a:lead')
 endf
 
 " commands {{{1

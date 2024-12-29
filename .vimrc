@@ -1,5 +1,6 @@
 lan C
 se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen hls notgc noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
+
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -12,15 +13,17 @@ el
   se udir=~/.vim/cache/undo//
   "colo default
 en
+
 se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
 au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
-au BufEnter * se fo-=o
+com Mks exe 'mks' '!'[empty(v:this_session)] v:this_session
 
 colo slate
 sy on
 filet on
 filet plugin on
 
+au BufEnter * se fo-=o
 au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
 au FileType python if expand('<afile>') =~ 'pyi$' |nn gq :!black --quiet --pyi %<CR> |el |nn gq :!black --quiet -l<C-R>=&tw??78<CR> %<CR> |en
