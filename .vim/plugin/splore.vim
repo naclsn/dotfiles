@@ -268,8 +268,8 @@ fu s:plore(dir)
   sy match Comment /`---/
   sy match Title /\%1l.*/
 
-  nn <buffer> zp :ped <C-R>=getline('.')->matchstr(' --\d* (\zs.*\ze)')->fnamemodify(':~:.')<CR> <Bar>cd .<CR>
-  nn <buffer> zx :sil !xdg-open <C-R>=getline('.')->matchstr(' --\d* (\zs.*\ze)')->fnamemodify(':~:.')<CR> &<CR>
+  nn <silent> <buffer> zp :exe 'ped' getline('.')->matchstr(' --\d* (\zs.*\ze)')->fnamemodify(':~:.') <Bar>cd .<CR>
+  nn <silent> <buffer> zx :cal system('xdg-open '..getline('.')->matchstr(' --\d* (\zs.*\ze)')->shellescape()..'&')<CR>
   let &ul = pul
   setl nomod
 endf

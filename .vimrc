@@ -1,5 +1,5 @@
 lan C
-se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen hls notgc noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru scl=number so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
@@ -16,7 +16,7 @@ en
 
 se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
 au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
-com Mks exe 'mks' '!'[empty(v:this_session)] v:this_session
+com Mks exe 'mks'.'!'[empty(v:this_session)] v:this_session
 
 colo slate
 sy on
@@ -114,12 +114,14 @@ map Zz zzZ
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
 com! -nargs=* -complete=file -bang GitDiff  ene |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf |f [git-diff] <args> |cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>)) |no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com! -nargs=*                      GitLog   ene |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl noswf |f [git-log] <args>  |cal setline(1, systemlist('git log '.<q-args>)) |nn <buffer> zp :cal cursor(search('commit', 'bcW'), 8)<CR>:bel vert ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR><C-W>56<lt>Bar>
+com! -nargs=*                      GitLog   ene |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl noswf |f [git-log] <args>  |cal setline(1, systemlist('git log '.<q-args>)) |nn <silent> <buffer> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
 com! -nargs=* -complete=file       GitShow  ene |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf |f [git-show] <args> |cal setline(1, systemlist('git show '.<q-args>))
 
 abc
 ca lang se wrap! spell! spl
 ca scra se bt=nofile ft
+ca hl se hls!
+ca wr se wrap!
 ca vb vert sb
 
 " platform specific {{{1

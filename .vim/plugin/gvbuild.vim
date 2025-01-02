@@ -46,9 +46,15 @@
 " s: functions {{{1
 fu s:attrs(ind, l)
   let l:l = a:l
-    \ ->mapnew({_, attr -> a:ind..attr->substitute('\w\+=\zs.*', '\=''"''..escape(submatch(0)->expand(), ''"'')..''"''', '')})
+    \ ->mapnew({_, attr -> a:ind..attr->substitute('^\w\+=\zs.*', '\=''"''..escape(submatch(0)->expand(), ''"'')..''"''', '')})
     \ ->filter('v:val !~ "^in="')
     \ ->sort()
+
+  let l:nono = l:l->matchstr('^\%(\w\+="\)\@!.*$')
+  if !empty(l:nono)
+    th "attribute argument invalid: '"..l:nono.."'"
+  en
+
   retu empty(a:ind) ? empty(l:l) ? '' : ' ['..join(l:l)..']' : l
 endf
 
@@ -133,6 +139,13 @@ fu s:GVNode(name, ...)
     th "GVNode's `in=` needs a cluster name; got '"..l:cluster.."'"
   en
 
+  let l:chain = a:000->match('<-\|->')
+  if -1 != l:chain
+    cal call('s:GVEdge', a:000[l:chain+1:]->copy()->insert(a:name, '<-' == a:000[l:chain]))
+    cal call('s:GVNode', [a:name]->extend(a:000[:l:chain-1]))
+    retu
+  en
+
   let l:at = empty(cluster)
     \ ? g:gvbuf->getbufinfo()[0].linecount-1
     \ : s:indexafter(s:lines(),
@@ -140,7 +153,7 @@ fu s:GVNode(name, ...)
     \   '    }')
 
   cal s:update(l:at,
-    \ [(cluster < 0 ? '    ' : '        ')..a:name..s:attrs('', a:000)])
+    \ [(empty(cluster) ? '    ' : '        ')..a:name..s:attrs('', a:000)])
 endf
 
 fu s:GVEdge(from, to, ...)
