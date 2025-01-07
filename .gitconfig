@@ -11,6 +11,8 @@
 	url = "!f()(git remote get-url ${1:-origin}|sed 's,^\\(ssh://\\)\\?git@\\([a-zA-Z.-]\\+\\):\\(\\([0-9]\\+/\\)\\|\\([^0-9][^/]\\+\\)\\),https://\\2/\\5,');f"
 	sha = rev-parse HEAD
 	root = rev-parse --show-toplevel
+	#git rev-list HEAD -n1 --before=
+	ls-files-at = ls-tree -r --name-only
 [init]
 	defaultBranch = main
 [credential]

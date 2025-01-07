@@ -5,7 +5,6 @@
 "   :GVG[raph] <filename.gv> rankdir=LR [and other attr]
 "
 " This will load the buffer in the back and set it to receive updates.
-" (Personal choice: <bang> will set colors to some light on gray.)
 "
 "   :GVC[luster] c1 label=yey\ how\ you? [other attr]
 "   :GVN[ode] n1 in=c1 label=% [other attr]
@@ -29,12 +28,12 @@
 "
 "   :GVX[dot]! " doesn't background if no <bang>
 "
-" (Lastly, if using the GVG! colors, here's a patch to maybe apply:
-"  ~/.local/lib/python3.00/site-packages/xdot/ui/window.py:583
-"       window.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.2, .2, .2))
-"  in "class DotWindow", after "window = self")
+" :GVNode and :GVEdge have a 'chaining' mechanism:
+" when an argument is "<-" or "->" it recursively does :GVEdge;
+" however the behavior is counter intuitive for longer chains,
+" "back arrow collapses"--make what you want of this info.
 "
-" Last Change:	2024 Dec 27
+" Last Change:	2025 Jan 7
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -42,6 +41,10 @@
 "
 " TODO: fix completion based on in-gv attrs values (doesn't appear at all)
 "       ensure consistent undo / have a way to GVU or to edit last thingy
+
+" g: variables {{{1
+if &cp || exists('g:loaded_gvbuild') |fini |en
+let g:loaded_gvbuild = 1
 
 " s: functions {{{1
 fu s:attrs(ind, l)
@@ -74,7 +77,7 @@ fu s:update(at, l)
 endf
 
 " command functions {{{2
-fu s:GVGraph(gray, name='%', ...)
+fu s:GVGraph(name='%', ...)
   "" some attrs:
   ""  0. rankdir=LR|TB
   ""  0. rank=same
@@ -89,25 +92,25 @@ fu s:GVGraph(gray, name='%', ...)
   if 1 == g:gvbuf->getbufinfo()[0].linecount
     ev (['digraph {'] +
       \ s:attrs('    ', a:000) +
-      \ (a:gray ? [
-        \ '    bgcolor="#333333"',
-        \ '    color="#eeeeee" fontcolor="#eeeeee"',
-        \ '    node [color="#eeeeee" fontcolor="#eeeeee"]',
-        \ '    edge [color="#eeeeee" fontcolor="#eeeeee"]'] : []) +
       \ ['', '}'])
       \ ->setbufline(g:gvbuf, 1)
   en
+      "\ (a:gray ? [
+      "  \ '    bgcolor="#333333"',
+      "  \ '    color="#eeeeee" fontcolor="#eeeeee"',
+      "  \ '    node [color="#eeeeee" fontcolor="#eeeeee"]',
+      "  \ '    edge [color="#eeeeee" fontcolor="#eeeeee"]'] : []) +
 endf
 
-fu s:GVCluster(name, ...)
+fu s:GVSubgraph(name, ...)
   "" some attrs:
   ""  0. label
   ""  0. rank
   if a:name !~ '^\h\w*$'
-    th "GVCluster needs a cluster name first; got '"..a:name.."'"
+    th "GVCluster needs a subgraph name first; got '"..a:name.."'"
   en
-  if -1 != s:lines()->match('^    subgraph cluster_'..a:name)
-    th "cluster '"..a:name.."' already exists"
+  if -1 != s:lines()->match('^    subgraph '..a:name)
+    th "subgraph '"..a:name.."' already exists"
   en
 
   let l:at = s:indexafter(s:lines(),
@@ -115,7 +118,7 @@ fu s:GVCluster(name, ...)
     \ '')+1
 
   cal s:update(l:at,
-    \ ['    subgraph cluster_'..a:name..' {'] +
+    \ ['    subgraph '..a:name..' {'] +
     \ s:attrs('        ', a:000) +
     \ ['    }', ''])
 endf
@@ -134,26 +137,49 @@ fu s:GVNode(name, ...)
   if -1 != s:lines()->match('^\v    (    )?'..a:name..'+($| [)')
     th "node '"..a:name.."' already exists"
   en
-  let l:cluster = a:000->matchstr('^in=\zs.*')[3:]
-  if !empty(l:cluster) && l:cluster !~ '^\h\w*$'
-    th "GVNode's `in=` needs a cluster name; got '"..l:cluster.."'"
+  let l:subgraph = a:000->matchstr('^in=\zs.*')[3:]
+  if !empty(l:subgraph) && l:subgraph !~ '^\h\w*$'
+    th "GVNode's `in=` needs a subgraph name; got '"..l:subgraph.."'"
   en
 
   let l:chain = a:000->match('<-\|->')
   if -1 != l:chain
+    " GVN a -> b -> c
+    "  GVE a b -> c
+    "   GVE b c
+    "   GVE a b
+    "  GVN a
+    "
+    " GVN a <- b <- c
+    "  GVE b a <- c
+    "   GVE c a
+    "   GVE b a
+    "  GVN a
+    "
+    " GVN a <- b -> c
+    "  GVE b a -> c
+    "   GVE a c
+    "   GVE b a
+    "  GVN a
+    "
+    " GVE a -> b <- c
+    "  GVE a b <- c
+    "   GVE c b
+    "   GVE a b
+    "  GVN a
     cal call('s:GVEdge', a:000[l:chain+1:]->copy()->insert(a:name, '<-' == a:000[l:chain]))
     cal call('s:GVNode', [a:name]->extend(a:000[:l:chain-1]))
     retu
   en
 
-  let l:at = empty(cluster)
+  let l:at = empty(l:subgraph)
     \ ? g:gvbuf->getbufinfo()[0].linecount-1
     \ : s:indexafter(s:lines(),
-    \   '    subgraph cluster_'..cluster..' {',
+    \   '    subgraph '..l:subgraph..' {',
     \   '    }')
 
   cal s:update(l:at,
-    \ [(empty(cluster) ? '    ' : '        ')..a:name..s:attrs('', a:000)])
+    \ [(empty(l:subgraph) ? '    ' : '        ')..a:name..s:attrs('', a:000)])
 endf
 
 fu s:GVEdge(from, to, ...)
@@ -164,11 +190,50 @@ fu s:GVEdge(from, to, ...)
   if a:from !~ '^\h\w*$' || a:to !~ '^\h\w*$'
     th "GVEdge needs two node names first; got '"..a:from.."' and '"..a:to.."'"
   en
+  let l:subgraph = a:000->matchstr('^in=\zs.*')[3:]
+  if !empty(l:subgraph) && l:subgraph !~ '^\h\w*$'
+    th "GVEdge's `in=` needs a subgraph name; got '"..l:subgraph.."'"
+  en
 
-  let l:at = g:gvbuf->getbufinfo()[0].linecount-1
+  let l:chain = a:000->match('<-\|->')
+  if -1 != l:chain
+    " GVE a b -> c -> d
+    "  GVE b c -> d
+    "   GVE c d
+    "   GVE b c
+    "  GVE a b
+    "
+    " GVE a b <- c <- d
+    "  GVE c b <- d
+    "   GVE d b
+    "   GVE c b
+    "  GVE a b
+    "
+    " GVE a b <- c -> d
+    "  GVE c b -> d
+    "   GVE b d
+    "   GVE c b
+    "  GVE a b
+    "
+    " GVE a b -> c <- d
+    "  GVE b c <- d
+    "   GVE d c
+    "   GVE b c
+    "  GVE a b
+    cal call('s:GVEdge', a:000[l:chain+1:]->copy()->insert(a:to, '<-' == a:000[l:chain]))
+    cal call('s:GVEdge', [a:from, a:to]->extend(a:000[:l:chain-1]))
+    retu
+  en
+
+  let l:at = empty(l:subgraph)
+    \ ? g:gvbuf->getbufinfo()[0].linecount-1
+    \ : s:indexafter(s:lines(),
+    \   '    subgraph '..l:subgraph..' {',
+    \   '    }')
+
 
   cal s:update(l:at,
-    \ ['    '..a:from..' -> '..a:to..s:attrs('', a:000)])
+    \ [(empty(l:subgraph) ? '    ' : '        ')..a:from..' -> '..a:to..s:attrs('', a:000)])
 endf
 
 " completion {{{2
@@ -182,7 +247,7 @@ let s:compl_map = #{
   \ color: s:colors,
   \ fillcolor: s:colors,
   \ fontcolor: s:colors,
-  \ in: {-> s:lines()->filter('v:val =~ "^    subgraph cluster_"')->map('v:val->matchstr(''_\zs\w\+'')')},
+  \ in: {-> s:lines()->filter('v:val =~ "^    subgraph ')->map('v:val->matchstr(''_\zs\w\+'')')},
   \ label: {lead -> glob(lead..'*', 1, 1)->map('v:val->fnameescape()')},
   \ layout: 'circo dot fdp neato nop nop1 nop2 osage patchwork sfdp twopi'->split(),
   \ margin: 0,
@@ -221,10 +286,11 @@ fu s:compl(lead, _line, _pos)
 endf
 
 " commands {{{1
-com -bang -bar -nargs=* -complete=file               GVGraph   cal s:GVGraph  (<bang>0, <f-args>)
-com       -bar -nargs=+ -complete=customlist,s:compl GVCluster cal s:GVCluster(<f-args>)
-com       -bar -nargs=+ -complete=customlist,s:compl GVNode    cal s:GVNode   (<f-args>)
-com       -bar -nargs=+ -complete=customlist,s:compl GVEdge    cal s:GVEdge   (<f-args>)
+com -bar -nargs=* -complete=file               GVGraph    cal s:GVGraph  (<f-args>)
+com -bar -nargs=+ -complete=customlist,s:compl GVSubgraph cal s:GVCluster(<f-args>)
+com -bar -nargs=+ -complete=customlist,s:compl GVCluster  GVSubgraph cluster_<args>
+com -bar -nargs=+ -complete=customlist,s:compl GVNode     cal s:GVNode   (<f-args>)
+com -bar -nargs=+ -complete=customlist,s:compl GVEdge     cal s:GVEdge   (<f-args>)
 
 com -bang -bar GVXdot cal system('python3 -m xdot '..g:gvbuf->bufname()->shellescape()..'&'[<bang>1])
 

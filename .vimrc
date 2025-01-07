@@ -113,15 +113,21 @@ map Zz zzZ
 "com!                               ClipEdit ene |setl bh=wipe bt=nofile nobl noswf spell wrap |pu + |0d _ |no <buffer> <C-S> :<C-U>%y +<CR>
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
-com! -nargs=* -complete=file -bang GitDiff  ene |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl noswf |f [git-diff] <args> |cal setline(1, systemlist('git diff '.(<bang>0?'--staged ':'').<q-args>)) |no <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com! -nargs=*                      GitLog   ene |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl noswf |f [git-log] <args>  |cal setline(1, systemlist('git log '.<q-args>)) |nn <silent> <buffer> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
-com! -nargs=* -complete=file       GitShow  ene |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl noswf |f [git-show] <args> |cal setline(1, systemlist('git show '.<q-args>))
+com! -nargs=* -complete=file GitDiff  ene      |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl            noswf         |f [git-diff] <args>
+  \ |ev systemlist('git diff ' .<q-args>->expand()->shellescape())->setline(1) |nn          <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
+com! -nargs=*                GitLog   ene      |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl            noswf         |f [git-log] <args>
+  \ |ev systemlist('git log '  .<q-args>->expand()->shellescape())->setline(1) |nn <silent> <buffer> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
+com! -nargs=* -complete=file GitShow  ene      |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl            noswf         |f [git-show] <args>
+  \ |ev systemlist('git show ' .<q-args>->expand()->shellescape())->setline(1)
+com! -nargs=+ -complete=file GitBlame vert new |setl bh=wipe bt=nofile                         nobl nonu nornu noswf pvw scb |f [git-blame] <args> |winc 57<Bar>
+  \ |ev systemlist('git blame '.<q-args>->expand()->shellescape())->setline(1) |nn          <buffer> zp 0 |winc w |setl scb
 
 abc
 ca lang se wrap! spell! spl
 ca scra se bt=nofile ft
 ca hl se hls!
 ca wr se wrap!
+ca pw se pvw!
 ca vb vert sb
 
 " platform specific {{{1
