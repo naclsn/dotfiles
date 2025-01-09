@@ -26,7 +26,7 @@ filet plugin on
 au BufEnter * se fo-=o
 au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
-au FileType python if expand('<afile>') =~ 'pyi$' |nn gq :!black --quiet --pyi %<CR> |el |nn gq :!black --quiet -l<C-R>=&tw??78<CR> %<CR> |en
+au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gq :!python3 -m black --quiet --pyi %<CR> |el |nn <buffer> gq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR> |en
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
 hi clear diffAdded |hi link diffAdded Special
@@ -37,7 +37,7 @@ if has_key(g:, 'terminal_ansi_colors')
   exe 'hi Terminal guibg='.c
   unl c
 en
-au FileType xxd nn <C-A> geebi0x<Esc><C-A>b"_2xe |nn <C-X> geebi0x<Esc><C-X>b"_2xe
+au FileType xxd nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
 
 nm <C-J> :<C-U>tabn<CR>
 nm <C-K> :<C-U>tabN<CR>
@@ -113,14 +113,16 @@ map Zz zzZ
 "com!                               ClipEdit ene |setl bh=wipe bt=nofile nobl noswf spell wrap |pu + |0d _ |no <buffer> <C-S> :<C-U>%y +<CR>
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
-com! -nargs=* -complete=file GitDiff  ene      |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl            noswf         |f [git-diff] <args>
-  \ |ev systemlist('git diff ' .<q-args>->expand()->shellescape())->setline(1) |nn          <buffer> gf ?diff --git<CR>f/l<C-W><C-S>vEgf
-com! -nargs=*                GitLog   ene      |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl            noswf         |f [git-log] <args>
-  \ |ev systemlist('git log '  .<q-args>->expand()->shellescape())->setline(1) |nn <silent> <buffer> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
-com! -nargs=* -complete=file GitShow  ene      |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl            noswf         |f [git-show] <args>
-  \ |ev systemlist('git show ' .<q-args>->expand()->shellescape())->setline(1)
-com! -nargs=+ -complete=file GitBlame vert new |setl bh=wipe bt=nofile                         nobl nonu nornu noswf pvw scb |f [git-blame] <args> |winc 57<Bar>
-  \ |ev systemlist('git blame '.<q-args>->expand()->shellescape())->setline(1) |nn          <buffer> zp 0 |winc w |setl scb
+" git {{{1
+fu s:git_buflines(com, args)
+  let l:exp = empty(a:args) ? '' : a:args->expand()->shellescape()
+  exe 'f [git-'..a:com..']' l:exp
+  ev ('git '..a:com..' '..l:exp)->systemlist()->setline(1)
+endf
+com! -nargs=* -complete=file GitDiff  ene      |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl            noswf         |cal s:git_buflines('diff',  <q-args>) |nn <buffer>          zp :ped <C-R>=search('^@@', 'bcnW')->getline()->matchstr('+\d\+')<CR> <C-R>=search('^---', 'bcnW')->getline()[6:]<CR><CR>
+com! -nargs=*                GitLog   ene      |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl            noswf         |cal s:git_buflines('log',   <q-args>) |nn <buffer> <silent> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
+com! -nargs=* -complete=file GitShow  ene      |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl            noswf         |cal s:git_buflines('show',  <q-args>)
+com! -nargs=+ -complete=file GitBlame vert new |setl bh=wipe bt=nofile                         nobl nonu nornu noswf pvw scb |cal s:git_buflines('blame', <q-args>) |winc 57<Bar> |winc w |setl scb
 
 abc
 ca lang se wrap! spell! spl

@@ -121,12 +121,26 @@ __jabs_poetry() {
     *) ;;
   esac
 }
+__jabs_python() {
+  case $1 in
+    -m) shift; __jabsC "$@";;
+    *) echo python;;
+  esac
+}
+__jabs_python3() {
+  __jabs_python "$@";
+}
 
+__jabsC() {
+  if type -t __jabs_$1 >/dev/null
+    then __jabs_$1 "${@:2}"
+    else echo $1
+  fi
+}
 __jabs() {
   jobs |while read spec status comm args
     do
-      comm=${comm##*/}
-      type -t __jabs_$comm >/dev/null && comm=`__jabs_$comm $args`
+      comm=`__jabsC ${comm##*/} $args`
       case ${spec:3:1} in
         +) col=32;;
         -) col=34;;
