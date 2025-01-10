@@ -33,7 +33,7 @@
 " however the behavior is counter intuitive for longer chains,
 " "back arrow collapses"--make what you want of this info.
 "
-" Last Change:	2025 Jan 7
+" Last Change:	2025 Jan 10
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -76,6 +76,16 @@ fu s:update(at, l)
   cal setbufvar(g:gvbuf, '&mod', 0)
 endf
 
+fu s:tagfunc(pat, _flags, _info)
+  let l:pat = '^    subgraph \+\('..a:pat..'\w\+\) *{\|^    \%(    \)\?\('..a:pat..'\w\+\)\%($\| *[)'
+  let l:found = s:lines()->match(l:pat)
+  retu -1 != l:found ? [#{
+    \   name: g:gvbuf->getbufline(l:found)->matchlist()[1:2]->join(''),
+    \   filename: g:gvbuf->bufname(),
+    \   cmd: l:found,
+    \ }] : v:null
+endf
+
 " command functions {{{2
 fu s:GVGraph(name='%', ...)
   "" some attrs:
@@ -95,11 +105,8 @@ fu s:GVGraph(name='%', ...)
       \ ['', '}'])
       \ ->setbufline(g:gvbuf, 1)
   en
-      "\ (a:gray ? [
-      "  \ '    bgcolor="#333333"',
-      "  \ '    color="#eeeeee" fontcolor="#eeeeee"',
-      "  \ '    node [color="#eeeeee" fontcolor="#eeeeee"]',
-      "  \ '    edge [color="#eeeeee" fontcolor="#eeeeee"]'] : []) +
+
+  cal setbufvar(g:gvbuf, '&tfu', funcref(s:tagfunc))
 endf
 
 fu s:GVSubgraph(name, ...)
@@ -109,7 +116,7 @@ fu s:GVSubgraph(name, ...)
   if a:name !~ '^\h\w*$'
     th "GVCluster needs a subgraph name first; got '"..a:name.."'"
   en
-  if -1 != s:lines()->match('^    subgraph '..a:name)
+  if -1 != s:lines()->match('^    subgraph \+'..a:name)
     th "subgraph '"..a:name.."' already exists"
   en
 
@@ -134,7 +141,7 @@ fu s:GVNode(name, ...)
   if a:name !~ '^\h\w*$'
     th "GVNode needs a node name first; got '"..a:name.."'"
   en
-  if -1 != s:lines()->match('^\v    (    )?'..a:name..'+($| [)')
+  if -1 != s:lines()->match('^\v    %(    )?'..a:name..'%($| *[)')
     th "node '"..a:name.."' already exists"
   en
   let l:subgraph = a:000->matchstr('^in=\zs.*')[3:]

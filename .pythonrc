@@ -10,7 +10,7 @@ from functools import *
 from itertools import *
 from pprint import pprint, pformat
 from string import *
-import os, sys, random, time, math
+import json, os, sys, random, re, time, math
 rand = random.randrange
 
 _install_dunders = lambda *names: lambda it: ([setattr(it, name, lambda self, *va, _clo_name_=name, **ka: (getattr(it, str(id(self))).append((_clo_name_, va, ka)), self)[1]) for name in names], it)[1]
