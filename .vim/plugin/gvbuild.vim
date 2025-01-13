@@ -106,7 +106,7 @@ fu s:GVGraph(name='%', ...)
       \ ->setbufline(g:gvbuf, 1)
   en
 
-  cal setbufvar(g:gvbuf, '&tfu', funcref(s:tagfunc))
+  cal setbufvar(g:gvbuf, '&tfu', funcref('s:tagfunc'))
 endf
 
 fu s:GVSubgraph(name, ...)

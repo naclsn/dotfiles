@@ -211,6 +211,7 @@ endf
 
 " autocommands {{{1
 aug vimno
+  au!
   au Syntax vimno cal s:Syntax()
   au FileType vimno cal s:FileType()
   au BufNewFile,BufRead *.vimno setf vimno
