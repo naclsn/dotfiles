@@ -1,7 +1,7 @@
 " Vim filetype plugin for interactive notes. Somewhat like a minimal org mode.
 " This is a short single file with filetype/indent/syntax/omnifunc/tagfunc.
 "
-" Last Change:	2024 Nov 27
+" Last Change:	2025 Jan 15
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -11,6 +11,8 @@
 " TODO: fix Source and make it work with |if_tcl.txt| |if_lua.txt|
 "       |if_perl.txt| |if_pyth.txt| |if_ruby.txt| |if_mzsch.txt|
 " TODO: comment Echo/Let ids and !.. :.. syntaxes
+" TODO: add $'' and $"" highlight
+" TODO: `= highlight
 " TODO: fix @Spell/@NoSpell situation
 " TODO: tagfunc
 " TODO: jobs
@@ -31,11 +33,11 @@ fu s:Echo(n, ...)
   "" Echos in the document itself; the line with the `Echo` itself is prefixed
   "" with a (hopefully unique) number after first run, which is used to locate
   "" itself on other runs. Output is prefixed with same indentation and '"| '.
-  ""  0. if value starts with !, uses system()
+  ""  0. if value starts with !, uses system(); `= are expanded
   ""  0. if value starts with :, uses execute()
   ""  0. otherwise it is a normal expression, uses eval()
   let c = join(a:000)
-  let r = '!' == c[0] ? system(c[1:]) : ':' == c[0] ? execute(c[1:]) : eval(c)
+  let r = '!' == c[0] ? system(c[1:]->substitute('`=.\{-}`', '\=submatch(0)[2:-2]->eval()', 'g')) : ':' == c[0] ? execute(c[1:]) : eval(c)
   echo r
   let n = a:n ?? (line('.')+localtime())%10000
   exe '-5/^\s*'..(a:n ? n : '')..'\vEcho?|Let!/'
@@ -51,7 +53,7 @@ fu s:Let(bang, n, var, eq, ...)
   "" the variable will contain the full file path. If the file already existed
   "" do :cal var->delete(). `Let!` will also `Echo`. See g:vimno_state as well
   "" as $VIMNO_CACHE.
-  ""  0. if value starts with !, uses system()
+  ""  0. if value starts with !, uses system(); `= are expanded
   ""  0. if value starts with :, uses execute()
   ""  0. otherwise it is a normal expression, uses eval()
   let d = $VIMNO_CACHE..'/'
@@ -61,7 +63,7 @@ fu s:Let(bang, n, var, eq, ...)
   cal mkdir(fnamemodify(d, ':h'), 'p')
   let c = join(a:000)
   echom c
-  let r = '!' == c[0] ? system(c[1:]) : ':' == c[0] ? execute(c[1:]) : eval(c)
+  let r = '!' == c[0] ? system(c[1:]->substitute('`=.\{-}`', '\=submatch(0)[2:-2]->eval()', 'g')) : ':' == c[0] ? execute(c[1:]) : eval(c)
   let g:l = split(r, "\n")
   cal writefile(g:l, d)
   if a:bang |cal s:Echo(a:n, 'g:l') |el |echo r |en

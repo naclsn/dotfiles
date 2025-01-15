@@ -33,7 +33,7 @@
 " however the behavior is counter intuitive for longer chains,
 " "back arrow collapses"--make what you want of this info.
 "
-" Last Change:	2025 Jan 10
+" Last Change:	2025 Jan 15
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -49,11 +49,11 @@ let g:loaded_gvbuild = 1
 " s: functions {{{1
 fu s:attrs(ind, l)
   let l:l = a:l
-    \ ->mapnew({_, attr -> a:ind..attr->substitute('^\w\+=\zs.*', '\=''"''..escape(submatch(0)->expand(), ''"'')..''"''', '')})
+    \ ->mapnew({_, attr -> a:ind..attr->substitute('^\w\+=\zs.*', '\=''"''..submatch(0)->expandcmd()->escape(''"'')..''"''', '')})
     \ ->filter('v:val !~ "^in="')
     \ ->sort()
 
-  let l:nono = l:l->matchstr('^\%(\w\+="\)\@!.*$')
+  let l:nono = l:l->matchstr('^'..a:ind..'\%(\w\+="\)\@!.*$')
   if !empty(l:nono)
     th "attribute argument invalid: '"..l:nono.."'"
   en
@@ -114,7 +114,7 @@ fu s:GVSubgraph(name, ...)
   ""  0. label
   ""  0. rank
   if a:name !~ '^\h\w*$'
-    th "GVCluster needs a subgraph name first; got '"..a:name.."'"
+    th "GVSubgraph needs a subgraph name first; got '"..a:name.."'"
   en
   if -1 != s:lines()->match('^    subgraph \+'..a:name)
     th "subgraph '"..a:name.."' already exists"
@@ -271,7 +271,7 @@ fu s:compl(lead, _line, _pos)
   let F = s:compl_map->get(l:attr)
   let t = type(l:F)
   let r = (l:t
-    \   ? (3 == l:t ? l:F : l:F(a:lead[len(l:attr)+1:]->expand()))->mapnew('l:attr.."="..v:val')
+    \   ? (3 == l:t ? l:F : l:F(a:lead[len(l:attr)+1:]->expandcmd()))->mapnew('l:attr.."="..v:val')
     \   : s:compl_map->keys()->map('v:val.."="'))
     \ ->sort()
 
@@ -293,11 +293,11 @@ fu s:compl(lead, _line, _pos)
 endf
 
 " commands {{{1
-com -bar -nargs=* -complete=file               GVGraph    cal s:GVGraph  (<f-args>)
-com -bar -nargs=+ -complete=customlist,s:compl GVSubgraph cal s:GVCluster(<f-args>)
+com -bar -nargs=* -complete=file               GVGraph    cal s:GVGraph   (<f-args>)
+com -bar -nargs=+ -complete=customlist,s:compl GVSubgraph cal s:GVSubgraph(<f-args>)
 com -bar -nargs=+ -complete=customlist,s:compl GVCluster  GVSubgraph cluster_<args>
-com -bar -nargs=+ -complete=customlist,s:compl GVNode     cal s:GVNode   (<f-args>)
-com -bar -nargs=+ -complete=customlist,s:compl GVEdge     cal s:GVEdge   (<f-args>)
+com -bar -nargs=+ -complete=customlist,s:compl GVNode     cal s:GVNode    (<f-args>)
+com -bar -nargs=+ -complete=customlist,s:compl GVEdge     cal s:GVEdge    (<f-args>)
 
 com -bang -bar GVXdot cal system('python3 -m xdot '..g:gvbuf->bufname()->shellescape()..'&'[<bang>1])
 
