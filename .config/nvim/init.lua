@@ -32,6 +32,7 @@ for it, conf in pairs {
     nim_langserver= {},
     basedpyright= { settings= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
+        reportConstantRedefinition= 'warning',
         reportDeprecated= 'information',
         reportExplicitAny= 'none',
         reportImplicitOverride= 'information',

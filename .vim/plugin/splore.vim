@@ -231,14 +231,14 @@ fu s:apply()
   setl ul=-1
   let pos = getpos('.')
   1
-  try
-    for s in reverse(eds) |echo s |exe s |endfo
-  fina
-    cal setpos('.', pos)
-    "exe "norm! a \<BS>\<Esc>"
-    let &ul = pul
-    setl nomod
-  endt
+  "try
+    for s in reverse(eds) |exe s |endfo
+  "fina
+  "  cal setpos('.', pos)
+  "  "exe "norm! a \<BS>\<Esc>"
+  "  let &ul = pul
+  "  setl nomod
+  "endt
 endf
 
 fu s:plore(dir)

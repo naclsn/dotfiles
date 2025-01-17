@@ -115,7 +115,7 @@ __jabs_run() {
   esac
 }
 __jabs_poetry() {
-  echo poy-$1
+  printf %s\  poy-$1
   case $1 in
     run) echo $2;;
     *) ;;

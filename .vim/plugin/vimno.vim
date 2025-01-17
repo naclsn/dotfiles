@@ -44,7 +44,7 @@ fu s:Echo(n, ...)
   let i = matchstr(getline('.'), '^\s*')
   exe 's/^\s*\zs\d*/'..n
   if a:n |sil /^\(\s*\\\)\@!/;/^\(\s*"| \)\@!/-d |sil - |en
-  let l = 3 == type(r) ? r : split(r, "\n")
+  let l = 3 == type(r) ? r : split(1 != type(r) ? string(r) : r, "\n")
   cal append('.', map(l, '"'..i..' \"| "..v:val->trim("", 2)'))
 endf
 

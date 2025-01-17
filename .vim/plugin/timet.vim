@@ -92,7 +92,7 @@ endf
 fu s:present_timet_day(day)
   let r = TimetDay(a:day)
   let t = 0
-  for k in sort(keys(r))
+  for k in sort(keys(r), {a, b -> r[a].active_time-r[b].active_time})
     let t+= r[k].active_time
     ec s:present_time(r[k].active_time) "\t-" k
   endfo
