@@ -8,16 +8,16 @@
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
-"
-" TODO: omnifunc/tagfunc
-" TODO: jobs
 
 " g: variables {{{1
-if &cp || exists('g:loaded_vimno') |fini |en
-let g:loaded_vimno = 1
+"if &cp || exists('g:loaded_vimno') |fini |en
+"let g:loaded_vimno = 1
 
-if !exists('g:vimno_state') |let g:vimno_state = expand('~/.cache/vimno/') |en
-if '/' != g:vimno_state[-1:] |let g:vimno_state..= '/' |en
+if !exists('g:persistate') |let g:persistate = expand('~/.cache/vimno/') |en
+if '/' != g:persistate[-1:] |let g:persistate..= '/' |en
+
+com SourceFold exe foldlevel() ? "norm! [zms'']z:'s,so\<CR>''" : ''
+nn zS :SourceFold<CR>
 
 " REM:
 "   g:vimsyn_embed == 0   : don't embed any scripts
@@ -50,14 +50,11 @@ fu s:filetype()
   cal IncludeSyntax('sh')
 
   " For Example: >vim
-  "     let a = system(cmd)
+  "     let x = systemlist(cmd)
   "     cal writefile(x, b:state..'/a.txt')
-  "
-  "     fu Freeze(var, ext='txt')
-  "       ev {a:var}->writefile(b:state..'/'..a:var..a:ext)
-  "     endf
-  " <
-  let b:state = g:vimno_state .. expand('%:p')->substitute('/', '%', 'g')
+  " < see |Store|
+  let b:state = g:persistate..expand('%:p')->substitute('/', '%', 'g')
+  ev b:state->mkdir('p')
 endf
 
 " public functions {{{1
@@ -79,25 +76,56 @@ fu IncludeSyntax(syntax, Name='', TAG='')
   let b:current_syntax = 'vim'
 endf
 
-fu Curl(url, head, data)
+fu Storable(var, ext='txt')
+  retu a:var !~ '^\$\|^\l:' ? 'g:'..a:var : a:var
+endf
+
+fu Storage(var, ext='txt')
+  retu b:state..'/'..Storable(a:var, a:ext)..'.'..a:ext
+endf
+
+fu Store(var, ext='txt')
+  let l:var = Storable(a:var, a:ext)
+  ev {l:var}->writefile(Storage(l:var))
+endf
+
+fu Restore(var, ext='txt')
+  let l:var = Storable(a:var, a:ext)
+  let {l:var} = readfile(Storage(l:var))
+endf
+
+fu Curl(url, head, data) abort
   let l:url = a:url
   let l:method = l:url->matchstr('^\u\+ ')
   let l:url = l:url[l:method->len():]
-  if a:url !~ '^\l\+://' |let l:url..= 'https://' |en
+  if l:url !~ '^\l\+://' |let l:url = 'https://'..l:url |en
 
-  let l:com = ['curl', '-s', l:url]
-  if !empty(l:method) |cal add(l:com, '-X'..l:method[:-2]) |en
+  let l:com = ['curl', '-so-', l:url]
 
-  for l:k in a:head->keys() |cal add(l:com, $'-H{l:k}:{a:head[l:k]}') |endfo
-
-  if v:t_dict == a:data->type()
-    for l:k in a:data->keys() |cal add(l:com, $'-d{l:k}={a:head[l:k]}') |endfo
-  el
-    for l:d in a:data->keys() |cal add(l:com, '-d'..l:d) |endfo
+  let l:encode = v:false
+  if !empty(l:method)
+    if 'GET ' == l:method && l:url =~ '^http'
+      let l:encode = v:true
+      cal add(l:com, '-G')
+    el
+      cal add(l:com, '-X'..l:method[:-2])
+    en
   en
 
+  for l:k in a:head->keys() |cal add(l:com, '-H'..l:k..':'..a:head[l:k]) |endfo
+
+  let l:data = v:t_dict == a:data->type()
+    \ ? a:data->keys()->map({_, k -> k..'='..a:data[k]})
+    \ : a:data
+
+  for l:it in l:data
+    ev l:encode && l:it =~ '=.*[^-0-9A-Z_a-z]'
+      \ ? l:com->extend(['--data-urlencode', l:it])
+      \ : l:com->add('-d'..l:it)
+  endfo
+
   echom l:com
-  retu l:com->system()
+  retu l:com->systemlist()
 endf
 
 " vim: se fdm=marker fdl=0 ts=2:
