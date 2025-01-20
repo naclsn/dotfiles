@@ -23,13 +23,6 @@ vim.cmd.hi 'link @punctuation NormalNC']]
 --vim.lsp.set_log_level("trace")
 
 for it, conf in pairs {
-    clangd= {},
-    elmls= {},
-    erlangls= {},
-    jdtls= {},
-    ts_ls= {},
-    lua_ls= {},
-    nim_langserver= {},
     basedpyright= { settings= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
         reportConstantRedefinition= 'warning',
@@ -53,8 +46,16 @@ for it, conf in pairs {
         reportUnusedExpression= 'none',
         reportWildcardImportFromLibrary= 'information',
     } } } } },
-    rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
+    clangd= {},
+    elmls= {},
+    erlangls= {},
+    jdtls= {},
+    lua_ls= {},
+    nim_langserver= {},
     ruby_lsp= {},
+    rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
+    ts_ls= {},
+    --vimls= {},
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
 
