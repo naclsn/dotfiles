@@ -14,14 +14,19 @@ if [ %$1 = %-h ]
 Usage: one of
   -h: help
   -l: list
+  -a: all
   -n: nothing
   -f: force (rm -f existing ones)
   -o: only (next arg is a local file)
   (one arg): same as only
-  (none): setup all
+  (none): same as list
 DOC
 fi
-[ 1 -eq $# ] && [ ${1#-} = $1 ] && set -- -o $1
+
+[ 1 -eq $# ] && [ %$1 = %${1#-} ] && set -- -o $1
+[ 0 -eq $# ] && set -- -l
+[ 1 -eq $# ] && [ %$1 = %-a ] && set --
+
 [ %$1 = %-o ] && if [ -f $2 ]
   then
     abs=`command realpath $2`

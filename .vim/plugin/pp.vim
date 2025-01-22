@@ -38,6 +38,7 @@ fu s:strPPer(str, opts)
     let l:avail = a:opts.wrap-a:opts.inde - 2 - (l:last ? 0 :3 )
     if l:avail < 8 |let l:avail = 8 |en
 
+    " inner indent for use if line too long
     let l:ininde = l:l->match('\%( \|\\t\)*\zs')
 
     wh l:avail < len(l:l)
@@ -45,12 +46,18 @@ fu s:strPPer(str, opts)
       let l:fits = l:l[:l:cut-1]
 
       " avoid cutting an escape sequence
-      let l:esc = l:fits->matchlist('\(\\\+\)\o\{,2}$')
-      if !empty(l:esc) && len(l:esc[1]) % 2
-        let l:cut-= len(l:esc[0])
+      let l:esc = l:fits->matchlist('\(\\*\)\(\\\o\{,2}\)$')
+      if !empty(l:esc) && 0 == len(l:esc[1]) % 2
+        let l:cut-= len(l:esc[2])
         let l:fits = l:l[:l:cut-1]
       en
-      let l:l = l:l[l:cut:]
+
+      " try to avoid cutting a word (\o stuff: don't count an oct esc as word)
+      let l:wor = l:fits->matchstr('\%(\\\l\)\?\zs\w\+$')
+      if !empty(l:wor) && l:l[l:cut] =~ '\w' && l:fits[-4:] !~ '\\\o\{3}'
+        let l:cut-= len(l:wor)
+        let l:fits = l:l[:l:cut-1]
+      en
 
       ev l:r[-1]->extend([
         \ 'String', '"'..l:fits..'"',
@@ -58,6 +65,8 @@ fu s:strPPer(str, opts)
         \ 'Operator', '..'])
       ev l:r->add([])
 
+      let l:l = l:l[l:cut:]
+      " still some left so use inner indent
       if l:ininde && !empty(l:l)
         ev l:r[-1]->extend(['None', ' '->repeat(l:ininde)])
       en
@@ -80,6 +89,39 @@ fu s:listPPer(list, opts)
   " only multi-line if needed:
   " * any item is
   " * total len would be long
+  let a:opts.wrap-= 1
+  let l:list = a:list->mapnew({_, e -> PPhl(e, a:opts)})
+  let a:opts.wrap+= 1
+
+  let l:r = [['None', '[']]
+  let l:len = len(l:list)
+  for l:k in range(len(l:list))
+    let l:firstln = l:list[l:k][0]
+    ev l:r[-1]->extend(l:firstln)
+
+    let l:ml = 1 < len(l:list[l:k])
+    if l:ml
+      ev l:r->extend(l:list[l:k][1:]->map({_, l -> ['None', ' ']->extend(l)}))
+    el
+      " may still be ml if too long
+      let l:txtlen = (len(l:firstln)/2)
+        \ ->range()
+        \ ->reduce({acc, cur -> acc + l:firstln[2*cur+1]->len()}, 0)
+      echom type(a:list) == type(a:list[0]) ? 'mat' : 'vec'  l:txtlen
+      let l:ml = a:opts.wrap-a:opts.inde - 1 < l:txtlen
+    en
+
+    if l:k < l:len-1
+      ev l:r[-1]->extend(['None', ','])
+      if l:ml
+        ev l:r->add(['None', ' '])        |el
+        ev l:r[-1]->extend(['None', ' ']) |en
+    el
+      ev l:r[-1]->extend(['None', ']'])
+    en
+  endfo
+
+  retu l:r
 endf
 
 fu s:dictPPer(dict, opts)
@@ -123,7 +165,8 @@ fu PPl(ny, opts={})
   " pretty print to a list of lines
   " (without trailing \n nor leading \\)
   retu PPhl(a:ny, a:opts)
-    \ ->map({_, line -> range(line->len()/2)
+    \ ->map({_, line -> (line->len()/2)
+    \   ->range()
     \   ->map({_, k -> line[2*k+1]})
     \   ->join('')})
 endf
@@ -134,13 +177,23 @@ fu PPs(ny, opts={})
   retu 1 < len(l:ines) ? '\ '..l:ines->join("\n\\ ").."\n" : l:ines[0]
 endf
 
-fu PP(ny, opts={})
+fu PP(ny, name='_', opts={})
   " pretty print to |:echo| and forward value, see also |PPs|
   " (with trailing \n and leading \\)
   let l:ines = PPhl(a:ny, a:opts)
 
+  ec ''
+  if 1 < len(l:ines)
+    echoh Keyword    |echon 'let'
+    echoh None       |echon ' '
+    echoh Identifier |echon a:name
+    echoh None       |echon ' '
+    echoh Operator   |echon '='
+  en
+
   for l:l in l:ines
     if 1 < len(l:ines)
+      echoh None    |ec '  '
       echoh Special |echon '\'
       echoh None    |echon ' '
     en
@@ -186,14 +239,14 @@ cal assert_equal([
   \   ['String', '"bla\n"', 'None', ' ', 'Operator', '..'],
   \   ['String', '"bla"']],
   \ PPhl("bla\nbla"), )
-" wrap match indent
+" wrap match indent + don't cut word
 cal assert_equal([
   \   ['String', '"def a():\n"', 'None', ' ', 'Operator', '..'],
-  \   ['String', '"    pass # this a lon"', 'None', ' ', 'Operator', '..'],
-  \   ['None', '    ', 'String', '"g line aint it"']],
+  \   ['String', '"    pass # this a "', 'None', ' ', 'Operator', '..'],
+  \   ['None', '    ', 'String', '"long line aint it"']],
   \ PPhl("def a():\n    pass # this a long line aint it", #{wrap: 26}))
 " {{{2
-" dont cut escape sequences
+" don't cut escape sequences
 cal assert_equal([
   \   ['String', '"abcdefhijklmnopqrs"', 'None', ' ', 'Operator', '..'],
   \   ['String', '"\tuvwxyz"']],
@@ -210,12 +263,42 @@ cal assert_equal([
   \   ['String', '"abcdefhijklmnop\006"', 'None', ' ', 'Operator', '..'],
   \   ['String', '"rstuvwxyz"']],
   \ PPhl("abcdefhijklmnop\006rstuvwxyz", #{wrap: 24}))
+cal assert_equal([
+  \   ['String', '"abcdefhijklmnopq\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\t_uvwxyz"']],
+  \ PPhl("abcdefhijklmnopq\\\t_uvwxyz", #{wrap: 24}))
+cal assert_equal([
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\"', 'None', ' ', 'Operator', '..'],
+  \   ['String', '"\\\\\\\\"']],
+  \ PPhl('\\\\\\\\\\\\\\\\\\\\', #{wrap: 10}))
 " {{{2
 cal assert_equal([
   \   ['Function', 'function', 'Special', '(', 'String', "'tr'", 'Special', ')']],
   \ PPhl(function('tr')))
+" {{{2
+" lists
+cal assert_equal([
+  \   ['None', '[', 'Number', '1', 'None', ',', 'None', ' ', 'Number', '2', 'None', ',', 'None', ' ', 'Number', '3', 'None', ']']],
+  \ PPhl([1, 2, 3]))
+cal assert_equal([
+  \   ['None', '[', 'String', '"a\n"', 'None', ' ', 'Operator', '..'],
+  \   ['None', ' ', 'String', '"b"', 'None', ','],
+  \   ['None', ' ', 'String', '"c\n"', 'None', ' ', 'Operator', '..'],
+  \   ['None', ' ', 'String', '"d"', 'None', ']']],
+  \ PPhl(["a\nb", "c\nd"]))
 " }}}
 
-if !empty(v:errors) |ec "v:errors:\n\t"..v:errors->mapnew('v:val->fnamemodify(":t")')->join("\n\t").."\n" |en
+if !empty(v:errors)
+  ec "v:errors:\n\t"..v:errors->mapnew('v:val->fnamemodify(":t")')->join("\n\t").."\n" |el
+  ec 'all tests passing! \o/' |en
 
-cal PP("def a():\n    pass # this a long line aint it", #{wrap: 26})
+"cal PP("def a():\n    pass # this a long line aint it", 'pyfunc', #{wrap: 26})
+cal PP([range(3), range(3), range(3)], #{wrap: 14})
+"cal PP(["a\nb", "c\nd"])

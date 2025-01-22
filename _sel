@@ -3,7 +3,7 @@ _sel(){
  [ x = "x${PS1#?}" ]&&PS1='\u@\h:\w\$ '
  PS1=${SHLVL%1}'$(printf %-3s `jobs|cut -c-4`)'$PS1
  reset(){ `command -v stty||echo :` sane -ixon;};reset
- alias l='command ls --color -FX' la=l\ -A ll=l\ -go py=python3 s=git\ status
+ alias l='command ls --color -FX' la=l\ -A ll=l\ -dog py=python3 s=git\ status
  export _SEL=_sel EDITOR=vim LESS=FR MANOPT=--nj\ --nh VIMINIT='sil! ru defaults.vim
   nn <C-N> :bn<CR>
   nn <C-P> :bp<CR>

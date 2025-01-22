@@ -3,64 +3,60 @@
 " This is a short file that really doesn't provide that much but a few tools;
 " the main point is the workflow itself, this can work with plain Vim.
 "
+" |Primer()| below as a start. But overall the idea is to simply work in
+" a file rather than a REPL, more or less like a notebook.
+"
+"     +,/^\.$/so " :.so on this line to run until the . line
+"     let a = 0
+"     py print('hi')
+"     .
+"
+"     +,/^\.$/so " works well with the various |if_|, eg |if_pyth|
+"     py <<
+"     def something():
+"         pass
+"     .
+"
+" See also things like |g:vimsyn_embed|.
+"
+" Actually in this file:
+"   * |Primer()|
+"   * |Heredoc()|
+"   * |Registore()|
+"   * |Curl()|
+"   * |PP()|, |PPl()| and |PPs()|
+"
 " Last Change:	2025 Jan 18
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
 "  Just, know what you're using and doing-
 
-" g: variables {{{1
-"if &cp || exists('g:loaded_vimno') |fini |en
-"let g:loaded_vimno = 1
-
-if !exists('g:persistate') |let g:persistate = expand('~/.cache/vimno/') |en
-if '/' != g:persistate[-1:] |let g:persistate..= '/' |en
-
-com SourceFold exe foldlevel() ? "norm! [zms'']z:'s,so\<CR>''" : ''
-nn zS :SourceFold<CR>
-
-" REM:
-"   g:vimsyn_embed == 0   : don't embed any scripts
-"   g:vimsyn_embed =~# 'l' : embed Lua
-"   g:vimsyn_embed =~# 'm' : embed MzScheme
-"   g:vimsyn_embed =~# 'p' : embed Perl
-"   g:vimsyn_embed =~# 'P' : embed Python
-"   g:vimsyn_embed =~# 'r' : embed Ruby
-"   g:vimsyn_embed =~# 't' : embed Tcl
-
-" s: functions {{{1
-fu s:filetype()
-  if exists('g:vimsyn_folding') && (g:vimsyn_folding =~# '[hl]')
-    com! -bar -nargs=+ VimFoldl <args> fold |el
-    com! -bar -nargs=+ VimFoldl <args>      |en
-  if g:vimsyn_embed =~# 'l' |VimFoldl sy region vimLuaRegion      matchgroup=vimLetHereDocStart start=+=<<\s*\%(trim\s*\)\?\%(eval\s*\)\?\%(trim\s*\)\?\z(LUA\S*\)+  end=+^\s*\z1$+ contains=@vimLuaScript      |en
-  if g:vimsyn_embed =~# 'm' |VimFoldl sy region vimMzSchemeRegion matchgroup=vimLetHereDocStart start=+=<<\s*\%(trim\s*\)\?\%(eval\s*\)\?\%(trim\s*\)\?\z(MZ\S*\)+   end=+^\s*\z1$+ contains=@vimMzSchemeScript |en
-  if g:vimsyn_embed =~# 'p' |VimFoldl sy region vimPerlRegion     matchgroup=vimLetHereDocStart start=+=<<\s*\%(trim\s*\)\?\%(eval\s*\)\?\%(trim\s*\)\?\z(PERL\S*\)+ end=+^\s*\z1$+ contains=@vimPerlScript     |en
-  if g:vimsyn_embed =~# 'P' |VimFoldl sy region vimPythonRegion   matchgroup=vimLetHereDocStart start=+=<<\s*\%(trim\s*\)\?\%(eval\s*\)\?\%(trim\s*\)\?\z(PY\S*\)+   end=+^\s*\z1$+ contains=@vimPythonScript   |en
-  if g:vimsyn_embed =~# 'r' |VimFoldl sy region vimRubyRegion     matchgroup=vimLetHereDocStart start=+=<<\s*\%(trim\s*\)\?\%(eval\s*\)\?\%(trim\s*\)\?\z(RUBY\S*\)+ end=+^\s*\z1$+ contains=@vimRubyScript     |en
-  if g:vimsyn_embed =~# 't' |VimFoldl sy region vimTclRegion      matchgroup=vimLetHereDocStart start=+=<<\s*\%(trim\s*\)\?\%(eval\s*\)\?\%(trim\s*\)\?\z(TCL\S*\)+  end=+^\s*\z1$+ contains=@vimTclScript      |en
-  delc VimFoldl
-
-  " Adds Support For: >vim
-  "     let script =<<SH
-  "       # this should have sh highlight
-  "       echo hello
-  "     SH
-  " <
-  cal IncludeSyntax('sh')
-
-  " For Example: >vim
-  "     let x = systemlist(cmd)
-  "     cal writefile(x, b:state..'/a.txt')
-  " < see |Store|
-  let b:state = g:persistate..expand('%:p')->substitute('/', '%', 'g')
-  ev b:state->mkdir('p')
+" public functions {{{1
+fu Primer()
+  if getline(1) !~ '^+,'
+    1i
++,/^\.$/so
+ia <buffer> sofence +,/^\.$/so
+ia <buffer> upfence +,/^\.$/-d_<Bar>-<Bar>cal append('.',
+map <buffer> ]] /^+,<CR>
+map <buffer> ][ /^\.$<CR>
+map <buffer> [[ ?^+,<CR>
+map <buffer> [] ?^\.$<CR>
+-
+.
+    s/-/./
+  en
 endf
 
-" public functions {{{1
-fu IncludeSyntax(syntax, Name='', TAG='')
-  let l:Name = empty(a:Name) ? a:syntax->fnamemodify(':t:r')->substitute('^\w', {c -> c[0]->toupper()}) : a:Name
-  let l:TAG = empty(a:TAG) ? a:Name->toupper() : a:TAG
+fu Heredoc(syntax, TAG='', Name='')
+  " cal Heredoc('sh')
+  " let script =<<SH
+  "   # this should have sh highlight
+  "   echo hello
+  " SH
+  let l:TAG = empty(a:TAG) ? a:syntax->fnamemodify(':t:r')->toupper() : a:TAG
+  let l:Name = empty(a:Name) ? a:TAG->substitute('^\w', {c -> c[0]->toupper()}, '') : a:Name
 
   unl b:current_syntax
   exe 'sy include @vim'..a:Name..'Script'
@@ -76,25 +72,35 @@ fu IncludeSyntax(syntax, Name='', TAG='')
   let b:current_syntax = 'vim'
 endf
 
-fu Storable(var, ext='txt')
-  retu a:var !~ '^\$\|^\l:' ? 'g:'..a:var : a:var
+fu Registore(var='') abort
+  " a:var is a var name with optional .ext (eg 'g:some.json', g: optional)
+  " * var exists -> store it
+  " * var doesn't exist -> load it
+  " * a:var itself empty -> only set b:state
+  " return path
+  if !exists('b:state')
+    let b:state = g:->get('registore', expand('~/.cache/vimno/'))..expand('%:p')->substitute('/', '%', 'g')
+    ev b:state->mkdir('p')
+  en
+  if empty(a:var) |retu |en
+
+  let l:var = (a:var !~ '^\$\|^\l:' ? 'g:' : '')..a:var->fnamemodify(':r')
+  let l:ext = a:var->fnamemodify(':e') ?? 'txt'
+
+  let l:dst = b:state..'/'..l:var..'.'..l:ext
+  if exists(l:var)
+    ev {l:var}->writefile(l:dst)  |el
+    let {l:var} = readfile(l:dst) |en
+  retu l:dst
 endf
 
-fu Storage(var, ext='txt')
-  retu b:state..'/'..Storable(a:var, a:ext)..'.'..a:ext
-endf
-
-fu Store(var, ext='txt')
-  let l:var = Storable(a:var, a:ext)
-  ev {l:var}->writefile(Storage(l:var))
-endf
-
-fu Restore(var, ext='txt')
-  let l:var = Storable(a:var, a:ext)
-  let {l:var} = readfile(Storage(l:var))
-endf
-
-fu Curl(url, head, data) abort
+fu Curl(url, head, data, dry=v:null) abort
+  " url may be: [METHOD] [proto://][...]
+  " * perdu.com -> GET to https://perdu.com
+  " * http://perdu.com -> GET to http://perdu.com
+  " * GET .. -> GET .. but use -G and --data-urlencode
+  " head is a dict, data may be dict or list
+  " if dry not null then return that without doing the thing
   let l:url = a:url
   let l:method = l:url->matchstr('^\u\+ ')
   let l:url = l:url[l:method->len():]
@@ -125,7 +131,7 @@ fu Curl(url, head, data) abort
   endfo
 
   echom l:com
-  retu l:com->systemlist()
+  retu v:null == a:dry ? l:com->system() : a:dry
 endf
 
 " vim: se fdm=marker fdl=0 ts=2:
