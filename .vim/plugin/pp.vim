@@ -94,39 +94,47 @@ fu s:listPPer(list, opts)
   let a:opts.wrap+= 1
 
   let l:r = [['None', '[']]
+  let l:accu = 1 " accu for current line len
+
+  let l:LineLen = {l -> (len(l)/2)
+    \ ->range()
+    \ ->reduce({acc, cur -> acc + l[2*cur+1]->len()}, 0)}
+
   let l:len = len(l:list)
   for l:k in range(len(l:list))
-    let l:firstln = l:list[l:k][0]
-    ev l:r[-1]->extend(l:firstln)
+    let l:firstlen = l:LineLen(l:list[l:k][0])
+    let l:multiln = 1 < len(l:list[l:k])
 
-    let l:ml = 1 < len(l:list[l:k])
-    if l:ml
-      ev l:r->extend(l:list[l:k][1:]->map({_, l -> ['None', ' ']->extend(l)}))
+    " need to break rn if:
+    " * item is multiline
+    " * first (only) line doesn't fit
+    " and its not first item of line
+    if 2 < len(l:r[-1]) && (l:multiln || a:opts.wrap-a:opts.inde - 1 < l:accu+l:firstlen)
+      ev l:r->add(['None', ' '->repeat(1+a:opts.inde)])
+      let l:accu = 1 + (l:multiln ? l:LineLen(l:list[l:k][-1]) : l:firstlen)
     el
-      " may still be ml if too long
-      let l:txtlen = (len(l:firstln)/2)
-        \ ->range()
-        \ ->reduce({acc, cur -> acc + l:firstln[2*cur+1]->len()}, 0)
-      echom type(a:list) == type(a:list[0]) ? 'mat' : 'vec'  l:txtlen
-      let l:ml = a:opts.wrap-a:opts.inde - 1 < l:txtlen
+      if l:k |ev l:r[-1]->extend(['None', ' ']) |en
+      let l:accu+= l:firstlen
     en
 
-    if l:k < l:len-1
-      ev l:r[-1]->extend(['None', ','])
-      if l:ml
-        ev l:r->add(['None', ' '])        |el
-        ev l:r[-1]->extend(['None', ' ']) |en
-    el
-      ev l:r[-1]->extend(['None', ']'])
-    en
+    ev l:r[-1]->extend(l:list[l:k][0])
+    if l:multiln |ev l:r->extend(l:list[l:k][1:]->map({_, l -> ['None', ' '->repeat(1+a:opts.inde)]->extend(l)})) |en
+    ev l:r[-1]->extend(['None', l:k < l:len-1 ? ',' : ']'])
   endfo
 
   retu l:r
 endf
 
 fu s:dictPPer(dict, opts)
-  " similar to list
-  " idquitek about keys tho
+  " similar to list, align value with key like
+  " {"a": "bla" ..
+  "       "bla"}
+  " long keys will go like
+  " {"long-key":
+  "   "bla" ..
+  "   "bla"}
+  " if all keys are ident-valid, use #{} syntax
+  retu [['Error', 'NIY: dictPPer']]
 endf
 
 fu s:specialPPer(val, opts)
@@ -293,6 +301,11 @@ cal assert_equal([
   \   ['None', ' ', 'String', '"c\n"', 'None', ' ', 'Operator', '..'],
   \   ['None', ' ', 'String', '"d"', 'None', ']']],
   \ PPhl(["a\nb", "c\nd"]))
+cal assert_equal([
+  \   ['None', '[', 'None', '[', 'Number', '0', 'None', ',', 'None', ' ', 'Number', '1', 'None', ',', 'None', ' ', 'Number', '2', 'None', ']', 'None', ','],
+  \   ['None', ' ', 'None', '[', 'Number', '0', 'None', ',', 'None', ' ', 'Number', '1', 'None', ',', 'None', ' ', 'Number', '2', 'None', ']', 'None', ','],
+  \   ['None', ' ', 'None', '[', 'Number', '0', 'None', ',', 'None', ' ', 'Number', '1', 'None', ',', 'None', ' ', 'Number', '2', 'None', ']', 'None', ']']],
+  \ PPhl([range(3), range(3), range(3)], #{wrap: 14}))
 " }}}
 
 if !empty(v:errors)
@@ -300,5 +313,6 @@ if !empty(v:errors)
   ec 'all tests passing! \o/' |en
 
 "cal PP("def a():\n    pass # this a long line aint it", 'pyfunc', #{wrap: 26})
-cal PP([range(3), range(3), range(3)], #{wrap: 14})
+"cal PP([range(3), range(3), range(3)], '_', #{wrap: 14})
 "cal PP(["a\nb", "c\nd"])
+ev getbufinfo()->PP()
