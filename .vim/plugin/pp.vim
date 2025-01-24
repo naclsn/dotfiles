@@ -138,6 +138,7 @@ fu s:dictPPer(dict, opts)
 endf
 
 fu s:specialPPer(val, opts)
+  " v:true, v:false and v:null
   retu [['Identifier', a:val->string()]]
 endf
 

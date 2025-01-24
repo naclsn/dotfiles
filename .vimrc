@@ -51,32 +51,18 @@ nn <C-S> :<C-U>up<CR>
 
 map! <C-Space> <Nop>
 
+abc
+ca lang se wrap! spell! spl
+ca scra se bt=nofile ft
+ca hl se hls!
+ca wr se wrap!
+ca pw se pvw!
+ca vb vert sb
+
 nm U u
 nn + :<C-U>.+
 nn - :<C-U>.-
 
-if has('nvim')
-  map <space>t :<C-U>vert abo ter<CR>:setl nobl nonu nornu<CR><C-W>60<Bar>i
-  tmap <C-W>N <C-\><C-N>
-el
-  map <space>t :<C-U>vert abo ter ++cols=60 ++noclose<CR>
-  fu s:etup_term()
-    setl nobl nonu nornu
-    if 'cmd' == &sh
-      tno <C-A> <Home>
-      tno <C-B> <Left>
-      tno <C-D> <Del>
-      tno <C-E> <End>
-      tno <C-F> <Right>
-      tno <C-H> <BS>
-      tno <C-N> <Down>
-      tno <C-P> <Up>
-    elsei &sh =~ 'powershell\|pwsh'
-      cal term_sendkeys('', '$_psss=@{EditMode="Emacs";Colors=@{Operator="$([char]27)[m";Parameter="$([char]27)[m"}};set-psreadlineoption @_psss'."\r")
-    en
-  endf
-  autocmd TerminalOpen * cal <SID>etup_term()
-en
 map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
 map <space>b :<C-U>Ebuffers<CR>
 map <space>B :<C-U>Ebuffers!<CR>
@@ -118,22 +104,15 @@ com!                               Mark     lad expand('%').':'.line('.').':'.ge
 
 " git {{{1
 fu s:git_buflines(com, args)
-  let l:exp = empty(a:args) ? '' : a:args->expand()->shellescape()
+  setl bh=wipe bt=nofile fdm=syntax nobl noswf
+  let l:exp = empty(a:args) ? '' : a:args->expandcmd()->shellescape()
   exe 'f [git-'..a:com..']' l:exp
-  ev ('git '..a:com..' '..l:exp)->systemlist()->setline(1)
+  ev systemlist('git '..a:com..' '..l:exp)->setline(1)
 endf
-com! -nargs=* -complete=file GitDiff  ene      |setl bh=wipe bt=nofile fdm=syntax ft=diff      nobl            noswf         |cal s:git_buflines('diff',  <q-args>) |nn <buffer>          zp :ped <C-R>=search('^@@', 'bcnW')->getline()->matchstr('+\d\+')<CR> <C-R>=search('^---', 'bcnW')->getline()[6:]<CR><CR>
-com! -nargs=*                GitLog   ene      |setl bh=wipe bt=nofile fdm=syntax ft=git       nobl            noswf         |cal s:git_buflines('log',   <q-args>) |nn <buffer> <silent> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
-com! -nargs=* -complete=file GitShow  ene      |setl bh=wipe bt=nofile fdm=syntax ft=gitcommit nobl            noswf         |cal s:git_buflines('show',  <q-args>)
-com! -nargs=+ -complete=file GitBlame vert new |setl bh=wipe bt=nofile                         nobl nonu nornu noswf pvw scb |cal s:git_buflines('blame', <q-args>) |winc 57<Bar> |winc w |setl scb
-
-abc
-ca lang se wrap! spell! spl
-ca scra se bt=nofile ft
-ca hl se hls!
-ca wr se wrap!
-ca pw se pvw!
-ca vb vert sb
+com! -nargs=* -complete=file GitDiff  ene      |setl ft=diff            |cal s:git_buflines('diff',  <q-args>) |nn <buffer>          zp :ped <C-R>=search('^@@', 'bcnW')->getline()->matchstr('+\d\+')<CR> <C-R>=search('^---', 'bcnW')->getline()[6:]<CR><CR>
+com! -nargs=*                GitLog   ene      |setl ft=git             |cal s:git_buflines('log',   <q-args>) |nn <buffer> <silent> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
+com! -nargs=* -complete=file GitShow  ene      |setl ft=gitcommit       |cal s:git_buflines('show',  <q-args>)
+com! -nargs=+ -complete=file GitBlame vert new |setl nonu nornu pvw scb |cal s:git_buflines('blame', <q-args>) |winc 57<Bar> |winc w |setl scb
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -161,12 +140,6 @@ if has('gui_running')
   endfo
   map! <M-BS> <Esc><BS>
   tma <S-space> <space>
-  if has('nvim')
-    map <C-Z> :<C-U>b term:<CR>
-  el
-    map <C-Z> :<C-U>b !<CR>
-  en
-  map <C-W><C-Z> <C-W><C-^><C-W>H<C-W>60<Bar>
 en
 
 " command-line {{{1
@@ -174,8 +147,8 @@ cno <C-A> <Home>
 cno <C-B> <Left>
 cno <C-D> <Del>
 cno <C-F> <Right>
-cno <C-O> <C-F>
-cno <C-X> <C-A>
+"cno <C-O> <C-F>
+"cno <C-X> <C-A>
 
 " evaluate with 'ge{motion}' and replace with result {{{1
 fu s:eval_this(ty='')
