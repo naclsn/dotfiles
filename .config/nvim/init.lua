@@ -55,7 +55,6 @@ for it, conf in pairs {
     ruby_lsp= {},
     rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
     ts_ls= {},
-    --vimls= {},
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
 
