@@ -10,24 +10,24 @@
 "   #           ... and so on
 "
 " `->` essentially makes a `_N` variable of the preceding expression, and in
-" the following expression `_` is a shorthand to the latest `_N`:
+" the following expression `_` is the latest `_N` at current depth:
 "
-"   1 -> _+_ -> print(_) # prints 2
-"   1 -> _+_ -> print(_0) # prints 1
+"   1 -> (_+_) -> print(_) # prints 2
+"   1 -> (_+_) -> print(_0) # prints 1 except it doesn't because fixme
 "
 "   set()->(_.update(coucou) or _.update(blabla) or _)->print(_)
 "
-" Be prepared for jank 'cause idc. Use :YOUSK2 to 'help' debugging.
-" Why 'Ypy'? 'cause :Y is easy to type and y not.
+" Be prepared for jank 'cause idc. Use :NotYpy to 'help' debugging.
+" Why 'Ypy'? 'cause :Y is easy to type, :y <crap> will complain, and y not.
 
-let s:loaded = v:false
+let s:loaded = 0
 fu s:ypy()
   if s:loaded |retu |en
-  let s:loaded = v:true
+  let s:loaded = 1
   py <<
 from pprint import pp
 import tokenize
-_BREAKS = {tokenize.COMMA, tokenize.COLON} # TODO: way more, actually all ops and such
+_LOWPREC = {tokenize.NOTEQUAL, tokenize.PERCENT, tokenize.PERCENTEQUAL, tokenize.AMPER, tokenize.AMPEREQUAL, tokenize.STAR, tokenize.DOUBLESTAR, tokenize.DOUBLESTAREQUAL, tokenize.STAREQUAL, tokenize.PLUS, tokenize.PLUSEQUAL, tokenize.COMMA, tokenize.MINUS, tokenize.MINEQUAL, tokenize.SLASH, tokenize.DOUBLESLASH, tokenize.DOUBLESLASHEQUAL, tokenize.SLASHEQUAL, tokenize.COLON, tokenize.COLONEQUAL, tokenize.SEMI, tokenize.LESS, tokenize.LEFTSHIFT, tokenize.LEFTSHIFTEQUAL, tokenize.LESSEQUAL, tokenize.EQEQUAL, tokenize.GREATER, tokenize.GREATEREQUAL, tokenize.RIGHTSHIFT, tokenize.RIGHTSHIFTEQUAL, tokenize.AT, tokenize.ATEQUAL, tokenize.CIRCUMFLEX, tokenize.CIRCUMFLEXEQUAL, tokenize.VBAR, tokenize.VBAREQUAL}
 _CLOSERS = {tokenize.LPAR: tokenize.RPAR, tokenize.LSQB: tokenize.RSQB, tokenize.LBRACE: tokenize.RBRACE}
 _DISCARD = {tokenize.NEWLINE, tokenize.COMMENT, tokenize.NL, tokenize.ENCODING}
 
@@ -60,7 +60,7 @@ def ypytr(script: str):
                         subj = [f"_{n}"]
                         n+= 1
 
-                elif et in _BREAKS:
+                elif et in _LOWPREC:
                     r.append(tok.string)
                     subst = len(r)
 
@@ -77,7 +77,9 @@ def ypy(script: str): return eval(ypytr(script))
 .
 endf
 
-fu Ypy(script) " funnnny- *JOkK!*
-cal s:ypy() |retu pyeval('(_:=ypy(r"""'..a:script..'"""))') |endf
-com -nargs=+ Ypy cal s:ypy() |py pp(_ := ypy(r"""<args>"""))
-com -nargs=+ YOUSK2 py print(ypytr(r"""<args>"""))
+fu Ypy(script)
+  cal s:ypy()
+  retu pyeval('(_:=ypy(r"""'..a:script..'"""))')
+endf
+com -nargs=+ Ypy cal s:ypy() |py pp(_:=ypy(r"""<args>"""))
+com -nargs=+ NotYpy cal s:ypy() |py print(ypytr(r"""<args>"""))

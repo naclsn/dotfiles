@@ -1,5 +1,3 @@
-" TODO: fix confusion with inde and wrap, wrap doesn't change
-
 " default options {{{1
 let s:default_opts = #{
   "\ wrapping width, note that |PP| use 2 cols (for '\ ') when multiline!
