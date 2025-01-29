@@ -23,6 +23,12 @@ vim.cmd.hi 'link @punctuation NormalNC']]
 --vim.lsp.set_log_level("trace")
 
 for it, conf in pairs {
+    -- npm i -g @ansible/ansible-language-server
+    ansiblels= {
+        --filetypes= { 'yaml', 'yaml.ansible' },
+        settings= { ansible= { validation= { enabled= false } } },
+    },
+    -- pip install basedpyright
     basedpyright= { settings= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
         reportAny= 'none',
         reportConstantRedefinition= 'warning',
@@ -50,10 +56,12 @@ for it, conf in pairs {
     elmls= {},
     erlangls= {},
     jdtls= {},
+    -- https://github.com/LuaLS/lua-language-server/releases/
     lua_ls= {},
     nim_langserver= {},
     ruby_lsp= {},
     rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
+    -- npm i -g typescript typescript-language-server
     ts_ls= {},
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
@@ -70,7 +78,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        -- whever, I hate nvim anyways
         if 'rust' == vim.bo[ev.buf].ft
           then vim.keymap.set('n', 'gq', vim.lsp.buf.format, opts)
         end
