@@ -118,7 +118,9 @@ let s:default_opts = #{
   \ wrap: &tw ?? 78,
   "\ indentation
   \ inde: 0,
-  "\ depth stack (internal use)
+  "\ sort dict key by default
+  \ sort: 1,
+  "\ depth stack (internal use) ((NIY))
   \ stack: []}
 
 let s:bslash_table = {"\b": 'b', "\t": 't', "\n": 'n', "\f": 'f', "\r": 'r', "\e": 'e', '"': '"', '\': '\'}
@@ -298,6 +300,7 @@ fu s:dictPPer(dict, opts)
   let l:avail = a:opts.wrap - a:opts.inde
   let l:inde = ' '->repeat(a:opts.inde)
   let l:keys = a:dict->keys()
+  if a:opts.sort |ev l:keys->sort() |en
   let l:allok = -1 == l:keys->match('[^-0-9A-Z_a-z]')
 
   let l:r = [empty(l:inde) ? [] : ['None', l:inde]]

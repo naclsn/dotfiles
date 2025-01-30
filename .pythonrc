@@ -12,4 +12,4 @@ from itertools import *
 from pprint import pprint, pformat
 from string import *
 import json, os, sys, random, re, time, math
-rand = random.randrange
+_displayhook, sys.displayhook = sys.displayhook, lambda v: v is None or setattr(__builtins__, '_', v) or pprint(v)
