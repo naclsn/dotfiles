@@ -12,4 +12,4 @@ from itertools import *
 from pprint import pprint, pformat
 from string import *
 import json, os, sys, random, re, time, math
-sys.displayhook = lambda v: v is None or setattr(__builtins__, '_', v) or pprint(v)
+sys.displayhook = lambda v: v is None or (dict.__setitem__ if dict == type(__builtins__) else setattr)(__builtins__, '_', v) or pprint(v, compact=True, sort_dicts=False, underscore_numbers=True)
