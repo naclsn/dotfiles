@@ -75,6 +75,10 @@ for it, conf in pairs {
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 
+vim.api.nvim_create_user_command('LspDiagnostics', function()
+    vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+end, {})
+
 vim.api.nvim_create_autocmd('LspAttach', {
     group= vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback= function(ev)
