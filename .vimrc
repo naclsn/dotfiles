@@ -42,12 +42,12 @@ if has_key(g:, 'terminal_ansi_colors')
 en
 au FileType xxd nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
 
-nm <C-J> :<C-U>tabn<CR>
-nm <C-K> :<C-U>tabp<CR>
-nn <C-C> :<C-U>q!<CR>
+"nm <C-J> :<C-U>tabn<CR>
+"nm <C-K> :<C-U>tabp<CR>
+"nn <C-C> :<C-U>winc c<CR>
 nn <C-N> :<C-U>bn<CR>
 nn <C-P> :<C-U>bp<CR>
-nn <C-S> :<C-U>up<CR>
+"nn <C-S> :<C-U>up<CR>
 
 map! <C-Space> <Nop>
 
