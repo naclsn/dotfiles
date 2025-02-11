@@ -22,6 +22,10 @@ export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules
 
+here=`readlink ~/.bash_aliases`
+[ -d "${here%/*}/../mopfiles/lib" ] && export PYTHONPATH="${here%/*}/../mopfiles/lib"
+unset here
+
 alias           grep='grep --color=auto'
 alias             ls='ls --color=auto'
 alias              l='ls -FX'

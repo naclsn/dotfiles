@@ -52,6 +52,7 @@ for it, conf in pairs {
         reportUnknownLambdaType= 'warning',
         reportUnknownParameterType= 'warning',
         reportUnreachable= 'unreachable',
+        reportUnusedVariable= 'warning',
         reportUnusedCallResult= 'none',
         reportUnusedExpression= 'none',
         reportUnusedImport= 'warning',
