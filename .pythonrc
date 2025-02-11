@@ -15,6 +15,15 @@ import json, os, sys, random, re, time, math
 sys.displayhook = lambda v: None if v is None else (dict.__setitem__ if dict == type(__builtins__) else setattr)(__builtins__, '_', v) or pprint(v, compact=True, sort_dicts=False, underscore_numbers=True)
 
 
+def xclip(data: ... = None):
+    from subprocess import TimeoutExpired, check_output
+    if not (data is None or isinstance(data, bytes) or hasattr(data, '__buffer__')):
+        data = str(data).encode()
+    try:
+        return check_output(['xclip', '-sel', 'c', data and '-i' or '-o'], timeout=.1, input=data)
+    except TimeoutExpired:
+        pass
+
 import tokenize
 _LOWPREC = {tokenize.NOTEQUAL, tokenize.PERCENT, tokenize.PERCENTEQUAL, tokenize.AMPER, tokenize.AMPEREQUAL, tokenize.STAR, tokenize.DOUBLESTAR, tokenize.DOUBLESTAREQUAL, tokenize.STAREQUAL, tokenize.PLUS, tokenize.PLUSEQUAL, tokenize.COMMA, tokenize.MINUS, tokenize.MINEQUAL, tokenize.SLASH, tokenize.DOUBLESLASH, tokenize.DOUBLESLASHEQUAL, tokenize.SLASHEQUAL, tokenize.COLON, tokenize.COLONEQUAL, tokenize.SEMI, tokenize.LESS, tokenize.LEFTSHIFT, tokenize.LEFTSHIFTEQUAL, tokenize.LESSEQUAL, tokenize.EQEQUAL, tokenize.GREATER, tokenize.GREATEREQUAL, tokenize.RIGHTSHIFT, tokenize.RIGHTSHIFTEQUAL, tokenize.AT, tokenize.ATEQUAL, tokenize.CIRCUMFLEX, tokenize.CIRCUMFLEXEQUAL, tokenize.VBAR, tokenize.VBAREQUAL}
 _CLOSERS = {tokenize.LPAR: tokenize.RPAR, tokenize.LSQB: tokenize.RSQB, tokenize.LBRACE: tokenize.RBRACE}

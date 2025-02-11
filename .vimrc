@@ -29,7 +29,7 @@ filet plugin on
 au BufEnter * se fo-=o
 au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
-au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gq :!python3 -m black --quiet --pyi %<CR> |el |nn <buffer> gq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR> |en
+au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gq :!python3 -m black --quiet --pyi %<CR>|el |nn <buffer> gq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR>|en
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
 hi clear diffAdded |hi link diffAdded Special
@@ -60,8 +60,8 @@ ca pw se pvw!
 ca vb vert sb
 
 nm U u
-nn + :<C-U>.+
-nn - :<C-U>.-
+"nn + :<C-U>.+
+"nn - :<C-U>.-
 
 map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
 map <space>b :<C-U>Ebuffers<CR>
@@ -73,27 +73,27 @@ map <space>p "+p
 map <space>P "+P
 map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
 
-map <C-W><lt> :<C-U>winc <lt><CR><C-W>
-map <C-W>>    :<C-U>winc >   <CR><C-W>
-map <C-W>+    :<C-U>winc +   <CR><C-W>
-map <C-W>-    :<C-U>winc -   <CR><C-W>
+"map <C-W><lt> :<C-U>winc <lt><CR><C-W>
+"map <C-W>>    :<C-U>winc >   <CR><C-W>
+"map <C-W>+    :<C-U>winc +   <CR><C-W>
+"map <C-W>-    :<C-U>winc -   <CR><C-W>
 
 " view sticky {{{1
-map Z/ /
-map Z<space> <space>
-map Z? ?
-map ZG GZ
-map ZZ Z
-map Zb <C-B>Z
-map Zd <C-D>Z
-map Zf <C-F>Z
-map Zg ggZ
-map Zh zhZ
-map Zj <C-E>Z
-map Zk <C-Y>Z
-map Zl zlZ
-map Zu <C-U>Z
-map Zz zzZ
+"map Z/ /
+"map Z<space> <space>
+"map Z? ?
+"map ZG GZ
+"map ZZ Z
+"map Zb <C-B>Z
+"map Zd <C-D>Z
+"map Zf <C-F>Z
+"map Zg ggZ
+"map Zh zhZ
+"map Zj <C-E>Z
+"map Zk <C-Y>Z
+"map Zl zlZ
+"map Zu <C-U>Z
+"map Zz zzZ
 
 " random commands {{{1
 "com!                               Scratch  let ft=&ft |sil %y f |ene |pu f |0d _ |let &ft=ft |unlet ft
