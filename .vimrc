@@ -30,6 +30,7 @@ filet plugin on
 au BufEnter * se fo-=o
 au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
+au FileType python setl tw=88
 au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gq :!python3 -m black --quiet --pyi %<CR>|el |nn <buffer> gq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR>|en
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
@@ -53,14 +54,14 @@ nn <C-P> :<C-U>bp<CR>
 map! <C-Space> <Nop>
 
 abc
-ca lang se wrap! spell! spl
-ca scra se bt=nofile ft
-ca hl se hls!
-ca wr se wrap!
-ca pw se pvw!
+ca lang setl wrap! spell! spl
+ca scra setl bt=nofile ft
+ca hl setl hls!
+ca wr setl wrap!
+ca pw setl pvw!
 ca vb vert sb
 
-nm U u
+"nm U u
 "nn + :<C-U>.+
 "nn - :<C-U>.-
 

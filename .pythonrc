@@ -12,7 +12,9 @@ from itertools import *
 from pprint import pprint, pformat
 from string import *
 import json, os, sys, random, re, time, math
-sys.displayhook = lambda v: None if v is None else (dict.__setitem__ if dict == type(__builtins__) else setattr)(__builtins__, '_', v) or pprint(v, compact=True, sort_dicts=False, underscore_numbers=True)
+
+_ppargs = {} if sys.version_info < (3, 8) else {'compact': True, 'sort_dicts': False, 'underscore_numbers': True}
+sys.displayhook = lambda v: None if v is None else (dict.__setitem__ if dict == type(__builtins__) else setattr)(__builtins__, '_', v) or pprint(v, **_ppargs)
 
 
 def xclip(data: ... = None):
@@ -25,7 +27,11 @@ def xclip(data: ... = None):
         pass
 
 import tokenize
-_LOWPREC = {tokenize.NOTEQUAL, tokenize.PERCENT, tokenize.PERCENTEQUAL, tokenize.AMPER, tokenize.AMPEREQUAL, tokenize.STAR, tokenize.DOUBLESTAR, tokenize.DOUBLESTAREQUAL, tokenize.STAREQUAL, tokenize.PLUS, tokenize.PLUSEQUAL, tokenize.COMMA, tokenize.MINUS, tokenize.MINEQUAL, tokenize.SLASH, tokenize.DOUBLESLASH, tokenize.DOUBLESLASHEQUAL, tokenize.SLASHEQUAL, tokenize.COLON, tokenize.COLONEQUAL, tokenize.SEMI, tokenize.LESS, tokenize.LEFTSHIFT, tokenize.LEFTSHIFTEQUAL, tokenize.LESSEQUAL, tokenize.EQEQUAL, tokenize.GREATER, tokenize.GREATEREQUAL, tokenize.RIGHTSHIFT, tokenize.RIGHTSHIFTEQUAL, tokenize.AT, tokenize.ATEQUAL, tokenize.CIRCUMFLEX, tokenize.CIRCUMFLEXEQUAL, tokenize.VBAR, tokenize.VBAREQUAL}
+_LOWPREC = {
+    int(getattr(tokenize, n))
+    for n in 'NOTEQUAL PERCENT PERCENTEQUAL AMPER AMPEREQUAL STAR DOUBLESTAR DOUBLESTAREQUAL STAREQUAL PLUS PLUSEQUAL COMMA MINUS MINEQUAL SLASH DOUBLESLASH DOUBLESLASHEQUAL SLASHEQUAL COLON COLONEQUAL SEMI LESS LEFTSHIFT LEFTSHIFTEQUAL LESSEQUAL EQEQUAL GREATER GREATEREQUAL RIGHTSHIFT RIGHTSHIFTEQUAL AT ATEQUAL CIRCUMFLEX CIRCUMFLEXEQUAL VBAR VBAREQUAL'.split()
+    if hasattr(tokenize, n)
+}
 _CLOSERS = {tokenize.LPAR: tokenize.RPAR, tokenize.LSQB: tokenize.RSQB, tokenize.LBRACE: tokenize.RBRACE}
 _DISCARD = {tokenize.NEWLINE, tokenize.COMMENT, tokenize.NL, tokenize.ENCODING}
 
