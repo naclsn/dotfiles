@@ -395,9 +395,9 @@ endf
 
 fu PPl(ny, opts={})
   " pretty print to a list of lines
-  " (without trailing \n nor leading \\)
+  " (with leading \\)
   retu PPhl(a:ny, a:opts)
-    \ ->map({_, line -> (line->len()/2)
+    \ ->map({_, line -> '\ '..(line->len()/2)
     \   ->range()
     \   ->map({_, k -> line[2*k+1]})
     \   ->join('')})
@@ -405,8 +405,9 @@ endf
 
 fu PPs(ny, opts={})
   " pretty print to a string, see also |PP()|
+  " (with trailing \n and leading \\)
   let l:ines = PPl(a:ny, a:opts)
-  retu 1 < len(l:ines) ? '\ '..l:ines->join("\n\\ ").."\n" : l:ines[0]
+  retu 1 < len(l:ines) ? l:ines->join("\n").."\n" : l:ines[0]
 endf
 
 fu PP(ny, name='_', opts={})

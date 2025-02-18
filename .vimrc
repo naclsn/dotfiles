@@ -149,8 +149,7 @@ cno <C-A> <Home>
 cno <C-B> <Left>
 cno <C-D> <Del>
 cno <C-F> <Right>
-"cno <C-O> <C-F>
-"cno <C-X> <C-A>
+cno <C-X> <C-F>
 
 " evaluate with 'ge{motion}' and replace with result {{{1
 fu s:eval_this(ty='')
