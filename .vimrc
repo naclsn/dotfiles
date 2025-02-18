@@ -3,6 +3,7 @@ se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo
 
 " temp (to relocate)
 let g:vimsyn_embed = 'pPr'
+let g:man_hardwrap = 0
 
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
