@@ -1,5 +1,10 @@
 [core]
 	autocrlf = false
+	pager = ""
+[pager]
+	diff = ${PAGER:-less}
+	log = ${PAGER:-less}
+	show = ${PAGER:-less}
 [user]
 	name = Grenier Celestin
 	email = celestin.grenier@hotmail.com
