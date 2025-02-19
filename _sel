@@ -15,7 +15,7 @@ _sel(){
   cno <C-X> <C-F>
   map <space>w <C-W>
   map <space>y :w !printf "\e]52;c;";base64 -w0;printf "\e\\"<CR>
-  se hid isf-== ls=2 noto ttimeout ttm=100 wmnu ai et sw=0 ts=4 nu rnu nowrap so=0 mouse=nv cul dir=/tmp/swf// fdm=marker fdl=99'
+  se hid isf-== ls=2 sc noto ttimeout ttm=100 wmnu ai et sw=0 ts=4 nu rnu nowrap so=0 mouse=nv cul dir=/tmp/swf// fdm=marker fdl=99'
  command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;reset;return 127;}
  bind -x'"\ez":fg&>/dev/null'
 };[ _sel = "`command -v $_SEL`" ]&&_sel

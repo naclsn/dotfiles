@@ -89,9 +89,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        if 'rust' == vim.bo[ev.buf].ft
-          then vim.keymap.set('n', 'gq', vim.lsp.buf.format, opts)
-        end
+        vim.keymap.set('n', 'gqq', vim.lsp.buf.format, opts)
 
         vim.keymap.set('n', '<space>k', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', '<space>r', vim.lsp.buf.rename, opts)

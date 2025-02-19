@@ -1,5 +1,5 @@
 lan C
-se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
 " temp (to relocate)
 let g:vimsyn_embed = 'pPr'
@@ -31,7 +31,25 @@ au BufEnter * se fo-=o
 au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
 au FileType python setl tw=88
-au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gq :!python3 -m black --quiet --pyi %<CR>|el |nn <buffer> gq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR>|en
+
+fu s:black_formatexpr()
+  if !empty(v:char) || mode() =~ '[iR]' |retu |en
+
+  let prog = ['black', '--quiet', '-l'..(&tw??78), '-', '--stdin-filename', @%]
+  if @% =~ 'pyi$' |ev prog->add('--pyi') |en " is this needed if ^ is given?
+
+  let last = v:lnum+v:count-1
+  let inde = range(v:lnum, last)->map('indent(v:val)')->min() / &ts
+  let text = ['if():']->repeat(inde)->map('" "->repeat(&ts*v:key)..v:val')->extend(getline(v:lnum, last))
+  let fmtd = prog->systemlist(text)[inde:]
+
+  cal deletebufline('%', v:lnum, last)
+  cal append(v:lnum-1, fmtd)
+endf
+
+au FileType python setl fex=s:black_formatexpr()
+au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gqq :!python3 -m black --quiet --pyi %<CR>|el |nn <buffer> gqq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR>|en
+
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
 hi clear diffAdded |hi link diffAdded Special
@@ -54,10 +72,10 @@ nn <C-P> :<C-U>bp<CR>
 map! <C-Space> <Nop>
 
 abc
-ca lang setl wrap! spell! spl
+ca lang setl wrap! bri! spell! spl
 ca scra setl bt=nofile ft
 ca hl setl hls!
-ca wr setl wrap!
+ca wr setl wrap! bri!
 ca pw setl pvw!
 ca vb vert sb
 
