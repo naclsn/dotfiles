@@ -1,31 +1,35 @@
+let s:best = 782
+let s:file = expand('<sfile>:p')
+
 fu s:fwch(h)
     retu nr2char(' ' == a:h ? 0x3000 : char2nr(a:h)+0xfee0)
 endf
 
 fu s:goto(x, y)
-    cal setcharpos('.', [0, b:yoff+a:y, b:xoff+a:x, 0])
+    cal setcharpos('.', [0, b:yoff+a:y+2, b:xoff+a:x+2, 0])
 endf
 
 fu s:start()
     if !exists('b:dir')
         ene
-        setl bh=wipe bt=nofile nobl nocuc nocul noswf nonu nornu
+        setl bh=wipe bt=nofile nobl nocuc nocul nonu nornu noswf
         f i m p o r t a n t - w o r k . t x t
     en
-    %d
+    sil%d
 
     let b:empty = s:fwch(' ')
     let b:walls = map(['|', '+', '-', '+', '|', '+', '-', '+'], 's:fwch(v:val)')
     let b:width = 20
     let b:height = 20
-    let b:xoff = 3
-    let b:yoff = 3
+    let b:xoff = 9
+    let b:yoff = 0
 
-    let m = repeat(' ', b:xoff-2)
-    cal setline(1, repeat([''], b:yoff-2))
+    let m = repeat(s:fwch(' '), b:xoff)
+    cal append('$', repeat([''], b:yoff))
     cal append('$',         m..b:walls[3]..repeat(b:walls[2], b:width)..b:walls[1])
     cal append('$', repeat([m..b:walls[4]..repeat(b:empty,    b:width)..b:walls[0]], b:height))
     cal append('$',         m..b:walls[5]..repeat(b:walls[6], b:width)..b:walls[7])
+    sil1d
 
     let b:rev_dir = {'h':'l', 'j':'k', 'k':'j', 'l':'h'}
 
@@ -97,7 +101,15 @@ fu s:step(timer)
         cal add(b:snake, b:dir)
 
     el
-        echom 'Score:' len(b:snake)*17
+        let score = len(b:snake)*17
+        echom 'Score:' score score < s:best ? '(best: '..s:best..')' : '(new best!)'
+        if s:best < score
+            let lines = readfile(s:file)
+            let lines[0] = 'let s:best = '..score
+            cal writefile(lines, s:file)
+            let s:best = score
+        en
+
         cal timer_stop(a:timer)
         unm <buffer> h
         unm <buffer> j
@@ -107,6 +119,7 @@ fu s:step(timer)
         unm <buffer> <Down>
         unm <buffer> <Up>
         unm <buffer> <Right>
+        map <buffer> <CR> :Snake
     en
 endf
 
