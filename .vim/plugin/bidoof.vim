@@ -523,10 +523,10 @@ endf
 
 fu Ypy(script)
   cal s:ypy()
-  retu pyeval('(_:=ypy(r"""'..a:script..'"""))')
+  retu pyeval('(_:=ypy(r""" '..a:script..' """))')
 endf
-com -nargs=+ Ypy cal s:ypy() |py pp(_:=ypy(r"""<args>"""))
-com -nargs=+ NotYpy cal s:ypy() |py print(ypytr(r"""<args>"""))
+com -nargs=+ Ypy cal s:ypy() |py pp(_:=ypy(r""" <args> """))
+com -nargs=+ NotYpy cal s:ypy() |py print(ypytr(r""" <args> """))
 " }}}
 
 " vim: se fdm=marker fdl=0 ts=2:

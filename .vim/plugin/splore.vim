@@ -29,6 +29,7 @@
 "     * new link: "name@ -> target" (creates the target file if doesn't exist)
 "     * new link to dir: "name/@ -> target" (+ dir target if doesn't exist)
 "     * new link to executable: "name*@ -> target" (same)
+"     * new copy of a plain file: "name@ => source" (is: cp source name)
 "     * any above through longer path: "path/to/file*@ -> target"
 "
 "   UPDATE: by changing the entry, keeping the concealed " -- (..)" part
@@ -68,8 +69,16 @@ hi Folded ctermbg=NONE guibg=NONE
 if !exists('g:splore_autocmd') |let g:splore_autocmd = 1 |en
 
 " s: functions {{{1
-fu s:trace(f, ...)
-  echom a:f a:000 '=>' call(a:f, a:000)
+fu s:trace(f, zok, ...)
+  "" zok 0 means return of 0 is ok
+  let r = call(a:f, a:000)
+  if !a:zok ? !r : r
+    echom a:f a:000
+  el
+    echoh Error
+    echom a:f a:000 '=>' r
+    echoh None
+  en
 endf
 
 fu s:dircontent(dir)
@@ -89,8 +98,13 @@ fu s:readlink(lnk, recursive)
 endf
 
 fu s:writelink(lnk, target, force)
-  "" ``force`` should be '' or '-f'
-  sil cal system(join(['ln', a:force, '-s', shellescape(a:target), shellescape(a:lnk)]))
+  "" ``force`` should be '' or '-f'; 0 on success
+  sil retu empty(system(join(['ln', a:force, '-s', shellescape(a:target), shellescape(a:lnk)])))
+endf
+
+fu s:filecopy(from, to)
+  "" return is as writefile, same as creating if from didn't exist
+  sil retu writefile(readblob(a:from), a:to)
 endf
 
 fu s:unfold(dir, depth, at)
@@ -154,6 +168,11 @@ fu s:apply()
       let target = entry[islnk+4:]
       let entry = entry[:islnk-2]
     en
+    let iscpy = match(entry, '@ => ')+1
+    if iscpy
+      let source = entry[iscpy+4:]
+      let entry = entry[:iscpy-2]
+    en
     let isdir = '/' == entry[-1:]
     let isexe = '*' == entry[-1:]
     let name = trim(isexe ? entry[:-2] : entry, '/', 2)
@@ -177,27 +196,32 @@ fu s:apply()
       if 1 < len(frags)
         " TODO: edits should unfold each fragment
         if isdir && !islnk
-          cal s:trace('mkdir', full, 'p')
+          cal s:trace('mkdir', !0, full, 'p')
           cal add(eds, k+1..'s/$/ --0'..len(path)..' ('..escaped..')')
           con
         en
-        cal s:trace('mkdir', join(isdir && islnk ? path[:-2] : path, '')..join(frags[:-2], '/'), 2 < len(frags) ? 'p' : '')
+        cal s:trace('mkdir', !0, join(isdir && islnk ? path[:-2] : path, '')..join(frags[:-2], '/'), 2 < len(frags) ? 'p' : '')
       en
       let name = frags[-1]
 
       if islnk
-        cal s:trace('s:writelink', full, target, '')
+        cal s:trace('s:writelink', 0, full, target, '')
         let full = '/' != target[0] ? fnamemodify(full, ':h')..'/'..target : target
         if '' != getftype(full) |con |en
       en
 
-      ev isdir ? s:trace('mkdir', full) : s:trace('writefile', [], full)
       cal add(eds, k+1..'s/$/ -- ('..escaped..')')
+      if iscpy
+        cal s:trace('s:filecopy', 0, source, full)
+        cal add(eds, k+1..'s/@ => .*')
+      el
+        ev isdir ? s:trace('mkdir', !0, full) : s:trace('writefile', 0, [], full)
+      en
     el
       " edition or deletion
 
       if empty(name)
-        cal s:trace('delete', pfull, wasdir && !islnk ? ['d', 'rf', ''][s:dircontent(pfull)] : '')
+        cal s:trace('delete', 0, pfull, wasdir && !islnk ? ['d', 'rf', ''][s:dircontent(pfull)] : '')
         cal add(eds, k+1..'d')
         con
       en
@@ -210,12 +234,12 @@ fu s:apply()
       if pfull == full && islnk
         let ptarget = s:readlink(full, '')
         if ptarget != target
-          cal s:trace('s:writelink', full, target, empty(ptarget) ? '' : '-f')
+          cal s:trace('s:writelink', 0, full, target, empty(ptarget) ? '' : '-f')
         en
       el
         " TODO: handle renaming dir that where unfolded- somehow-
         " FIXME: cannot rename broken links!? it fails with '=> -1'
-        cal s:trace('rename', pfull, full)
+        cal s:trace('rename', 0, pfull, full)
         cal add(eds, k+1..'s/ (.*)$/ ('..escaped..')')
       en
     en
@@ -223,7 +247,7 @@ fu s:apply()
     if isdirectory(full) |con |en
     let perm = getfperm(full)
     if 'x-'[isexe] == perm[2]
-      cal s:trace('setfperm', full, join([perm[:1], perm[3:4], perm[6:7], ''], '-x'[isexe]))
+      cal s:trace('setfperm', !0, full, join([perm[:1], perm[3:4], perm[6:7], ''], '-x'[isexe]))
     en
   endfo
 
@@ -231,14 +255,10 @@ fu s:apply()
   setl ul=-1
   let pos = getpos('.')
   1
-  "try
-    for s in reverse(eds) |exe s |endfo
-  "fina
-  "  cal setpos('.', pos)
-  "  "exe "norm! a \<BS>\<Esc>"
-  "  let &ul = pul
-  "  setl nomod
-  "endt
+  for s in reverse(eds) |exe s |endfo
+  cal setpos('.', pos)
+  let &ul = pul
+  setl nomod
 endf
 
 fu s:plore(dir)
@@ -261,12 +281,13 @@ fu s:plore(dir)
   au BufWriteCmd <buffer> cal s:apply()
   au CursorMoved <buffer> cal s:dotdotdot()
 
-  sy match Conceal /--\d* (.*)$/ conceal
-  sy match Statement /^\t*.\{-}\/\ze\(@\%[ -> ]\| --\|$\)/
-  sy match Structure /^\t*.\{-}\*\ze\(@\%[ -> ]\| --\|$\)/
-  sy match String /@ -> .\{-}\ze\( --\|$\)/
-  sy match Comment /`---/
-  sy match Title /\%1l.*/
+  sy match Conceal   /--\d* (.*)$/ conceal
+  sy match Statement /^\t*.\{-}\/\ze\(@\%[ [-=]> ]\| --\|$\)/
+  sy match Structure /^\t*.\{-}\*\ze\(@\%[ [-=]> ]\| --\|$\)/
+  sy match String    /@ -> .\{-}\ze\( --\|$\)/
+  sy match Constant  /@ => .*/
+  sy match Comment   /`---/
+  sy match Title     /\%1l.*/
 
   nn <silent> <buffer> zp :exe 'ped' getline('.')->matchstr(' --\d* (\zs.*\ze)')->fnamemodify(':~:.') <Bar>cd .<CR>
   nn <silent> <buffer> zx :cal system('xdg-open '..getline('.')->matchstr(' --\d* (\zs.*\ze)')->shellescape()..'&')<CR>
