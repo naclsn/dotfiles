@@ -548,7 +548,7 @@ h5,
   ],
   regexps: [
     "https://.*\\.(wikipedia|wiktionary|wikimedia|wikibooks|mediawiki).org/.*",
-    "https://wiki\\.[\\w-]+\\.(org|net)/.*",
+    "https://wiki\\.[\\w-]+\\.(org|net|fr)/.*",
     "https://[\\w-]+\\.wiki/.*",
     "https://.+/wiki/.*",
   ],
@@ -3380,6 +3380,8 @@ tr:not(:first-of-type) {
     "docs.ros.org",
     "docs.blender.org",
     "firefox-source-docs.mozilla.org",
+    "docs.ansible.com",
+    "flake8.pycqa.org",
   ],
   urlPrefixes: [
     "https://kernel.org/doc/html",
@@ -3407,13 +3409,20 @@ hr {
     border-color: var(--bd-0);
 }
 
+table.ansible-option-table tbody .row-odd td,
+table.ansible-option-table td:first-child > div.ansible-option-cell,
+table.ansible-option-table td > div.ansible-option-cell,
+.rst-content table.docutils,
+.wy-table-bordered-all,
 table.docutils th,
 table.docutils td,
 table {
     border-color: var(--bd-1) !important;
 }
 table.docutils tr th,
-table.docutils tr td {
+table.docutils tr td,
+table.ansible-option-table tbody .row-odd td,
+table.ansible-option-table td:first-child > div.ansible-option-cell {
     background-color: var(--bg-2) !important;
 }
 table.docutils tr:nth-child(2n-1) td {
@@ -3431,6 +3440,9 @@ table.docutils tr:nth-child(2n-1) td {
 .highlight .go {
     color: var(--co-1);
 }
+.highlight .l {
+    color: #2a95e7;
+}
 div[class^="highlight"] pre, .n,
 .rst-content code, .rst-content tt {
     color: var(--co-2);
@@ -3443,7 +3455,32 @@ a .rst-content code, a .rst-content tt {
     color: inherit;
 }
 
-.rst-content .note, .rst-content .seealso, .rst-content .tip, .rst-content .refbox, .rst-content .wy-alert-info.admonition, .rst-content .wy-alert-info.admonition-todo, .rst-content .wy-alert-info.attention, .rst-content .wy-alert-info.caution, .rst-content .wy-alert-info.danger, .rst-content .wy-alert-info.error, .rst-content .wy-alert-info.hint, .rst-content .wy-alert-info.important, .rst-content .wy-alert-info.tip, .rst-content .wy-alert-info.warning, .wy-alert.wy-alert-info, .sig.sig-object.py {
+
+.rst-content .admonition,
+.rst-content .admonition-todo,
+.rst-content .attention,
+.rst-content .caution,
+.rst-content .danger,
+.rst-content .error,
+.rst-content .hint,
+.rst-content .important,
+.rst-content .note,
+.rst-content .seealso,
+.rst-content .tip,
+.rst-content .warning,
+.rst-content .refbox,
+.rst-content .wy-alert-info.admonition,
+.rst-content .wy-alert-info.admonition-todo,
+.rst-content .wy-alert-info.attention,
+.rst-content .wy-alert-info.caution,
+.rst-content .wy-alert-info.danger,
+.rst-content .wy-alert-info.error,
+.rst-content .wy-alert-info.hint,
+.rst-content .wy-alert-info.important,
+.rst-content .wy-alert-info.tip,
+.rst-content .wy-alert-info.warning,
+.wy-alert.wy-alert-info,
+.sig.sig-object.py {
    background-color: var(--bg-3) !important;
 }
 
@@ -3474,12 +3511,12 @@ a .rst-content code, a .rst-content tt {
 }
 
 .rst-content dl:not(.docutils) dl dt,
-.rst-content dl:not(.docutils) dt {
-    background-color: var(--bg-2);
-    color: var(--co-0);
-    border-color: var(--bd-1);
-}
-`],
+.rst-content dl:not(.docutils) dt,
+.rst-content dl:not(.docutils) dt span {
+    background-color: var(--bg-2) !important;
+    color: var(--co-0) !important;
+    border-color: var(--bd-1) !important;
+}`],
 
 
 ["mep - Ruby", {
@@ -4545,7 +4582,7 @@ img {
     --co-disabled: #BDBDBD;
 }
 
-body {
+body, div#appRoot {
     background-color: var(--bg-medium);
     border-color: var(--bd-medium);
     color: var(--co-medium);
@@ -4560,6 +4597,18 @@ h2 {
 }
 .od-Files-topBar {
     border-color: var(--bd-medium) !important;
+}
+a[data-navigationcomponent="SiteHeader"] {
+    color: var(--co-bright) !important;
+}
+a[data-navigationcomponent="SiteHeader"]>img {
+    filter: invert(.92);
+}
+.od-TopBar-commandBar {
+    border-color: var(--bd-medium) !important;
+}
+.od-TopBar-item {
+    background-color: var(--bd-medium);
 }
 /*-*/
 
@@ -4629,6 +4678,13 @@ a.ms-Nav-link,
     color: var(--co-dark);
 }
 
+.ms-Shimmer-container {
+    filter: invert(.92);
+}
+.ms-List::after {
+    background-image: none;
+}
+
 /*- file list */
 .Files-mainColumn,
 .File-search-expand,
@@ -4686,6 +4742,59 @@ div[class*="isSelected"]::before {
 
 .heroButton_e5e31e1b:hover {
     background-color: var(--bg-bright);
+}
+
+.SPOApp:not(.od-Browser--ie) .od-ItemsScopeList-content .ms-DetailsHeader,
+.SPOApp:not(.od-Browser--ie) .od-ItemsScopeList-content .od-filtersHeader {
+    box-shadow: none;
+}
+/*-*/
+
+/*- file hover */
+.ms-ExpandingCard-compactCard,
+.ms-ExpandingCard-expandedCard,
+.ms-ExpandingCard-expandedCard>div>div>div>div,
+.ms-ActivityItem * {
+    color: var(--co-medium);
+}
+/*-*/
+
+/*- file details right side */
+.od-DetailsPane,
+.od-DetailsPane-PrimaryPane-wrapper {
+    background-color: var(--bg-bright);
+}
+.od-DetailsPane-PrimaryPane-header,
+.od-SharingSection-PermissionsPile,
+.od-DetailsPane-LegacySection .InfoPane-section,
+.od-DetailsPane-SecondaryPane-wrapper {
+    background-color: var(--bg-medium);
+}
+.od-DetailsPane-SecondaryPane-body {
+    background-color: var(--bg-bright);
+}
+.od-DetailsPane-SecondaryPane .od-DetailsPane-ItemActivityFeedSection-content .od-ItemActivityFeed-error,
+.od-DetailsPane-SecondaryPane .od-DetailsPane-ItemActivityFeedSection-content .od-ItemActivityFeed-noActivities,
+.od-DetailsPane-SecondaryPane .od-DetailsPane-ItemActivityFeedSection-content .od-ItemActivityList-activity {
+    background-color: var(--bg-medium);
+}
+.od-DetailsPaneWrapper {
+    border-color: var(--bg-dark) !important;
+}
+.od-DetailsPaneWrapper,
+.Files-rightPane,
+.od-Resize,
+.od-InfoPane-ReactSections .InfoPane-section {
+    background-color: var(--bg-dark);
+}
+.od-DetailsPane-SecondaryPane-header,
+.od-DetailsPane-SecondaryPane {
+    box-shadow: none;
+    background-color: var(--bg-dark);
+}
+.InfoPane-sectionHeaderText,
+.od-ItemActivityFeed-title-old {
+    color: var(--co-medium);
 }
 /*-*/
 
@@ -4916,9 +5025,14 @@ img {
 /*-*/
 
 /*- code/pre */
-code, .card {
+code,
+.card,
+.card-header {
     background-color: var(--bg-2) !important;
     color: var(--co-2) !important;
+}
+.card.border {
+    border: none !important;
 }
 
 code[class*="language-"],
@@ -4947,9 +5061,9 @@ pre[class*="language-"],
 `],
 
 
-if ('process' in globalThis && 2 < process.argv.length)
+];} if ('process' in globalThis && 2 < process.argv.length)
     if ('-h' == process.argv[2]) console.log("Usage: $0 [<stylus.json>]");
-    else for (const it of JSON.parse(require('fs').readFileSync(process.argv[2]))) for (const se of it.sections) {
+    else for (const it of JSON.parse(require('fs').readFileSync(process.argv[2])).filter(it => 'sections' in it)) for (const se of it.sections) {
         console.log(`["${it.name}", {`);
         for (const ppt of ['domains', 'regexps', 'urlPrefixes']) if (ppt in se)
             console.log(`  ${ppt}: [\n    ${se[ppt].map(JSON.stringify).join(',\n    ')},\n  ],`);
