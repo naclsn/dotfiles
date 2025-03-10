@@ -5069,9 +5069,9 @@ pre[class*="language-"],
             console.log(`  ${ppt}: [\n    ${se[ppt].map(JSON.stringify).join(',\n    ')},\n  ],`);
         console.log(`}, \`\n${se.code.replace(/\\/g, '\\\\')}\`],\n\n`);
     }
-else ('copy' in globalThis ? copy : o => console.log(JSON.stringify(o, undefined, 2)))(list().map(([name, target, code], id) => ({
+else console.log(JSON.stringify([{settings:{}}]+list().map(([name, target, code], id) => ({
     id,
     name,
     enabled: true,
     sections: [{ code: code.slice(1), ...target }]
-})));
+})), undefined, 2));

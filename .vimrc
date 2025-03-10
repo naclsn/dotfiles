@@ -11,7 +11,7 @@ if has('nvim')
   se rtp^=~/.vim/
   se udir=~/.vim/cache/nundo//
   aun PopUp
-  au! nvim_popupmenu
+  sil! au! nvim_popupmenu
   "colo vim
 el
   se udir=~/.vim/cache/undo//

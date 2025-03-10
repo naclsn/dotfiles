@@ -1,35 +1,22 @@
 vim.cmd.so '~/.vimrc'
 
--- TODO: (#1229) swich over to lazy, or other, or plain (most likely)
-require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim'
-    use 'neovim/nvim-lspconfig'
-    --use 'nvim-treesitter/nvim-treesitter'
-end)
+vim.notify(vim.api.nvim_call_function('system', {{'/bin/sh'}, [[set -e
+  mkdir -p ~/.config/nvim/pack/ages/start
+  cd ~/.config/nvim/pack/ages/start
+  [ -d nvim-lspconfig ] || git clone --depth 1 https://github.com/neovim/nvim-lspconfig
+]]}))
 
---[[require('nvim-treesitter.configs').setup {
-    ensure_installed= 'all',
-    sync_install= false,
-    auto_install= true,
-    highlight= {
-        enable= true,
-        additional_vim_regex_highlighting= false,
-    },
-}
-vim.cmd.hi 'link @punctuation NormalNC']]
-
---do return end
 
 --vim.lsp.set_log_level("trace")
 
 for it, conf in pairs {
-    -- npm i -g @ansible/ansible-language-server
     ansiblels= {
+        -- npm i -g @ansible/ansible-language-server
         --filetypes= { 'yaml', 'yaml.ansible' },
         settings= { ansible= { validation= { enabled= false } } },
     },
-    -- pip install basedpyright
     basedpyright= { settings= { basedpyright= { analysis= { diagnosticSeverityOverrides= {
+        -- pip install basedpyright
         reportAny= 'none',
         reportConstantRedefinition= 'warning',
         reportDeprecated= 'information',
@@ -60,16 +47,10 @@ for it, conf in pairs {
         reportWildcardImportFromLibrary= 'information',
     } } } } },
     clangd= {},
-    elmls= {},
-    erlangls= {},
     jdtls= {},
-    -- https://github.com/LuaLS/lua-language-server/releases/
-    lua_ls= {},
-    nim_langserver= {},
-    ruby_lsp= {},
-    rust_analyzer= { settings= { ['rust-analyzer']= { procMacro= { enable= false } } } },
-    -- npm i -g typescript typescript-language-server
-    ts_ls= {},
+    lua_ls= {}, -- https://github.com/LuaLS/lua-language-server/releases/
+    rust_analyzer= { --[[settings= { ['rust-analyzer']= { procMacro= { enable= false } } }]] },
+    ts_ls= {}, -- npm i -g typescript typescript-language-server
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
 
@@ -100,6 +81,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<space>=', vim.lsp.buf.format, opts)
     end,
 })
+
+
+
+
+-- -
 
 vim.g.zig_fmt_autosave = 0
 
