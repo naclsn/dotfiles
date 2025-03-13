@@ -2,7 +2,7 @@ vim.cmd.so '~/.vimrc'
 
 vim.notify(vim.fn.system({'/bin/sh'}, [[set -e
   sitepackages=~/.local/share/nvim/site/pack/ages/start
-  mkdir -p $sitepackages; cd $sitepackages
+  mkdir -p "$sitepackages"; cd "$sitepackages"
   [ -d nvim-lspconfig ] || git clone --depth 1 https://github.com/neovim/nvim-lspconfig
 ]]))
 
