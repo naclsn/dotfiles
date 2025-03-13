@@ -254,7 +254,6 @@ fu s:apply()
   let pul = &ul
   setl ul=-1
   let pos = getpos('.')
-  1
   for s in reverse(eds) |exe s |endfo
   cal setpos('.', pos)
   let &ul = pul

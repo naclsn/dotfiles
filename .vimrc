@@ -30,7 +30,7 @@ filet plugin on
 au BufEnter * se fo-=o
 au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
-au FileType python setl tw=88
+au FileType python if '0' == &tw |setl tw=88 |en
 
 fu s:black_formatexpr()
   if !empty(v:char) || mode() =~ '[iR]' |retu |en
@@ -500,11 +500,23 @@ com! -nargs=+ -complete=buffer Surveil cal <SID>urveil(<f-args>)
 "  au FileType netrw sil! unm <buffer> s
 "  au FileType netrw sil! unm <buffer> S
 "aug END
-for n in ['gzip', 'netrw', 'tar', 'zip']
+for n in ['gzip', 'netrw', 'spellfile', 'tar', 'zip']
   let g:loaded_{n} = 1
   let g:loaded_{n}Plugin = 1
+  let g:loaded_{n}_plugin = 1
 endfo
 unl n
+
+fu s:pellfile_wget(lang)
+  if 2 == confirm('Download spl/sug for '..a:lang..'?', "&No\n&Yes")
+    sil let res = system('wget -B https://ftp.nluug.nl/pub/vim/runtime/spell/ -P "$HOME/.vim/spell" -nvc -i-', [
+      \ a:lang.'.utf-8.spl',
+      \ a:lang.'.utf-8.sug'])
+    ec res
+    if res =~ 'failed:\|ERROR' |echoe 'hoe!!' |en
+  en
+endf
+au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
 
 " modeline {{{1
 " vim: se fdm=marker fdl=0 ts=2:

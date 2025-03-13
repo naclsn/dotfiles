@@ -1,10 +1,10 @@
 vim.cmd.so '~/.vimrc'
 
-vim.notify(vim.api.nvim_call_function('system', {{'/bin/sh'}, [[set -e
-  mkdir -p ~/.config/nvim/pack/ages/start
-  cd ~/.config/nvim/pack/ages/start
+vim.notify(vim.fn.system({'/bin/sh'}, [[set -e
+  sitepackages=~/.local/share/nvim/site/pack/ages/start
+  mkdir -p $sitepackages; cd $sitepackages
   [ -d nvim-lspconfig ] || git clone --depth 1 https://github.com/neovim/nvim-lspconfig
-]]}))
+]]))
 
 
 --vim.lsp.set_log_level("trace")
