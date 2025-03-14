@@ -125,8 +125,8 @@ com!                               Mark     lad expand('%').':'.line('.').':'.ge
 " git {{{1
 fu s:git_buflines(com, args)
   setl bh=wipe bt=nofile fdm=syntax nobl noswf
-  let l:exp = empty(a:args) ? '' : a:args->expandcmd()->shellescape()
-  exe 'f [git-'..a:com..']' l:exp
+  let l:exp = a:args->expandcmd()
+  exe 'f :Git'..a:com[0]->toupper()..a:com[1:] l:exp
   ev systemlist('git '..a:com..' '..l:exp)->setline(1)
 endf
 com! -nargs=* -complete=file GitDiff  ene      |setl ft=diff            |cal s:git_buflines('diff',  <q-args>) |nn <buffer>          zp :ped <C-R>=search('^@@', 'bcnW')->getline()->matchstr('+\d\+')<CR> <C-R>=search('^---', 'bcnW')->getline()[6:]<CR><CR>
