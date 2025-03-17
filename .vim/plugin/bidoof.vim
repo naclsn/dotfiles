@@ -71,7 +71,7 @@ fu Registore(var='') abort " {{{1
   retu l:dst
 endf " }}}
 
-fu Curl(url, head, data, dry=v:null) abort " {{{1
+fu Curl(url, head={}, data={}, dry=v:null) abort " {{{1
   " url may be: [METHOD] [proto://][...]
   " * perdu.com -> GET to https://perdu.com
   " * http://perdu.com -> GET to http://perdu.com
@@ -97,15 +97,20 @@ fu Curl(url, head, data, dry=v:null) abort " {{{1
 
   for l:k in a:head->keys() |cal add(l:com, '-H'..l:k..':'..a:head[l:k]) |endfo
 
-  let l:data = v:t_dict == a:data->type()
-    \ ? a:data->keys()->map({_, k -> k..'='..a:data[k]})
-    \ : a:data
+  let l:ty = a:data->type()
+  if v:t_string == l:ty || v:t_blob == l:ty
+    ev l:com->extend(['--data-binary', a:data])
+  el
+    let l:data = v:t_dict == l:ty
+      \ ? a:data->keys()->map({_, k -> k..'='..a:data[k]})
+      \ : a:data
 
-  for l:it in l:data
-    ev l:encode && l:it =~ '=.*[^-0-9A-Z_a-z]'
-      \ ? l:com->extend(['--data-urlencode', l:it])
-      \ : l:com->add('-d'..l:it)
-  endfo
+    for l:it in l:data
+      ev l:encode && l:it =~ '=.*[^-0-9A-Z_a-z]'
+        \ ? l:com->extend(['--data-urlencode', l:it])
+        \ : l:com->add('-d'..l:it)
+    endfo
+  en
 
   echom l:com
   retu v:null == a:dry ? l:com->system() : a:dry
