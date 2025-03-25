@@ -21,6 +21,7 @@ for it, conf in pairs {
         reportConstantRedefinition= 'warning',
         reportDeprecated= 'information',
         reportExplicitAny= 'none',
+        reportImplicitAbstractClass= 'error',
         reportImplicitOverride= 'information',
         reportImplicitRelativeImport= 'warning',
         reportImplicitStringConcatenation= 'warning',

@@ -2,6 +2,7 @@
 	autocrlf = false
 	pager = ""
 [pager]
+	blame = ${PAGER:-less}
 	diff = ${PAGER:-less}
 	log = ${PAGER:-less}
 	show = ${PAGER:-less}

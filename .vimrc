@@ -122,18 +122,6 @@ map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
 "com!                               ClipEdit ene |setl bh=wipe bt=nofile nobl noswf spell wrap |pu + |0d _ |no <buffer> <C-S> :<C-U>%y +<CR>
 com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
 
-" git {{{1
-fu s:git_buflines(com, args)
-  setl bh=wipe bt=nofile fdm=syntax nobl noswf
-  let l:exp = a:args->expandcmd()
-  exe 'f :Git'..a:com[0]->toupper()..a:com[1:] l:exp
-  ev systemlist('git '..a:com..' '..l:exp)->setline(1)
-endf
-com! -nargs=* -complete=file GitDiff  ene      |setl ft=diff            |cal s:git_buflines('diff',  <q-args>) |nn <buffer>          zp :ped <C-R>=search('^@@', 'bcnW')->getline()->matchstr('+\d\+')<CR> <C-R>=search('^---', 'bcnW')->getline()[6:]<CR><CR>
-com! -nargs=*                GitLog   ene      |setl ft=git             |cal s:git_buflines('log',   <q-args>) |nn <buffer> <silent> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <C-R><C-W> <lt>Bar>cal win_execute(bufwinid(bufnr('<C-R><C-W>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
-com! -nargs=* -complete=file GitShow  ene      |setl ft=gitcommit       |cal s:git_buflines('show',  <q-args>)
-com! -nargs=+ -complete=file GitBlame vert new |setl nonu nornu pvw scb |cal s:git_buflines('blame', <q-args>) |winc 57<Bar> |winc w |setl scb
-
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
 if g:is_win
