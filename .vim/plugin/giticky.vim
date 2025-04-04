@@ -17,21 +17,31 @@ fu s:git_diff(args)
   nn <buffer> zp :exe 'ped' search('^@@', 'bcnW')->getline()->matchstr('+\d\+') search('^---', 'bcnW')->getline()[6:]<CR>
 endf
 
+fu s:git_log_zp() abort
+  let h = search('^commit ', 'bcnW')->getline()[7:]
+  let b = bufadd('')
+  cal bufload(b)
+  exe 'pb' b
+  cal win_execute(bufwinid(b), 'exe "GitShow" "'..h..'"')
+endf
 fu s:git_log(args)
   setl ft=git
-  nn <buffer> <silent> zp :cal cursor(search('^commit ', 'bcW'), 8)<CR>:ped <cword> <lt>Bar>cal win_execute(bufwinid(bufnr('<cword>')), 'exe "GitShow" @% <lt>Bar>bw#')<CR>
+  nn <buffer> <silent> zp :cal <SID>git_log_zp()<CR>
 endf
 
 fu s:git_show(args)
   if a:args =~ ':' |filet detect |el |setl ft=gitcommit |en
 endf
 
+" TODO: command name clash with GitL is annoying
+"       -> rename to just GitTree or even GitFiles
 fu s:git_ls_tree(args)
   nn <buffer> gf :GitShow <C-R>=@%->split()[-1]<CR>:<cfile><CR>
   nm <buffer> <C-W>f :sp<CR>gf
   nm <buffer> <C-W><C-F> :sp<CR>gf
 endf
 
+" TODO: just todo
 "fu s:git_blame(rg)
 "  setl nonu nornu pvw scb
 "  winc 57<Bar>
@@ -39,7 +49,7 @@ endf
 "  setl scb
 "endf
 
-for n in ['diff', 'log', 'show', 'ls-tree -r --name-only']
+for n in ['diff', 'log', 'show'] ", 'ls-tree -r --name-only']
   exe 'com! -nargs=* -complete=file Git'..s:Case(n)
     \ 'ene |'
     \ 'cal s:ys_git_buflines("'..n..'", <q-args>) |'
