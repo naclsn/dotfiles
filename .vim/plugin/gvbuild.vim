@@ -1,4 +1,4 @@
-" Build a dot-graphviz-based [mental-] map while browsing a codebase..
+" Build a dot-graphviz-based [mental-] map while browsing a codebase.
 "
 " Commands have some completion.
 "

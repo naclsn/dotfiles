@@ -545,9 +545,10 @@ h5,
   domains: [
     "esolangs.org",
     "www.pokepedia.fr",
+    "wiki.mhcomm.fr",
   ],
   regexps: [
-    "https://.*\\.(wikipedia|wiktionary|wikimedia|wikibooks|mediawiki).org/.*",
+    "https://.*\\.(wiktionary|wikimedia|wikibooks|mediawiki).org/.*",
     "https://wiki\\.[\\w-]+\\.(org|net|fr)/.*",
     "https://[\\w-]+\\.wiki/.*",
     "https://.+/wiki/.*",
@@ -1917,6 +1918,20 @@ hr {
 }, `
 body, h1, h2, h3, h4, h5, h6, p, li {
     background-color: var(--bg-1);
+}
+
+@media only screen and (max-width: 1000px) {
+    body {
+        margin: 1em;
+    }
+    .nav {
+        visibility: hidden;
+    }
+}
+@media only screen and (max-width: 1000px) and (min-width: 719px) {
+    body {
+        margin-left: calc(50vw - 23em);
+    }
 }
 
 .nav, .nav *, div.box {
@@ -4698,8 +4713,10 @@ a[class^="tileViewport"],
     box-shadow: 0px 2px 4px var(--bd-medium), 0px 0px 2px var(--bd-medium) !important;
 }
 
+#odList,
 .ms-DetailsList-headerWrapper .ms-DetailsHeader {
     background-color: var(--bg-bright);
+    border-color: var(--bd-medium);
 }
 .ms-DetailsHeader-cell {
     color: var(--co-medium);
@@ -5062,16 +5079,16 @@ pre[class*="language-"],
 
 
 ];} if ('process' in globalThis && 2 < process.argv.length)
-    if ('-h' == process.argv[2]) console.log("Usage: $0 [<stylus.json>]");
+    if ('-h' == process.argv[2] || '--help' == process.argv[2]) console.log("Usage: $0 [<in-stylus.json>]");
     else for (const it of JSON.parse(require('fs').readFileSync(process.argv[2])).filter(it => 'sections' in it)) for (const se of it.sections) {
         console.log(`["${it.name}", {`);
         for (const ppt of ['domains', 'regexps', 'urlPrefixes']) if (ppt in se)
             console.log(`  ${ppt}: [\n    ${se[ppt].map(JSON.stringify).join(',\n    ')},\n  ],`);
         console.log(`}, \`\n${se.code.replace(/\\/g, '\\\\')}\`],\n\n`);
     }
-else console.log(JSON.stringify([{settings:{}}]+list().map(([name, target, code], id) => ({
+else console.log(JSON.stringify([{settings:{'editor.keyMap':'vim','hotkey.styleDisableAll':'Alt+Y'}}].concat(list().map(([name, target, code], id) => ({
     id,
     name,
     enabled: true,
     sections: [{ code: code.slice(1), ...target }]
-})), undefined, 2));
+}))), undefined, 2));

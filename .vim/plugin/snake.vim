@@ -1,3 +1,11 @@
+" snek
+"
+" Last Change:	na
+" Maintainer:	no
+" License:	This file is placed in the public domain.
+"
+"  Just, have fun dang it!
+
 let s:best = 782
 let s:file = expand('<sfile>:p')
 

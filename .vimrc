@@ -32,23 +32,25 @@ au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
 au FileType python if '0' == &tw |setl tw=88 |en
 
-fu s:black_formatexpr()
-  if !empty(v:char) || mode() =~ '[iR]' |retu |en
+fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char, curpos=[])
+  if !empty(a:char) || mode() =~ '[iR]' |retu |en
 
   let prog = ['black', '--quiet', '-l'..(&tw??78), '-', '--stdin-filename', @%]
   if @% =~ 'pyi$' |ev prog->add('--pyi') |en " is this needed if ^ is given?
 
-  let last = v:lnum+v:count-1
-  let inde = range(v:lnum, last)->map('indent(v:val)')->min() / &ts
-  let text = ['if():']->repeat(inde)->map('" "->repeat(&ts*v:key)..v:val')->extend(getline(v:lnum, last))
+  let last = a:lnum+a:count-1
+  let inde = range(a:lnum, last)->map('indent(v:val)')->min() / &ts
+  let text = ['if():']->repeat(inde)->map('" "->repeat(&ts*v:key)..v:val')->extend(getline(a:lnum, last))
   let fmtd = prog->systemlist(text)[inde:]
 
-  cal deletebufline('%', v:lnum, last)
-  cal append(v:lnum-1, fmtd)
+  cal deletebufline('%', a:lnum, last)
+  cal append(a:lnum-1, fmtd)
+
+  if !empty(a:curpos) |$d |cal setpos('.', a:curpos) |en
 endf
 
 au FileType python setl fex=s:black_formatexpr()
-au FileType python if expand('<afile>') =~ 'pyi$' |nn <buffer> gqq :!python3 -m black --quiet --pyi %<CR>|el |nn <buffer> gqq :!python3 -m black --quiet -l<C-R>=&tw??78<CR> %<CR>|en
+au FileType python nn gqq :cal <SID>black_formatexpr(1, line('$'), '', getcurpos())<CR>
 
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier

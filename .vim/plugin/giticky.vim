@@ -1,15 +1,30 @@
+" Few usufull git commands.
+"
+" It all just boils down to the |Giticky()| which invokes `git`
+" and pumps out the result into a buffer (args given to a command
+" are forwarded):
+"   |:GitDiff| is `git diff`
+"   |:GitLog|     `git log`
+"   |:GitShow|    `git show`  understands '<commit>:<file>' arg syntax
+"   |:GitBlame|   `git blame`  default if no arg: current buffer's name
+"   |:GitFiles|   `git ls-tree -r --name-only`  default arg: 'HEAD'
+"
+" Note That:! all buffers are marked "bh=wipe" 'bh'
+" Also |Giticky()| expands the argument in the context of the new buffer.
+"
+" Last Change:	2025 Apr 09
+" Maintainer:	a b <a.b@c.d>
+" License:	This file is placed in the public domain.
+"
+"  Just, know what you're using and doing-
 
-" git {{{1
-fu s:Case(word)
-  retu a:word->split()[0]->substitute('\v%(^|-)(\w)', '\u\1', 'g')
-endf
-
-fu s:ys_git_buflines(com, args)
+fu Giticky(name, args, com=a:name, dargs='') abort
   if [''] != getline(1, '$') |th 'not touching non-empty buffer' |en
   setl bh=wipe bt=nofile fdm=syntax nobl noswf
-  let l:exp = a:args->expandcmd()
-  exe 'f :Git'..s:Case(a:com) l:exp
-  ev systemlist('git '..a:com..' '..l:exp)->setline(1)
+  let exargs = (a:args ?? a:dargs)->expandcmd()
+  exe 'f :Git'..toupper(a:name[0])..a:name[1:] exargs
+  ev systemlist('git '..a:com..' '..exargs)->setline(1)
+  cal call('s:git_'..a:name, [exargs])
 endf
 
 fu s:git_diff(args)
@@ -17,44 +32,51 @@ fu s:git_diff(args)
   nn <buffer> zp :exe 'ped' search('^@@', 'bcnW')->getline()->matchstr('+\d\+') search('^---', 'bcnW')->getline()[6:]<CR>
 endf
 
-fu s:git_log_zp() abort
-  let h = search('^commit ', 'bcnW')->getline()[7:]
-  let b = bufadd('')
-  cal bufload(b)
-  exe 'pb' b
-  cal win_execute(bufwinid(b), 'exe "GitShow" "'..h..'"')
-endf
 fu s:git_log(args)
   setl ft=git
   nn <buffer> <silent> zp :cal <SID>git_log_zp()<CR>
+  endf
+  fu s:git_log_zp() abort
+    let h = search('^commit ', 'bcnW')->getline()[7:]
+    let b = bufadd('')
+    cal bufload(b)
+    exe 'pb' b
+    cal win_execute(bufwinid(b), 'exe "GitShow" "'..h..'"')
 endf
 
 fu s:git_show(args)
   if a:args =~ ':' |filet detect |el |setl ft=gitcommit |en
 endf
 
-" TODO: command name clash with GitL is annoying
-"       -> rename to just GitTree or even GitFiles
-fu s:git_ls_tree(args)
+fu s:git_files(args)
   nn <buffer> gf :GitShow <C-R>=@%->split()[-1]<CR>:<cfile><CR>
   nm <buffer> <C-W>f :sp<CR>gf
   nm <buffer> <C-W><C-F> :sp<CR>gf
 endf
 
-" TODO: just todo
-"fu s:git_blame(rg)
-"  setl nonu nornu pvw scb
-"  winc 57<Bar>
-"  winc w
-"  setl scb
-"endf
+fu s:git_blame(rg)
+  setl nonu nornu pvw
+  let wn = winnr()
+  vert winc ^
+  setl crb scb sbo-=jump
+  let ln = line('.')
+  winc p
+  exe ln
+  setl crb scb sbo-=jump
+  winc p
+  sync
+endf
 
-for n in ['diff', 'log', 'show'] ", 'ls-tree -r --name-only']
-  exe 'com! -nargs=* -complete=file Git'..s:Case(n)
-    \ 'ene |'
-    \ 'cal s:ys_git_buflines("'..n..'", <q-args>) |'
-    \ 'cal s:git_'..n->split()[0]->substitute('-', '_', 'g')..'(<q-args>)'
+for [name, com, dargs] in
+  \ [ ['diff', 'diff', '']
+  \ , ['log', 'log', '']
+  \ , ['show', 'show', '']
+  \ , ['blame', 'blame', '#']
+  \ , ['files', 'ls-tree -r --name-only', 'HEAD']
+  \ ]
+  exe 'com! -bar -nargs=* -complete=file Git'..toupper(name[0])..name[1:]
+    \ 'ene |cal Giticky("'..name..'", <q-args>, "'..com..'", "'..dargs..'")'
 endfo
-unl n
+unl name com dargs
 
 " vim: se ts=2:
