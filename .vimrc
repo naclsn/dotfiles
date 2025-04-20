@@ -32,25 +32,52 @@ au FileType c,python sy keyword Title self
 au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
 au FileType python if '0' == &tw |setl tw=88 |en
 
-fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char, curpos=[])
+fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char) abort
   if !empty(a:char) || mode() =~ '[iR]' |retu |en
 
-  let prog = ['black', '--quiet', '-l'..(&tw??78), '-', '--stdin-filename', @%]
-  if @% =~ 'pyi$' |ev prog->add('--pyi') |en " is this needed if ^ is given?
+  let lines = ['black',
+      \ '--quiet', '--diff',
+      \ '--line-length', &tw ?? 78,
+      \ '--line-ranges', a:lnum..'-'..(a:lnum+a:count-1),
+      \ '--stdin-filename', @%, '-']
+    \ ->systemlist(getline(1, '$') + [''])
+  let l = lines->len()
 
-  let last = a:lnum+a:count-1
-  let inde = range(a:lnum, last)->map('indent(v:val)')->min() / &ts
-  let text = ['if():']->repeat(inde)->map('" "->repeat(&ts*v:key)..v:val')->extend(getline(a:lnum, last))
-  let fmtd = prog->systemlist(text)[inde:]
+  let pos = getcurpos()
+  let pastend = 0
+  let k = 2
+  wh k < l
+    let nr = line('.')
+    let j = lines[k]->matchstr('^@@ -\d\+,\d\+ +\zs\d\+\ze,\d\+ @@$')
+    if j
+      cal cursor(j, 1)
+      let n = k+1
 
-  cal deletebufline('%', a:lnum, last)
-  cal append(a:lnum-1, fmtd)
+    elsei '-' == lines[k][0]
+      let n = lines->match('^[^-]', k)
+      if -1 == n |let n = l |en
+      cal deletebufline('%', nr, nr+n-k-1)
+      " if we deleted last line, we moved; next (and last) '+'s must not -1
+      if line('.') != nr |let pastend = 1 |en
 
-  if !empty(a:curpos) |$d |cal setpos('.', a:curpos) |en
+    elsei '+' == lines[k][0]
+      let n = lines->match('^[^+]', k)
+      if -1 == n |let n = l |en
+      cal append(pastend ? nr : nr-1, lines[k:n-1]->map('v:val[1:]'))
+
+    elsei ' ' == lines[k][0]
+      let n = lines->match('^[^ ]', k)
+      if -1 == n |let n = l |en
+      cal cursor(nr+n-k, 1)
+
+    el |echoe 'broken:' lines[k] |brea |en
+    let k = n
+  endw
+  cal setpos('.', pos)
 endf
 
 au FileType python setl fex=s:black_formatexpr()
-au FileType python nn gqq :cal <SID>black_formatexpr(1, line('$'), '', getcurpos())<CR>
+au FileType python nn gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
 
 hi clear MatchParen |hi link MatchParen Title
 hi clear diffRemoved |hi link diffRemoved Identifier
