@@ -24,10 +24,10 @@
 "   * |Primer()| for a usefull header
 "   * |Registore()| essentially a file path in ~/.cache
 "   * |Curl()| curl(1)
-"   * |PP()|, |PPl()| and |PPs()| pretty print
+"   * |:PP|, |PP()|, |PPl()| and |PPs()| pretty print
 "   * |:Ypy| and |Ypy()| python with expr8->
 "
-" Last Change:	2025 Jan 28
+" Last Change:	2025 Apr 16
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -125,6 +125,8 @@ let s:default_opts = #{
   \ inde: 0,
   "\ sort dict key by default
   \ sort: 1,
+  "\ put list items on same line as possible, by default no
+  \ tight: 0,
   "\ depth stack (internal use) ((NIY))
   \ stack: []}
 
@@ -260,13 +262,14 @@ fu s:listPPer(list, opts)
     ev l:lval[0]->remove(0, 1)
 
     " doesn't apply for first item in the line (1 == l:accu)
+    " always drop next line if a:opts.tight false
     "   [1, 2, 3, <l:lval>
     "            |--------| essentially l:avail-l:accu
     "   if multiline, and if taller than large, drop to next line
     "   or if it would simply overflow
-    if 1 < l:accu
-        \ && (1 < len(l:lval) && l:avail-l:accu < 2*len(l:lval)
-        \     || l:avail-l:accu < s:len(l:lval[0]))
+    if 1 < l:accu && ( !a:opts.tight ||
+        \    (1 < len(l:lval) && l:avail-l:accu < 2*len(l:lval)
+        \     || l:avail-l:accu < s:len(l:lval[0])) )
       ev l:r[-1]->extend(['None', ','])
       ev l:r->add(['None', l:inde..' '])
       let l:accu = 1
@@ -444,6 +447,8 @@ fu PP(ny, name='_', opts={})
   echoh None
   retu a:ny
 endf
+
+com -nargs=+ -complete=expression PP cal PP(<args>, <q-args>)
 " }}}
 
 " Ypy {{{1

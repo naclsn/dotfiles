@@ -1,4 +1,6 @@
 lan C
+
+" se {{{1
 se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
 " temp (to relocate)
@@ -19,19 +21,20 @@ el
 en
 
 se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
-au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
-com Mks exe 'mks'.'!'[empty(v:this_session)] v:this_session
 
-colo slate
-sy on
-filet on
-filet plugin on
-
+" au {{{1
 au BufEnter * se fo-=o
+au ColorScheme * cal s:fix_colo()
+au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au FileType c,python sy keyword Title self
-au FileType python if !filereadable('Makefile') |setl makeprg=flake8 |en
-au FileType python if '0' == &tw |setl tw=88 |en
+au FileType python   if !filereadable('Makefile') |setl makeprg=flake8 |en
+au FileType python   if '0' == &tw |setl tw=88 |en
+au FileType python   setl fex=s:black_formatexpr()
+au FileType python   nn gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
+au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
+au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
 
+" fu used by au {{{1
 fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char) abort
   if !empty(a:char) || mode() =~ '[iR]' |retu |en
 
@@ -76,29 +79,41 @@ fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char) abort
   cal setpos('.', pos)
 endf
 
-au FileType python setl fex=s:black_formatexpr()
-au FileType python nn gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
+fu s:fix_colo()
+  hi clear MatchParen  |hi link MatchParen  Title
+  hi clear Pmenu       |hi link Pmenu       CursorLine
+  hi clear diffRemoved |hi link diffRemoved Identifier
+  hi clear diffAdded   |hi link diffAdded   Special
+  "hi Normal ctermfg=white ctermbg=black
+  if has_key(g:, 'terminal_ansi_colors')
+    let c = matchstr(execute('hi Normal'), 'guibg=\S\+')[6:]
+    let g:terminal_ansi_colors = [c]+g:terminal_ansi_colors[1:]
+    exe 'hi Terminal guibg='.c
+    unl c
+  en
+endf
 
-hi clear MatchParen |hi link MatchParen Title
-hi clear diffRemoved |hi link diffRemoved Identifier
-hi clear diffAdded |hi link diffAdded Special
-"hi Normal ctermfg=white ctermbg=black
-if has_key(g:, 'terminal_ansi_colors')
-  let c = matchstr(execute('hi Normal'), 'guibg=\S\+')[6:]
-  let g:terminal_ansi_colors = [c]+g:terminal_ansi_colors[1:]
-  exe 'hi Terminal guibg='.c
-  unl c
-en
-au FileType xxd nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
+fu s:pellfile_wget(lang)
+  if 2 == confirm('Download spl/sug for '..a:lang..'?', "&No\n&Yes")
+    sil let res = system('wget -B https://ftp.nluug.nl/pub/vim/runtime/spell/ -P "$HOME/.vim/spell" -nvc -i-', [
+      \ a:lang.'.utf-8.spl',
+      \ a:lang.'.utf-8.sug'])
+    ec res
+    if res =~ 'failed:\|ERROR' |echoe 'hoe!!' |en
+  en
+endf
 
-"nm <C-J> :<C-U>tabn<CR>
-"nm <C-K> :<C-U>tabp<CR>
-"nn <C-C> :<C-U>winc c<CR>
-nn <C-N> :<C-U>bn<CR>
-nn <C-P> :<C-U>bp<CR>
-"nn <C-S> :<C-U>up<CR>
-
-map! <C-Space> <Nop>
+" map and ab {{{1
+map <space>w <C-W>
+map <space>y "+y
+map <space>p "+p
+map <space>P "+P
+map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
+cno <C-A> <Home>
+cno <C-B> <Left>
+cno <C-D> <Del>
+cno <C-F> <Right>
+cno <C-X> <C-F>
 
 abc
 ca lang setl wrap! bri! spell! spl
@@ -108,48 +123,9 @@ ca wr setl wrap! bri!
 ca pw setl pvw!
 ca vb vert sb
 
-"nm U u
-"nn + :<C-U>.+
-"nn - :<C-U>.-
-
-map <space>f :<C-U>60Lex .<CR><C-W>60<Bar>
-map <space>b :<C-U>Ebuffers<CR>
-map <space>B :<C-U>Ebuffers!<CR>
-map <space>u :<C-U>Eundotree<CR>
-map <space>w <C-W>
-map <space>y "+y
-map <space>p "+p
-map <space>P "+P
-map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
-
-"map <C-W><lt> :<C-U>winc <lt><CR><C-W>
-"map <C-W>>    :<C-U>winc >   <CR><C-W>
-"map <C-W>+    :<C-U>winc +   <CR><C-W>
-"map <C-W>-    :<C-U>winc -   <CR><C-W>
-
-" view sticky {{{1
-"map Z/ /
-"map Z<space> <space>
-"map Z? ?
-"map ZG GZ
-"map ZZ Z
-"map Zb <C-B>Z
-"map Zd <C-D>Z
-"map Zf <C-F>Z
-"map Zg ggZ
-"map Zh zhZ
-"map Zj <C-E>Z
-"map Zk <C-Y>Z
-"map Zl zlZ
-"map Zu <C-U>Z
-"map Zz zzZ
-
-" random commands {{{1
-"com!                               Scratch  let ft=&ft |sil %y f |ene |pu f |0d _ |let &ft=ft |unlet ft
-"com! -nargs=+ -complete=command    Less     let l=execute(<q-args>) |ene |setl bt=nofile nobl noswf |f [less] <args> |cal setline(1, split(l, '\n'))
-"com!                               Watch    setl ar |au CursorHold <buffer> checkt
-"com!                               ClipEdit ene |setl bh=wipe bt=nofile nobl noswf spell wrap |pu + |0d _ |no <buffer> <C-S> :<C-U>%y +<CR>
-com!                               Mark     lad expand('%').':'.line('.').':'.getline('.')
+" com {{{1
+com Mark     lad expand('%').':'.line('.').':'.getline('.')
+com Mks exe 'mks'.'!'[empty(v:this_session)] v:this_session
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -178,22 +154,6 @@ if has('gui_running')
   map! <M-BS> <Esc><BS>
   tma <S-space> <space>
 en
-
-" command-line {{{1
-cno <C-A> <Home>
-cno <C-B> <Left>
-cno <C-D> <Del>
-cno <C-F> <Right>
-cno <C-X> <C-F>
-
-" evaluate with 'ge{motion}' and replace with result {{{1
-fu s:eval_this(ty='')
-  exe 'se opfunc={_->execute(\"norm!\ `]lc`[\\<C-R>=eval(@\\\")\\<Esc>\")}'
-  retu 'g@'
-endf
-nn <expr> ge <SID>eval_this()
-xn <expr> ge <SID>eval_this()
-"nn <expr> gee <SID>eval_this().'_'
 
 " surround (rather 'Zurround' -- messes with 'z) {{{1
 let pairs = map(split(&mps.',<:>,":",'':'',`:`', ','), 'split(v:val,":")')
@@ -318,89 +278,6 @@ endfu
 nn <expr> g= <SID>lignby()
 xn <expr> g= <SID>lignby()
 
-" buffer pick/drop/rename {{{1
-fu s:ebuffers_apply(bufdo)
-  let nls = getline(1, '$')
-  let k = 0
-  let c = a:bufdo
-  let d = 0
-  for l in b:ls
-    let nr = matchstr(l, '^\s*\d\+')
-    if k < len(nls) && nls[k][:len(nr)-1] == nr
-      let nn = matchstr(nls[k], '"[^"]\+"')
-      if matchstr(l, '"[^"]\+"') != nn
-        exe 'b' nr '|f' nn[1:-2]
-        if @# != @% |sil! bw# |en
-        if filereadable(@%) |setl mod |en
-      en
-      let k+= 1
-    el
-      let d = 1
-      let c.= ' '.nr
-    en
-  endfo
-  if d |exe c |en
-endf
-fu s:ebuffers(bang)
-  let pnr = bufnr()
-  let pls = split(execute('ls'.a:bang), '\n')
-  bel 10sp |ene |setl bh=wipe bt=nofile cul nobl noswf
-  exe 'f [Buffer List'.a:bang.']'
-  let pul = &ul
-  setl ul=-1
-  let b:ls = pls
-  cal matchadd('String', '"[^"]*"')
-  cal matchadd('Comment', '\%6ch')
-  cal matchadd('Special', '\%6ca')
-  cal matchadd('Comment', '^\s*\d\+u.*$')
-  %d _
-  cal setline(1, b:ls)
-  au BufLeave <buffer> ++once cal clearmatches()
-  exe 'au BufLeave <buffer> ++once cal <SID>ebuffers_apply("' ('!'==a:bang?'bw':'bd') '")'
-  map <buffer> <silent> <CR> :<C-U>let l=getline('.')<Bar>bw<Bar>exe ''==l?'ene':'b'.matchstr(l,'^\s*\d\+')<Bar>unl l<CR>
-  sil! exe '/^\s*'.pnr.'\D'
-  norm! zz
-  let &ul = pul
-endf
-com! -bang Ebuffers cal <SID>ebuffers('<bang>')
-
-" edit a variable (eg ':Eva Run') {{{1
-fu s:evariable(name)
-  bel 10sp |ene |setl bh=wipe bt=nofile nobl noswf
-  exe 'f [Edit Variable' a:name.']'
-  cal setline(1, split(get(g:, a:name, ''), '\n'))
-  let nr = bufnr()
-  exe 'au BufLeave <buffer> ++once let '.a:name.' = join(getbufline('.nr.', 1, "$"), "\n")'
-endf
-com! -nargs=1 -complete=var Evariable cal <SID>evariable(<q-args>)
-
-" navigate undo tree visually {{{1
-fu s:eundotree_pr(nodes, cur, depth)
-  let d = a:depth+1
-  let ind = repeat('  ', d)
-  for n in a:nodes
-    cal append('$', ind.(a:cur == n.seq ? '('.n.seq.')' : n.seq))
-    if has_key(n, 'alt')
-      cal s:eundotree_pr(n.alt, a:cur, d)
-    en
-  endfo
-endf
-fu s:eundotree()
-  let x = undotree()
-  let b = bufnr()
-  abo 20vs |ene |setl bh=wipe bt=nofile nobl noswf nonu nornu
-  exe 'f [undotree -' bufname(b).']'
-  cal s:eundotree_pr(x.entries, x.seq_cur, 0)
-  1d
-  setl noma
-  try
-    /(
-  cat
-  endt
-  exe 'nn <buffer> zp :'.b.'bufdo undo <C-R>=getline(".")<CR><CR><C-^>:setl bh= ma<CR>I[<Esc>/(<CR>xf)x/[<CR>r(A)<Esc>^:setl bh=wipe noma<CR>'
-endf
-com! Eundotree cal <SID>eundotree()
-
 " ASETNIOP layout using mapmode-l {{{1
 aug asetniop
   au!
@@ -494,7 +371,7 @@ endf
 au FileType ansimple cal <SID>ansimple_ft()
 
 " surveil (update a copy-buffer and filter with command) {{{1
-fu s:urveil(buf, com='%!cat')
+fu s:urveil(buf, com=':')
   let nr = bufnr(a:buf)
   if bufnr() == nr |bel 30vs |en
   ene |setl bt=nofile noswf
@@ -502,21 +379,15 @@ fu s:urveil(buf, com='%!cat')
   let menr = bufnr()
   let b:urveil = a:com
   exe 'aug surveil'.menr
+  " TODO: rewrite so it does update even if hidden (no win_execute)
+  "      .. or remove |:Surveil| if unused
   exe 'au surveil'.menr 'BufWritePost <buffer='.nr.'> let b:w=win_findbuf('.menr.') |if len(b:w) |cal deletebufline('.menr.',1,"$") |cal setbufline('.menr.',1,getbufline('.nr.',1,"$")) |cal win_execute(b:w[0],"noau ".getbufvar('.menr.',"urveil")) |en |unl b:w'
   aug END
   exe 'au BufDelete <buffer> ++once au! surveil'.menr.' |aug! surveil'.menr
 endf
 com! -nargs=+ -complete=buffer Surveil cal <SID>urveil(<f-args>)
 
-" netrw, I don't like you :< {{{1
-"let g:netrw_banner      = 0
-"let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
-"let g:netrw_preview     = 1
-"let g:netrw_winsize     = 25
-"aug netrw_mapping
-"  au FileType netrw sil! unm <buffer> s
-"  au FileType netrw sil! unm <buffer> S
-"aug END
+" random and modeline {{{1
 for n in ['gzip', 'netrw', 'spellfile', 'tar', 'zip']
   let g:loaded_{n} = 1
   let g:loaded_{n}Plugin = 1
@@ -524,16 +395,8 @@ for n in ['gzip', 'netrw', 'spellfile', 'tar', 'zip']
 endfo
 unl n
 
-fu s:pellfile_wget(lang)
-  if 2 == confirm('Download spl/sug for '..a:lang..'?', "&No\n&Yes")
-    sil let res = system('wget -B https://ftp.nluug.nl/pub/vim/runtime/spell/ -P "$HOME/.vim/spell" -nvc -i-', [
-      \ a:lang.'.utf-8.spl',
-      \ a:lang.'.utf-8.sug'])
-    ec res
-    if res =~ 'failed:\|ERROR' |echoe 'hoe!!' |en
-  en
-endf
-au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
-
-" modeline {{{1
+sy on
+filet on
+filet plugin on
+colo slate
 " vim: se fdm=marker fdl=0 ts=2:
