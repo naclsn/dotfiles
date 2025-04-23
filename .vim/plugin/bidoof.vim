@@ -27,7 +27,7 @@
 "   * |:PP|, |PP()|, |PPl()| and |PPs()| pretty print
 "   * |:Ypy| and |Ypy()| python with expr8->
 "
-" Last Change:	2025 Apr 16
+" Last Change:	2025 Apr 23
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -112,6 +112,7 @@ fu Curl(url, head={}, data={}, dry=v:null) abort " {{{1
     endfo
   en
 
+  let l:com = l:com->map('v:val->shellescape()')->join()
   echom l:com
   retu v:null == a:dry ? l:com->system() : a:dry
 endf " }}}

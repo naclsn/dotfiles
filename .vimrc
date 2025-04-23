@@ -3,10 +3,6 @@ lan C
 " se {{{1
 se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
-" temp (to relocate)
-let g:vimsyn_embed = 'pPr'
-let g:man_hardwrap = 0
-
 se spf=~/.vim/spell.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
@@ -14,6 +10,7 @@ if has('nvim')
   se udir=~/.vim/cache/nundo//
   aun PopUp
   sil! au! nvim_popupmenu
+  map! <C-Space> <Nop>
   "colo vim
 el
   se udir=~/.vim/cache/undo//
@@ -25,13 +22,13 @@ se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,termina
 " au {{{1
 au BufEnter * se fo-=o
 au ColorScheme * cal s:fix_colo()
-au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au FileType c,python sy keyword Title self
 au FileType python   if !filereadable('Makefile') |setl makeprg=flake8 |en
 au FileType python   if '0' == &tw |setl tw=88 |en
-au FileType python   setl fex=s:black_formatexpr()
 au FileType python   nn gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
+au FileType python   setl fex=s:black_formatexpr()
 au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
+au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
 
 " fu used by au {{{1
@@ -42,8 +39,13 @@ fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char) abort
       \ '--quiet', '--diff',
       \ '--line-length', &tw ?? 78,
       \ '--line-ranges', a:lnum..'-'..(a:lnum+a:count-1),
-      \ '--stdin-filename', @%, '-']
+      \ '--stdin-filename', @%->shellescape(), '-']
+    \ ->join()
     \ ->systemlist(getline(1, '$') + [''])
+  if v:shell_error
+    for l in lines |echoe l |endfo
+    retu
+  en
   let l = lines->len()
 
   let pos = getcurpos()
@@ -104,11 +106,11 @@ fu s:pellfile_wget(lang)
 endf
 
 " map and ab {{{1
-map <space>w <C-W>
-map <space>y "+y
-map <space>p "+p
-map <space>P "+P
-map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
+"map <space>w <C-W>
+"map <space>y "+y
+"map <space>p "+p
+"map <space>P "+P
+"map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
 cno <C-A> <Home>
 cno <C-B> <Left>
 cno <C-D> <Del>
@@ -124,8 +126,8 @@ ca pw setl pvw!
 ca vb vert sb
 
 " com {{{1
-com Mark     lad expand('%').':'.line('.').':'.getline('.')
-com Mks exe 'mks'.'!'[empty(v:this_session)] v:this_session
+com -bar Mark lad expand('%').':'.line('.').':'.getline('.')
+com -bar -bang Mks exe 'mks'.'<bang>'[empty(v:this_session)] v:this_session
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
@@ -394,6 +396,8 @@ for n in ['gzip', 'netrw', 'spellfile', 'tar', 'zip']
   let g:loaded_{n}_plugin = 1
 endfo
 unl n
+let g:vimsyn_embed = 'pPr'
+let g:man_hardwrap = 0
 
 sy on
 filet on

@@ -6,15 +6,12 @@ _sel(){
  clip(){ printf '\e]52;c;';base64 -w0;printf '\e\\';}
  alias cd=command\ cd l='command ls --color -FX' la=l\ -A ll=l\ -go py=python3 s=git\ status
  export _SEL=_sel EDITOR=vim LESS=FR MANOPT=--nj\ --nh VIMINIT='sil! ru defaults.vim
-  nn <C-N> :bn<CR>
-  nn <C-P> :bp<CR>
   cno <C-A> <Home>
   cno <C-B> <Left>
   cno <C-D> <Del>
   cno <C-F> <Right>
   cno <C-X> <C-F>
-  map <space>w <C-W>
-  map <space>y :w !printf "\e]52;c;";base64 -w0;printf "\e\\"<CR>
+  com -bar -range=% Clip <line1>,<line2>w !printf "\e]52;c;";base64 -w0;printf "\e\\"<CR>
   se hid isf-== ls=2 sc noto ttimeout ttm=100 wmnu ai et sw=0 ts=4 nu rnu nowrap so=0 mouse=nv cul dir=/tmp/swf// fdm=marker fdl=99'
  command_not_found_handle(){ echo "$0: $1: command not found">/dev/tty;reset;return 127;}
  set -b
