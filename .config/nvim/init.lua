@@ -56,9 +56,6 @@ for it, conf in pairs {
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
 
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-
 vim.api.nvim_create_user_command('LspDiagnostics', function()
     vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, {})
@@ -66,21 +63,13 @@ end, {})
 vim.api.nvim_create_autocmd('LspAttach', {
     group= vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback= function(ev)
-        vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
         local opts = { buffer = ev.buf }
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         if '' == vim.api.nvim_eval('maparg("gqq")')
             then vim.keymap.set('n', 'gqq', vim.lsp.buf.format, opts)
         end
-
-        vim.keymap.set('n', '<space>k', vim.lsp.buf.hover, opts)
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
         vim.keymap.set('n', '<space>r', vim.lsp.buf.rename, opts)
-        vim.keymap.set({'n', 'v'}, '<space>a', vim.lsp.buf.code_action, opts)
-
-        vim.keymap.set('n', '<space>=', vim.lsp.buf.format, opts)
+        vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, opts)
     end,
 })
 
@@ -95,9 +84,7 @@ vim.g.zig_fmt_autosave = 0
 for _, method in ipairs({ "textDocument/diagnostic", "workspace/diagnostic" }) do
     local default_diagnostic_handler = vim.lsp.handlers[method]
     vim.lsp.handlers[method] = function(err, result, context, config)
-        if err ~= nil and err.code == -32802
-            then return
-        end
+        if err ~= nil and err.code == -32802 then return end
         return default_diagnostic_handler(err, result, context, config)
     end
 end

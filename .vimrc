@@ -106,11 +106,7 @@ fu s:pellfile_wget(lang)
 endf
 
 " map and ab {{{1
-"map <space>w <C-W>
-"map <space>y "+y
-"map <space>p "+p
-"map <space>P "+P
-"map <space>l :<C-U>let @+ = @%.':'.line('.')<CR>
+" only way id remove these is if id stop using c mode altogether (eg q: q/ ..)
 cno <C-A> <Home>
 cno <C-B> <Left>
 cno <C-D> <Del>
@@ -126,8 +122,9 @@ ca pw setl pvw!
 ca vb vert sb
 
 " com {{{1
-com -bar Mark lad expand('%').':'.line('.').':'.getline('.')
-com -bar -bang Mks exe 'mks'.'<bang>'[empty(v:this_session)] v:this_session
+com! -bar Mark lad expand('%').':'.line('.').':'.getline('.')
+com! -bar -bang Mks exe 'mks'.'<bang>'[empty(v:this_session)] v:this_session
+com! -bar DiffOrigin vne |setl bh=wipe bt=nofile pvw |r ++edit # |0d_ |difft |winc p |difft
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
