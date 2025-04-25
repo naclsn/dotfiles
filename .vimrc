@@ -25,7 +25,7 @@ au ColorScheme * cal s:fix_colo()
 au FileType c,python sy keyword Title self
 au FileType python   if !filereadable('Makefile') |setl makeprg=flake8 |en
 au FileType python   if '0' == &tw |setl tw=88 |en
-au FileType python   nn gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
+au FileType python   nn <buffer> <silent> gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
 au FileType python   setl fex=s:black_formatexpr()
 au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
 au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
@@ -124,7 +124,7 @@ ca vb vert sb
 " com {{{1
 com! -bar Mark lad expand('%').':'.line('.').':'.getline('.')
 com! -bar -bang Mks exe 'mks'.'<bang>'[empty(v:this_session)] v:this_session
-com! -bar DiffOrigin vne |setl bh=wipe bt=nofile pvw |r ++edit # |0d_ |difft |winc p |difft
+com! -bar DiffOrigin vne |setl bh=wipe bt=nofile pvw ro |r ++edit # |0d_ |difft |winc p |difft
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')

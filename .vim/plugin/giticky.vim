@@ -20,7 +20,7 @@
 
 fu Giticky(name, args, com=a:name, dargs='') abort
   if [''] != getline(1, '$') |th 'not touching non-empty buffer' |en
-  setl bh=wipe bt=nofile fdm=syntax nobl noswf
+  setl bh=wipe bt=nofile fdm=syntax nobl noswf ro
   let exargs = (a:args ?? a:dargs)->expandcmd()
   exe 'f :Git'..toupper(a:name[0])..a:name[1:] exargs
   ev systemlist('git '..a:com..' '..exargs)->setline(1)

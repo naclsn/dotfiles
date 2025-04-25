@@ -56,6 +56,12 @@ for it, conf in pairs {
     zls= {},
 } do require('lspconfig')[it].setup(conf) end
 
+vim.diagnostic.config {
+    underline= true,
+    virtual_text= false,
+    jump= {float= true},
+}
+
 vim.api.nvim_create_user_command('LspDiagnostics', function()
     vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end, {})
@@ -68,6 +74,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
             then vim.keymap.set('n', 'gqq', vim.lsp.buf.format, opts)
         end
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+        -- kept tho trying to slowly switch to K and 'kp'
+        -- annoyingly it'll not be mapped by _set_defaults for py cause kp is set in ft
+        vim.keymap.set('n', '<space>k', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', '<space>r', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, opts)
     end,
