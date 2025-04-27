@@ -136,7 +136,7 @@ if g:is_win
   en
 en
 if has('gui_running')
-  se go+=d go-=L go-=m go-=T wak=no
+  se go-=L go-=m go-=T wak=no
   if g:is_win
     se gfn=Consolas:h14
   elsei exists('g:neovide')
@@ -145,7 +145,7 @@ if has('gui_running')
     let g:neovide_scroll_animation_length = 0.15
     let g:neovide_cursor_animation_length = 0.06
   el
-    se gfn=Monospace\ 14
+    se go+=d gfn=Monospace\ 14
   en
   for c in split('abcdefghijklmnopqrstuvwxyz', '\zs')
     exe 'tno <M-'.c.'> <Esc>'.c

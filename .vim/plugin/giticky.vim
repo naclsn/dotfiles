@@ -12,7 +12,7 @@
 " Note That:! all buffers are marked "bh=wipe" 'bh'
 " Also |Giticky()| expands the argument in the context of the new buffer.
 "
-" Last Change:	2025 Apr 09
+" Last Change:	2025 Apr 27
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -20,10 +20,11 @@
 
 fu Giticky(name, args, com=a:name, dargs='') abort
   if [''] != getline(1, '$') |th 'not touching non-empty buffer' |en
-  setl bh=wipe bt=nofile fdm=syntax nobl noswf ro
+  setl bh=wipe bt=nofile fdm=syntax nobl noswf
   let exargs = (a:args ?? a:dargs)->expandcmd()
   exe 'f :Git'..toupper(a:name[0])..a:name[1:] exargs
   ev systemlist('git '..a:com..' '..exargs)->setline(1)
+  setl ro
   cal call('s:git_'..a:name, [exargs])
 endf
 
@@ -56,13 +57,14 @@ endf
 
 fu s:git_blame(rg)
   setl nonu nornu pvw
-  let wn = winnr()
   vert winc ^
-  setl crb scb sbo-=jump
-  let ln = line('.')
+    setl crb scb sbo-=jump
+    let ln = line('.')
+    let id = winnr()->win_getid()
   winc p
-  exe ln
-  setl crb scb sbo-=jump
+    exe ln
+    setl crb scb sbo-=jump
+    exe 'au BufWinLeave <buffer> ++once cal win_execute('..id..', "setl nocrb noscb sbo&")'
   winc p
   sync
 endf
