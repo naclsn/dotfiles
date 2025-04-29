@@ -23,7 +23,7 @@ fu s:start()
         setl bh=wipe bt=nofile nobl nocuc nocul nonu nornu noswf
         f i m p o r t a n t - w o r k . t x t
     en
-    sil%d
+    sil%d_
 
     let b:empty = s:fwch(' ')
     let b:walls = map(['|', '+', '-', '+', '|', '+', '-', '+'], 's:fwch(v:val)')
@@ -37,7 +37,7 @@ fu s:start()
     cal append('$',         m..b:walls[3]..repeat(b:walls[2], b:width)..b:walls[1])
     cal append('$', repeat([m..b:walls[4]..repeat(b:empty,    b:width)..b:walls[0]], b:height))
     cal append('$',         m..b:walls[5]..repeat(b:walls[6], b:width)..b:walls[7])
-    sil1d
+    sil1d_
 
     let b:rev_dir = {'h':'l', 'j':'k', 'k':'j', 'l':'h'}
 

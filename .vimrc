@@ -3,7 +3,7 @@ lan C
 " se {{{1
 se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
-se spf=~/.vim/spell.utf-8.add
+se spf=~/.vim/spell/my.utf-8.add
 se dir=~/.vim/cache/swap//
 if has('nvim')
   se rtp^=~/.vim/
@@ -24,7 +24,7 @@ au BufEnter * se fo-=o
 au ColorScheme * cal s:fix_colo()
 au FileType c,python sy keyword Title self
 au FileType python   if !filereadable('Makefile') |setl makeprg=flake8 |en
-au FileType python   if '0' == &tw |setl tw=88 |en
+au FileType python   sil! let &l:tw = (readfile('setup.cfg')->matchlist('max_line_length\s\?=\s\?\(\d\+\)') ?? ['', '88'])[1]
 au FileType python   nn <buffer> <silent> gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
 au FileType python   setl fex=s:black_formatexpr()
 au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe

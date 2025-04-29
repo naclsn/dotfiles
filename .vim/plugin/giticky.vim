@@ -60,7 +60,7 @@ fu s:git_blame(rg)
   vert winc ^
     setl crb scb sbo-=jump
     let ln = line('.')
-    let id = winnr()->win_getid()
+    let id = win_getid()
   winc p
     exe ln
     setl crb scb sbo-=jump
