@@ -65,24 +65,10 @@ spce() {
     *) select c; do cd $c; break; done;;
   esac
 }
-
-spces() {
-  [ -z "$1" ] && set -- $SPCE_PROJ/*/
-  for n in ${@#$SPCE_PROJ}
-    do if [ -d $SPCE_PROJ/$n/.git ]
-      then
-        printf '\n[%s]\n' $n
-        git -C $SPCE_PROJ/$n status
-    fi
-  done
-}
-
-spcew() (spce && sed -n '/---/q;s/^\([^ ]\+\).*/\1/;//!d;p' wip)
-
 __spce() {
   local full=($SPCE_PROJ/*/)
   COMPREPLY=(`compgen -W "${full[*]#$SPCE_PROJ/}" -- $2`)
-} && complete -F __spce spce spces
+} && complete -F __spce spce
 # }}}
 
 # jobs tabs (jabs) {{{

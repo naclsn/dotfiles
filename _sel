@@ -1,7 +1,7 @@
 # my bit of config - sel {{{
 _sel(){
  [ x = "x${PS1#?}" ]&&PS1='\u@\h:\w\$ '
- PS1=${SHLVL%1}'`jobs|cut -c-4`'$PS1
+ PS1=${SHLVL%1}'`jobs|cut -c-4|past -s`'$PS1 HISTCONTROL=ignoreboth
  reset(){ `command -v stty||echo :` sane -ixon;};reset
  clip(){ printf '\e]52;c;';base64 -w0;printf '\e\\';}
  alias cd=command\ cd l='command ls --color -FX' la=l\ -A ll=l\ -go py=python3 s=git\ status

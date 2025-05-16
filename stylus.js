@@ -718,8 +718,8 @@ hr {
 ul {
     list-style-image: unset;
 }
-a, a:visited {
-    color: #135cd6;
+a {
+    color: #1c82ba;
 }
 
 .vector-user-menu-login,
@@ -739,7 +739,6 @@ a, a:visited {
 .vector-menu-dropdown .vector-menu-content,
 .vector-dropdown .vector-dropdown-content,
 .mw-parser-output .side-box,
-.mw-message-box,
 .infobox,
 .infobox_v2,
 .cnotice, .cnotice-message p,
@@ -759,6 +758,27 @@ div.thumbinner,
     background-color: var(--bg-2) !important;
     color: var(--co-0) !important;
     border-color: var(--bd-1) !important;
+}
+
+.mw-message-box {
+    background-color: var(--bg-2);
+    color: var(--co-0);
+    border-color: var(--bd-1);
+}
+.mw-message-box-error {
+    background-color: #542523;
+    color: var(--co-0);
+    border-color: #b32424;
+}
+.mw-message-box-warning {
+    background-color: #563d0d;
+    color: var(--co-0);
+    border-color: #ac6600;
+}
+.mw-message-box-success {
+    background-color: #074336;
+    color: var(--co-0);
+    border-color: #096450;
 }
 
 .NavToggle,
@@ -944,17 +964,31 @@ div.vectorTabs li.selected a, div.vectorTabs li.selected a:visited {
     background-color: var(--bg-2);
 }
 .mw-prefs-tabs-wrapper.oo-ui-panelLayout-framed, .mw-prefs-tabs > .oo-ui-menuLayout-content > .oo-ui-indexLayout-stackLayout > .oo-ui-tabPanelLayout,
-.mw-prefs-buttons {
+.mw-prefs-buttons,
+.mw-editfont-monospace {
     border-color: var(--bd-1);
 }
 .oo-ui-tabSelectWidget-framed {
-   background-color: var(--bg-3);
+    background-color: var(--bg-3);
 }
 .mw-prefs-buttons {
-   background-color: var(--bg-1);
+    background-color: var(--bg-1);
 }
 .oo-ui-tabOptionWidget {
     color: var(--co-1);
+}
+.oo-ui-checkboxInputWidget [type="checkbox"] + span,
+.oo-ui-dropdownWidget.oo-ui-widget-enabled .oo-ui-dropdownWidget-handle,
+.oo-ui-textInputWidget.oo-ui-widget-enabled .oo-ui-inputWidget-input,
+.oo-ui-buttonElement-framed.oo-ui-widget-enabled > .oo-ui-buttonElement-button {
+    background-color: var(--bg-3);
+    color: var(--co-0);
+    border-color: var(--bd-1);
+}
+.editOptions {
+    background-color: var(--bg-2);
+    color: var(--co-2);
+    border-color: var(--bd-1);
 }
 /*-*/
 
@@ -976,6 +1010,16 @@ div.vectorTabs li.selected a, div.vectorTabs li.selected a:visited {
 
 .mwe-math-fallback-image-inline {
     filter: invert(.88);
+}
+
+.diff-context {
+    background-color: var(--bg-2);
+    color: var(--co-2);
+    border-color: var(--bd-0);
+}
+.diff-addedline .diffchange,
+.diff-deletedline .diffchange {
+    color: var(--bg-0);
 }
 
 /* code and such */
@@ -2005,7 +2049,7 @@ div.important, div.warning, div.caution,
 div.important *, div.warning *, div.caution *,
 .lfs .package,
 .lfs .configuration,
-.lfs .content ,
+.lfs .content,
 .lfs .package *,
 .lfs .configuration *,
 .lfs .content  * {
@@ -2582,66 +2626,6 @@ pre {
 
 #toc {
     background: var(--bg-1);
-    border-color: var(--bd-0);
-}
-`],
-
-
-["mep - Git", {
-  urlPrefixes: [
-    "https://libgit2.org/libgit2",
-  ],
-}, `
-.content {
-    color: var(--co-0);
-}
-
-#header-wrapper,
-div.sidebar-module ul ul,
-div.sidebar-module .spacer {
-    background: var(--bg-1);
-}
-
-#header ul.nav,
-div.sidebar-module > ul,
-div.sidebar-module > ul h3,
-div.sidebar-module > ul > li,
-div.sidebar-module ul ul li {
-    border-color: var(--bd-0);
-}
-
-div.sidebar-module ul ul li:hover,
-div.sidebar-module li.disable {
-    background: var(--bg-2);
-    border-color: var(--bd-0);
-}
-
-#header ul.nav,
-div.sidebar-module > ul h3 {
-    background: var(--bg-2);
-    text-shadow: 1px 1px 0px var(--bg-0);
-}
-
-#wrapper,
-div.sidebar-module {
-    background: var(--bg-0);
-    border-radius: 5px;
-}
-
-input.search {
-    background: var(--bg-3);
-    color: var(--co-0);
-    border-color: var(--bd-0);
-}
-
-.example {
-    background-color: #384238;
-}
-.signatures a {
-    background: var(--bg-3);
-}
-.also {
-    background: var(--bg-2);
     border-color: var(--bd-0);
 }
 `],
@@ -4982,7 +4966,7 @@ a:visited {
 `],
 
 
-["Office MHComm", {
+["mep - Office MHComm", {
   domains: [
     "office.mhcomm.fr",
     "cloud.mhcomm.fr",

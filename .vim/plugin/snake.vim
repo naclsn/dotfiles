@@ -6,7 +6,7 @@
 "
 "  Just, have fun dang it!
 
-let s:best = 782
+let s:best = 799
 let s:file = expand('<sfile>:p')
 
 fu s:fwch(h)
@@ -113,7 +113,7 @@ fu s:step(timer)
         echom 'Score:' score score < s:best ? '(best: '..s:best..')' : '(new best!)'
         if s:best < score
             let lines = readfile(s:file)
-            let lines[0] = 'let s:best = '..score
+            let lines[7] = 'let s:best = '..score
             cal writefile(lines, s:file)
             let s:best = score
         en
