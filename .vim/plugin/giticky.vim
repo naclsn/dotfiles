@@ -9,7 +9,7 @@
 "   |:GitBlame|   `git blame`  default if no arg: current buffer's name
 "   |:GitFiles|   `git ls-tree -r --name-only`  default arg: 'HEAD'
 "
-" Note That:! all buffers are marked "bh=wipe" 'bh'
+" Note That:! all buffers are marked "bh=delete" 'bh'
 " Also |Giticky()| expands the argument in the context of the new buffer.
 "
 " Last Change:	2025 Apr 27
@@ -20,7 +20,7 @@
 
 fu Giticky(name, args, com=a:name, dargs='') abort
   if [''] != getline(1, '$') |th 'not touching non-empty buffer' |en
-  setl bh=wipe bt=nofile fdm=syntax nobl noswf
+  setl bh=delete bt=nofile fdm=syntax nobl noswf
   let exargs = (a:args ?? a:dargs)->expandcmd()
   exe 'f :Git'..toupper(a:name[0])..a:name[1:] exargs
   ev systemlist('git '..a:com..' '..exargs)->setline(1)

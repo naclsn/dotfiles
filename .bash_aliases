@@ -16,7 +16,7 @@ expath ~/.npm-global/bin
 expath ./node_modules/.bin
 
 export        EDITOR=`command -v nvim || echo vim`
-export          LESS='FiR --mouse --wheel-lines=3 --use-color'
+export          LESS='FR --mouse --wheel-lines=3 --use-color'
 export        MANOPT='--nj --nh'
 export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
