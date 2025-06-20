@@ -14,7 +14,8 @@ from string import *
 import json, os, sys, random, re, time, math
 
 _ppargs = {k: not v for k, v in pprint.__kwdefaults__.items() if type(v) is bool}
-sys.displayhook = lambda v: None if v is None else (dict.__setitem__ if dict == type(__builtins__) else setattr)(__builtins__, '_', v) or pprint(v, **_ppargs)
+_b = vars(__builtins__)
+sys.displayhook = lambda v: None if v is None else (_b.update(_=v), pp(v) if 'pp' in _b else pprint(v, **_ppargs))[0]
 
 
 def xclip(data: ... = None):
