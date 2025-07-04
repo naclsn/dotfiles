@@ -66,7 +66,7 @@ let g:loaded_splore = 1
 "if exists('g:splore_hifolded') |hi Folded ctermbg=NONE guibg=NONE |en
 hi Folded ctermbg=NONE guibg=NONE
 
-if !exists('g:splore_autocmd') |let g:splore_autocmd = 1 |en
+if !exists('g:splore_autocmd') |let g:splore_autocmd = 0 |en
 
 " s: functions {{{1
 fu s:trace(f, zok, ...)

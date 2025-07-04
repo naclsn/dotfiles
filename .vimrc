@@ -108,11 +108,11 @@ endf
 
 " map and ab {{{1
 " only way id remove these is if id stop using c mode altogether (eg q: q/ ..)
-cno <C-A> <Home>
-cno <C-B> <Left>
-cno <C-D> <Del>
-cno <C-F> <Right>
-cno <C-X> <C-F>
+"cno <C-A> <Home>
+"cno <C-B> <Left>
+"cno <C-D> <Del>
+"cno <C-F> <Right>
+"cno <C-X> <C-F>
 
 abc
 ca lang setl wrap! bri! spell! spl
@@ -178,6 +178,7 @@ unl o c s oo cc ss
 
 " sneak movement (multi-char and multi-line 't'/'f') {{{1
 fu s:neak(d)
+  echoh WarningMsg |echom 'You used sneak!' |echoh None |sl
   redr |ec '('.a:d.')'
   let l = [92, 86]
   for k in range(abs(a:d))
@@ -278,114 +279,18 @@ endfu
 nn <expr> g= <SID>lignby()
 xn <expr> g= <SID>lignby()
 
-" ASETNIOP layout using mapmode-l {{{1
-aug asetniop
+" simplest ass file explorer (likely temp experiment) {{{1
+aug FileExplorer
   au!
-  au InsertEnter * se to tm=100
-  au InsertLeave * se noto
+  au BufEnter * cal s:dir_fax()
+  fu s:dir_fax()
+    if !@%->isdirectory() |retu |en
+    keepj %d_ |exe 'r !dir -FAX1 %:p |xargs printf "%:./\%s\n"' |keepj 0d_ |se nomod
+    sy match Statement /^.*\/$/
+    sy match Structure /^.*\*$/
+    sy match String /^.*@$/
+  endf
 aug END
-lmapc
-let km =<< trim KEYMAP
-a a
-b fj
-c sf
-d ds
-e d
-f fa
-g fl
-h jk
-i k
-j js
-k ks
-l lk
-m j;
-n j
-o l
-p ;
-q aj
-r fd
-s s
-t f
-u jl
-v fk
-w sa
-x da
-y jd
-z ak
-! ;k
-@ :K
-' ;d
-" :D
-<BS> ;f
-; ;l
-: :L
-, kd
-< KD
-. ls
-> LS
-/ ;a
-? :A
-( al
-[ AL
-) ;s
-] :S
-- ld
-_ LD
-KEYMAP
-for kv in km
-  let [k, v] = split(kv)
-  exe 'lm' v k
-  exe 'lm' v[1].v[0] k
-  let u = toupper(k)
-  if u != k
-    let w = (';'==v[0]?':':toupper(v[0])).(';'==v[1]?':':toupper(v[1]))
-    exe 'lm' w u
-    exe 'lm' w[1].w[0] u
-  en
-endfo
-unl km kv k v u w
-
-" ansimple (handle a restricted few escape sequences) {{{1
-fu! s:ansimple_ft()
-    sy match ansimpleConceal /\e\[\d*m/ conceal
-    let ww =<< trim ANSIMPLE
-      Bold      1  \(0\|22\) =bold
-      Underline 4  \(0\|24\) =underline
-      Black     30 0         fg=Black
-      Red       31 0         fg=Red
-      Green     32 0         fg=Green
-      Yellow    33 0         fg=Yellow
-      Blue      34 0         fg=Blue
-      Magenta   35 0         fg=Magenta
-      Cyan      36 0         fg=Cyan
-      White     37 0         fg=White
-ANSIMPLE
-    for nsev in ww
-      let [n, s, e, v] = split(nsev)
-      exe 'sy region ansimple'.n 'concealends matchgroup=ansimpleConceal start=/\e\['.s.'m/  end=/\e\['.e.'\?m/ contains=@ansimpleAll'
-      exe 'hi ansimple'.n 'cterm'.v 'gui'.v
-    endfo
-    exe 'sy cluster ansimpleAll contains='.join(map(ww, '"ansimple".split(v:val)[0]'), ',')
-    se cocu=nc cole=3
-endf
-au FileType ansimple cal <SID>ansimple_ft()
-
-" surveil (update a copy-buffer and filter with command) {{{1
-fu s:urveil(buf, com=':')
-  let nr = bufnr(a:buf)
-  if bufnr() == nr |bel 30vs |en
-  ene |setl bt=nofile noswf
-  exe 'f [surveil -' a:buf.']' escape(a:com, '%#\$!<*')
-  let menr = bufnr()
-  let b:urveil = a:com
-  exe 'aug surveil'.menr
-  " TODO: rewrite so it does update even if hidden (no win_execute)
-  "      .. or remove |:Surveil| if unused
-  exe 'au surveil'.menr 'BufWritePost <buffer='.nr.'> let b:w=win_findbuf('.menr.') |if len(b:w) |cal deletebufline('.menr.',1,"$") |cal setbufline('.menr.',1,getbufline('.nr.',1,"$")) |cal win_execute(b:w[0],"noau ".getbufvar('.menr.',"urveil")) |en |unl b:w'
-  aug END
-  exe 'au BufDelete <buffer> ++once au! surveil'.menr.' |aug! surveil'.menr
-endf
-com! -nargs=+ -complete=buffer Surveil cal <SID>urveil(<f-args>)
 
 " random and modeline {{{1
 for n in ['gzip', 'netrw', 'spellfile', 'tar', 'zip']
