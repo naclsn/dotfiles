@@ -449,7 +449,7 @@ fu PP(ny, name='_', opts={})
   retu a:ny
 endf
 
-com -nargs=+ -complete=expression PP cal PP(<args>, <q-args>)
+com -nargs=+ -complete=expression PP let g:_ = PP(<args>, <q-args>)
 " }}}
 
 " Ypy {{{1

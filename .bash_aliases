@@ -16,7 +16,7 @@ expath ~/.npm-global/bin
 expath ./node_modules/.bin
 
 export        EDITOR=`command -v nvim || echo vim`
-export          LESS='FR --mouse --wheel-lines=3 --use-color'
+export          LESS='SFR --mouse --wheel-lines=3 --use-color'
 export        MANOPT='--nj --nh'
 export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
@@ -45,7 +45,7 @@ bind -x       '"\eq":treest'
 bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`cat $t`;rm $t;READLINE_POINT=${#READLINE_LINE}' # for some unknown reason, this is not a useless use of cat
 bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
 
-set -b
+set -b -o noclobber
 stty sane -ixon
 
 # small c helpers (todo: put somewhere else) {{{

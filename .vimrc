@@ -176,41 +176,6 @@ for [o,c] in pairs
 endfo
 unl o c s oo cc ss
 
-" sneak movement (multi-char and multi-line 't'/'f') {{{1
-fu s:neak(d)
-  echoh WarningMsg |echom 'You used sneak!' |echoh None |sl
-  redr |ec '('.a:d.')'
-  let l = [92, 86]
-  for k in range(abs(a:d))
-    if add(l, getchar())[-1] < 32 || 126 < l[-1] |retu |en
-    if 39 == l[-1] |cal add(l, 39) |en
-  endfo
-  let s = "cal search('".join(map(l, 'nr2char(v:val)'), '')."', "
-  let g:eak = s.(a:d < 0 ? "'sb', line('w0'))" : "'sz', line('w$'))")
-  let g:kae = s.(a:d < 0 ? "'sz', line('w$'))" : "'sb', line('w0'))")
-  exe g:eak
-  if has('patch-8.3.1978') || has('nvim')
-    let g:eak = "\<Cmd>".g:eak."\<CR>"
-    let g:kae = "\<Cmd>".g:kae."\<CR>"
-  el
-    let g:eak = ":\<C-U>".g:eak."\<CR>"
-    let g:kae = ":\<C-U>".g:kae."\<CR>"
-  en
-endf
-if has('patch-8.3.1978') || has('nvim')
-  no s <Cmd>cal <SID>neak(2)<CR>
-  no S <Cmd>cal <SID>neak(-2)<CR>
-el
-  no s :<C-U>cal <SID>neak(2)<CR>
-  no S :<C-U>cal <SID>neak(-2)<CR>
-en
-for r in ['t','T','f','F']
-  exe 'nn '.r.' :unl! g:eak g:kae<CR>'.r
-endfo
-unl r
-no <expr> ; get(g:,'eak',';')
-no <expr> , get(g:,'kae',',')
-
 " comment with 'gc{motion}' {{{1
 fu s:omment(ty='')
   if '' == a:ty
@@ -282,14 +247,12 @@ xn <expr> g= <SID>lignby()
 " simplest ass file explorer (likely temp experiment) {{{1
 aug FileExplorer
   au!
-  au BufEnter * cal s:dir_fax()
-  fu s:dir_fax()
-    if !@%->isdirectory() |retu |en
-    keepj %d_ |exe 'r !dir -FAX1 %:p |xargs printf "%:./\%s\n"' |keepj 0d_ |se nomod
-    sy match Statement /^.*\/$/
-    sy match Structure /^.*\*$/
-    sy match String /^.*@$/
-  endf
+  au BufEnter * if isdirectory(@%) && !wordcount().bytes
+        \|exe 'r !dir -agop --time-style=+ %:p:S' |keepj 0d_
+        \|setl nomod noswf syn=dirpager
+        \|nn <buffer> <silent> <CR> :exe 'e' trim(@%,'/',2).'/'.matchstr(getline('.'),'\%>11c.*[ 0-9]\{-}  \zs.*')<CR>
+        \|nn <buffer> <silent> g<CR> :exe 'ped' trim(@%,'/',2).'/'.matchstr(getline('.'),'\%>11c.*[ 0-9]\{-}  \zs.*')<CR>
+        \|en
 aug END
 
 " random and modeline {{{1
