@@ -126,6 +126,7 @@ ca vb vert sb
 com! -bar Mark lad expand('%').':'.line('.').':'.getline('.')
 com! -bar -bang Mks exe 'mks'.'<bang>'[empty(v:this_session)] v:this_session
 com! -bar DiffOrigin vne |setl bh=wipe bt=nofile pvw ro |r ++edit # |0d_ |difft |winc p |difft
+com! -nargs=1 Mv f <args> |exe '!mv # %' |bd #
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')
