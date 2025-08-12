@@ -107,12 +107,13 @@ fu s:pellfile_wget(lang)
 endf
 
 " map and ab {{{1
-" only way id remove these is if id stop using c mode altogether (eg q: q/ ..)
-"cno <C-A> <Home>
-"cno <C-B> <Left>
-"cno <C-D> <Del>
-"cno <C-F> <Right>
-"cno <C-X> <C-F>
+" bringing these back 'cause save my pinkies
+nm Zb <C-B>Z
+nm Zd <C-D>Z
+nm Ze <C-E>Z
+nm Zf <C-F>Z
+nm Zu <C-U>Z
+nm Zy <C-Y>Z
 
 abc
 ca lang setl wrap! bri! spell! spl
@@ -268,6 +269,13 @@ let g:man_hardwrap = 0
 
 sy on
 filet on
+"filet plugin indent off
 "filet plugin on
-colo slate
+
+if executable('gsettings') && system('gsettings get org.gnome.desktop.interface color-scheme') !~ 'dark'
+  colo shine
+el
+  colo slate
+en
+
 " vim: se fdm=marker fdl=0 ts=2:

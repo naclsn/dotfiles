@@ -21,8 +21,10 @@ export        MANOPT='--nj --nh'
 export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules
+export           LC_="alias s='LESS=FR git status';export EDITOR=vim LESS=R VIMINIT='se hid ls=2 ai et ts=4 nu rnu nowrap mouse=nv cul dir=~/.cache//';unset cd ls command_not_found_handle PROMPT_COMMAND"
 
 here=`readlink ~/.bash_aliases`
+# maybe could eventually move to dotfiles idk...
 [ -d "${here%/*}/../mopfiles/lib" ] && export PYTHONPATH="${here%/*}/../mopfiles/lib"
 unset here
 
@@ -42,7 +44,7 @@ alias        println='printf %s\\n'
 bind -x       '"\ez":fg&>/dev/null'
 bind -x       '"\eZ":fg -&>/dev/null'
 bind -x       '"\eq":treest'
-bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">"$t";$EDITOR $t;READLINE_LINE=`cat $t`;rm $t;READLINE_POINT=${#READLINE_LINE}' # for some unknown reason, this is not a useless use of cat
+bind -x       '"\ee":t=`mktemp --suffix=.bash`;echo "$READLINE_LINE">|"$t";$EDITOR $t;READLINE_LINE=`cat $t`;rm $t;READLINE_POINT=${#READLINE_LINE}' # for some unknown reason, this is not a useless use of cat
 bind -x       '"\ey":printf %s "$READLINE_LINE" |xclip -sel c'
 
 set -b -o noclobber

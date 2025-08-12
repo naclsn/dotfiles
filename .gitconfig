@@ -10,10 +10,11 @@
 	name = Grenier Celestin
 	email = celestin.grenier@hotmail.com
 [alias]
-	cd = checkout
-	ls = branch -vv
-	amend = commit --amend --no-edit
+	cd = checkout # could remove
+	ls = branch -vv # could remove
+	amend = commit --amend --no-edit # could remove
 	graph = log --oneline --graph --decorate
+	wip = !$EDITOR `git ls-files --modified` # could remove
 	url = "!f()(git remote get-url ${1:-origin}|sed 's,^\\(ssh://\\)\\?git@\\([a-zA-Z.-]\\+\\):\\(\\([0-9]\\+/\\)\\|\\([^0-9][^/]\\+\\)\\),https://\\2/\\5,');f"
 	sha = rev-parse HEAD
 	root = rev-parse --show-toplevel

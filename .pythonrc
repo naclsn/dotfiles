@@ -17,7 +17,6 @@ _ppargs = {k: not v for k, v in pprint.__kwdefaults__.items() if type(v) is bool
 _b = vars(__builtins__)
 sys.displayhook = lambda v: None if v is None else (_b.update(_=v), pp(v) if 'pp' in _b else pprint(v, **_ppargs))[0]
 
-
 def xclip(data: ... = None):
     from subprocess import TimeoutExpired, check_output
     if not (data is None or isinstance(data, bytes) or hasattr(data, '__buffer__')):
@@ -27,6 +26,7 @@ def xclip(data: ... = None):
     except TimeoutExpired:
         pass
 
+# should remove {{{
 import tokenize
 _LOWPREC = {
     int(getattr(tokenize, n))
@@ -90,3 +90,4 @@ def _ypy_excepthook(exctype: 'type[BaseException]', value: BaseException, traceb
     sys.__excepthook__(exctype, value, traceback)
 
 sys.excepthook = _ypy_excepthook
+# }}}
