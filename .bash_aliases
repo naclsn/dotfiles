@@ -23,7 +23,7 @@ export        MANOPT='--nj --nh'
 export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules
-export           LC_="alias s=LESS=FR;HISTIGNORE=fg;export EDITOR=vim LESS=R VIMINIT='se hid ls=2 ai et sw=4 nu rnu nowrap mouse=nv cul dir=~/.cache//';unset cd ls command_not_found_handle PROMPT_COMMAND"
+export           LC_="export EDITOR=vim LESS=R VIMINIT='se hid ls=2 ai et sw=4 nu rnu nowrap mouse=nv dir=~/.cache//';unset cd ls command_not_found_handle PROMPT_COMMAND"
 
 here=`readlink ~/.bash_aliases`
 # maybe could eventually move to dotfiles idk...
@@ -32,10 +32,10 @@ unset here
 
 alias           grep='grep --color=auto'
 alias             ls='ls --color=auto'
-alias              l='ls -FX'
-alias             la='l -A'
-alias             ll='l -go'
-alias             db='gdb -q --args'
+#alias              l='ls -FX'
+#alias             la='l -A'
+#alias             ll='l -go'
+#alias             db='gdb -q --args'
 alias             py='python3'
 alias              s='git status'
 alias          reset='stty sane -ixon'
