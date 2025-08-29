@@ -1,19 +1,3 @@
-" se scl=number
-"
-" sign define lcov text=ok texthl=Visual
-"
-" sign place 2 line=23 name=lcov group=lcov file=<c-r>%
-"
-" sign unplace 2
-" sign unplace * group=lcov file=
-"                           buffer=
-
-
-" SF:<filenam>
-" DA:<lnum>,<hits>
-" line cov: LH/LF
-" branch cov: BRH/BRF (hit/found)
-
 fu Lcov(file)
   %argd
   sign unplace * group=lcov
@@ -27,10 +11,16 @@ fu Lcov(file)
       let cur = line[3:]
       exe 'arge' cur
       setl scl=number
+      let phits = 0 " line '-1', say, not covered
 
     elsei line =~ '^DA:'
       let [lnum, hits] = line[3:]->split(',')
+      " basic heurstic: a line with no kwchar is likely not meaningfull (eg.
+      " closing if in C-like); mark as not covered only if previous also so)
+      " ((this will be wrong for many occasion - as simple as a comment line))
+      if !hits && getline(lnum) !~ '\k' |let hits = phits |en
       exe 'sign place' lnum 'line='..lnum 'name=lcov'..(hits ? 'ok' : 'ko') 'group=lcov file='..fnameescape(cur)
+      let phits = hits
 
     elsei line =~ '^FNF:' |let fnf = str2nr(line[3:])*1.0
     elsei line =~ '^FNH:' |let fnh = str2nr(line[3:])*1.0
