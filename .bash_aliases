@@ -23,7 +23,7 @@ export        MANOPT='--nj --nh'
 export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules
-export           LC_="export EDITOR=vim LESS=R VIMINIT='se hid ls=2 ai et sw=4 nu rnu nowrap mouse=nv dir=~/.cache//';unset cd ls command_not_found_handle PROMPT_COMMAND"
+export           LC_="export EDITOR=vim LESS=FR VIMINIT='se hid ls=2 ai et sw=4 nu rnu nowrap mouse=nv dir=~/.cache//';unset cd ls command_not_found_handle PROMPT_COMMAND"
 
 here=`readlink ~/.bash_aliases`
 # maybe could eventually move to dotfiles idk...

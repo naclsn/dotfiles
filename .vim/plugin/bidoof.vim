@@ -27,7 +27,7 @@
 "   * |:PP|, |PP()|, |PPl()| and |PPs()| pretty print
 "   * |:Ypy| and |Ypy()| python with expr8->
 "
-" Last Change:	2025 Apr 23
+" Last Change:	2025 Sep 04
 " Maintainer:	a b <a.b@c.d>
 " License:	This file is placed in the public domain.
 "
@@ -71,12 +71,13 @@ fu Registore(var='') abort " {{{1
   retu l:dst
 endf " }}}
 
-fu Curl(url, head={}, data={}, dry=v:null) abort " {{{1
+fu Curl(url, head={}, body={}, dry=v:null) abort " {{{1
   " url may be: [METHOD] [proto://][...]
   " * perdu.com -> GET to https://perdu.com
   " * http://perdu.com -> GET to http://perdu.com
   " * GET .. -> GET .. but use -G and --data-urlencode
-  " head is a dict, data may be dict or list
+  " head is a dict, body may be dict or list
+  " only PUT/POST/PATCH do json stuff; disable by having body a blob
   " if dry not null then return that without doing the thing
   let l:url = a:url
   let l:method = l:url->matchstr('^\u\+ ')
@@ -85,28 +86,34 @@ fu Curl(url, head={}, data={}, dry=v:null) abort " {{{1
 
   let l:com = ['curl', '-so-', l:url]
 
-  let l:encode = v:false
+  let l:urlencode = v:false
+  let l:jsonencode = v:false
   if !empty(l:method)
     if 'GET ' == l:method && l:url =~ '^http'
-      let l:encode = v:true
+      let l:urlencode = v:true
       cal add(l:com, '-G')
     el
+      let l:jsonencode = l:method[:-2] =~ '^\%(PUT\|POST\|PATCH\)$'
       cal add(l:com, '-X'..l:method[:-2])
     en
   en
 
-  for l:k in a:head->keys() |cal add(l:com, '-H'..l:k..':'..a:head[l:k]) |endfo
+  for l:k in a:head->keys() |ev l:com->add('-H'..l:k..':'..a:head[l:k]) |endfo
 
-  let l:ty = a:data->type()
-  if v:t_string == l:ty || v:t_blob == l:ty
-    ev l:com->extend(['--data-binary', a:data])
+  let l:ty = a:body->type()
+  if l:jsonencode && v:t_blob != l:ty
+    ev l:com->extend([
+      \ '-HContent-Type:application/json',
+      \ '--data-binary', a:body->json_encode()])
+  elseif v:t_string == l:ty || v:t_blob == l:ty
+    ev l:com->extend(['--data-binary', a:body])
   el
-    let l:data = v:t_dict == l:ty
-      \ ? a:data->keys()->map({_, k -> k..'='..a:data[k]})
-      \ : a:data
+    let l:body = v:t_dict == l:ty
+      \ ? a:body->keys()->map({_, k -> k..'='..a:body[k]})
+      \ : a:body
 
-    for l:it in l:data
-      ev l:encode && l:it =~ '=.*[^-0-9A-Z_a-z]'
+    for l:it in l:body
+      ev l:urlencode && l:it =~ '=.*[^-0-9A-Z_a-z]'
         \ ? l:com->extend(['--data-urlencode', l:it])
         \ : l:com->add('-d'..l:it)
     endfo

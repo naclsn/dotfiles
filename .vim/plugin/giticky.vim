@@ -106,7 +106,7 @@ fu s:git_grep(args)
 endf
 
 for [name, com, dargs] in
-  \ [ ['diff', 'diff', '']
+  \ [ ['diff', 'diff --stat -u', '']
   \ , ['log', 'log', '']
   \ , ['show', 'show', "`=@%=~'^:GitB'?expand('<cword>'):@%=~'^:GitD'&&expand('<cfile>')=~'^[ab]/'?getline(1)->split()[1].'~:'.expand('<cfile>')[2:]:'--'`"]
   \ , ['blame', 'blame', '%']

@@ -1,7 +1,7 @@
 lan C
 
 " se {{{1
-se ai bs= cot=menuone,noselect cul et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr gp= hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot=menuone,noselect cul enc=utf-8 et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr gp= hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
 se spf=~/.vim/spell/my.utf-8.add
 se dir=~/.vim/cache/swap//
@@ -252,9 +252,12 @@ aug FileExplorer
   au BufEnter * if isdirectory(@%) && !wordcount().bytes
         \|exe 'r !dir -agop --time-style=+ %:p:S' |keepj 0d_
         \|setl nomod noswf syn=dirpager
-        \|nn <buffer> <silent> <CR> :exe 'e' trim(@%,'/',2).'/'.matchstr(getline('.'),'\%>11c.*[ 0-9]\{-}  \zs.*')<CR>
-        \|nn <buffer> <silent> g<CR> :exe 'ped' trim(@%,'/',2).'/'.matchstr(getline('.'),'\%>11c.*[ 0-9]\{-}  \zs.*')<CR>
+        \|nn <buffer> <silent> <CR> :exe 'e' Cfile()<CR>
+        \|nn <buffer> <silent> g<CR> :exe 'ped' Cfile()<CR>
         \|en
+  fu! Cfile()
+    retu matchstr(trim(@%,'/',2).'/'.matchstr(getline('.'),'\%>11c.*[ 0-9]\{-}  \zs.*'),'^\%(\./\)\?\zs.\{-}\ze/*$')
+  endf
 aug END
 
 " random and modeline {{{1
