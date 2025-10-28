@@ -1,7 +1,7 @@
 lan C
 
 " se {{{1
-se ai bs= cot=menuone,noselect cul enc=utf-8 et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr gp= hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
+se ai bs= cot-=preview cul enc=utf-8 et fdl=999 fdm=marker ff=unix ffs=unix,dos fo=1cjnr gp= hid is isf-== lbr lcs=tab:>\ ,trail:~ list ls=2 mouse=nrv noea nofen nohls notgc noto nowrap nu rnu ru sc scl=no so=0 spc= ssl sw=0 ts=4 ttimeout ttm=100 udf wim=longest:full,full wmnu wop=pum
 
 se spf=~/.vim/spell/my.utf-8.add
 se dir=~/.vim/cache/swap//
@@ -27,7 +27,7 @@ au FileType python   if !filereadable('Makefile') |setl mp=flake8 |el |setl mp& 
 au FileType python   sil! let &l:tw = (readfile('setup.cfg')->matchlist('max_line_length\s\?=\s\?\(\d\+\)') ?? ['', '88'])[1]
 au FileType python   nn <buffer> <silent> gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
 au FileType python   setl fex=s:black_formatexpr()
-au Filetype xml      setl fp=xmllint\ --format\ -
+au FileType xml      setl fp=xmllint\ --format\ -
 au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
 au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
 au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
@@ -126,8 +126,7 @@ ca vb vert sb
 " com {{{1
 com! -bar Mark lad expand('%').':'.line('.').':'.getline('.')
 com! -bar -bang Mks exe 'mks'.'<bang>'[empty(v:this_session)] v:this_session
-com! -bar DiffOrigin vne |setl bh=wipe bt=nofile pvw ro |r ++edit # |0d_ |difft |winc p |difft
-com! -nargs=1 Mv f <args> |exe '!mv # %' |bd #
+com! -bar DiffOrigin vne |r ++edit # |0d_ |setl bh=wipe bt=nofile pvw ro |difft |winc p |difft
 
 " platform specific {{{1
 let g:is_win = has('win16') || has('win32') || has('win64')

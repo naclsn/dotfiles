@@ -69,9 +69,12 @@ fu s:git_show(args)
   endf
   fu s:git_show_zp() abort
     let [rev, fil] = @%->matchlist('^:GitShow \([^:]\+\):\(.*\)')[1:2]
+    let ln = line('.')
     let nev = system('git rev-list -1 '..rev..'~ -- '..fil)->trim()
     if empty(nev) |th 'no earlier revision of this file' |en
     exe 'GitShow' nev..':'..fil
+    exe ln
+    norm zz
 endf
 
 fu s:git_blame(rg)

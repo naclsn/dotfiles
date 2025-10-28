@@ -12,7 +12,7 @@ from itertools import *
 from pathlib import Path, PurePath
 from pprint import pprint, pformat
 from string import *
-import json, os, sys, random, re, time, math
+import json, os, subprocess, sys, random, re, time, math
 
 _ppargs = {k: not v for k, v in pprint.__kwdefaults__.items() if type(v) is bool}
 _b = vars(__builtins__)
