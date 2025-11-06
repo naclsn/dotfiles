@@ -5262,7 +5262,7 @@ svg>polygon {
         console.log(`}, \`\n${se.code.replace(/\\/g, '\\\\')}\`],\n\n`);
     }
 else console.log(JSON.stringify([{settings:{'editor.keyMap':'vim','hotkey.styleDisableAll':'Alt+Y'}}].concat(list().map(([name, target, code], id) => ({
-    id,
+    id: id+1,
     name,
     enabled: true,
     sections: [{ code: code.slice(1), ...target }]
