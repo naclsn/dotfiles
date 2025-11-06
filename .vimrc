@@ -20,17 +20,19 @@ en
 se ssop=blank,buffers,folds,globals,options,resize,sesdir,slash,tabpages,terminal,unix,winsize
 
 " au {{{1
-au BufEnter * se fo-=o
-au ColorScheme * cal s:fix_colo()
-au FileType c,python sy keyword Title self
-au FileType python   if !filereadable('Makefile') |setl mp=flake8 |el |setl mp& |en
-au FileType python   sil! let &l:tw = (readfile('setup.cfg')->matchlist('max_line_length\s\?=\s\?\(\d\+\)') ?? ['', '88'])[1]
-au FileType python   nn <buffer> <silent> gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
-au FileType python   setl fex=s:black_formatexpr()
-au FileType xml      setl fp=xmllint\ --format\ -
-au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
-au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
-au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
+aug vimrc
+  au BufEnter * se fo-=o
+  au ColorScheme * cal s:fix_colo()
+  au FileType c,python sy keyword Title self
+  au FileType python   if !filereadable('Makefile') |setl mp=flake8 |el |setl mp& |en
+  au FileType python   sil! let &l:tw = (readfile('setup.cfg')->matchlist('max_line_length\s\?=\s\?\(\d\+\)') ?? ['', '88'])[1]
+  au FileType python   nn <buffer> <silent> gqq :cal <SID>black_formatexpr(1, line('$'), '')<CR>
+  au FileType python   setl fex=s:black_formatexpr()
+  au FileType xml      setl fp=xmllint\ --format\ -
+  au FileType xxd      nn <buffer> <C-A> geebi0x<Esc><C-A>b"_2xe |nn <buffer> <C-X> geebi0x<Esc><C-X>b"_2xe
+  au SessionLoadPost * if has_key(g:,'Run') |cal execute(g:Run) |en
+  au SpellFileMissing * cal s:pellfile_wget(expand('<amatch>'))
+aug END
 
 " fu used by au {{{1
 fu s:black_formatexpr(lnum=v:lnum, count=v:count, char=v:char) abort
@@ -273,11 +275,5 @@ sy on
 filet on
 "filet plugin indent off
 "filet plugin on
-
-if executable('gsettings') && system('gsettings get org.gnome.desktop.interface color-scheme') !~ 'dark'
-  colo shine
-el
-  colo slate
-en
 
 " vim: se fdm=marker fdl=0 ts=2:
