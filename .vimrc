@@ -110,12 +110,13 @@ endf
 
 " map and ab {{{1
 " bringing these back 'cause save my pinkies
-nm Zb <C-B>Z
-nm Zd <C-D>Z
-nm Ze <C-E>Z
-nm Zf <C-F>Z
-nm Zu <C-U>Z
-nm Zy <C-Y>Z
+" not anymore haha sike
+"nm Zb <C-B>Z
+"nm Zd <C-D>Z
+"nm Ze <C-E>Z
+"nm Zf <C-F>Z
+"nm Zu <C-U>Z
+"nm Zy <C-Y>Z
 
 abc
 ca lang setl wrap! bri! spell! spl
@@ -270,6 +271,7 @@ endfo
 unl n
 let g:vimsyn_embed = 'pPr'
 let g:man_hardwrap = 0
+let g:no_man_maps = 1 " wtf assholes mapped 'q' pieces of shit
 
 sy on
 filet on

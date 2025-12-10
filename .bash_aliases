@@ -18,12 +18,12 @@ expath ./node_modules/.bin
 
 export        LC_ALL=C
 export        EDITOR=`command -v nvim || echo vim`
-export          LESS='SFR --mouse --wheel-lines=3 --use-color'
+export          LESS='SFR --mouse --wheel-lines=3 --use-color -+i'
 export        MANOPT='--nj --nh'
 export  SYSTEMD_LESS=$LESS
 export PYTHONSTARTUP=~/.pythonrc
 export     NODE_PATH=~/.npm-global/lib/node_modules
-export           LC_="unalias -a;export EDITOR=vim LESS=FR VIMINIT='se hid ai et sw=4 nowrap mouse=nv dir=~/.cache//';unset PROMPT_COMMAND cd command_not_found_handle"
+export           LC_="unalias -a;alias s='git status';export EDITOR=vim LESS=FR VIMINIT='se hid ai et sw=4 nowrap mouse=nv dir=~/.cache//';unset PROMPT_COMMAND cd command_not_found_handle"
 
 here=`readlink ~/.bash_aliases`
 # maybe could eventually move to dotfiles idk...
@@ -62,7 +62,7 @@ ccdo()(c=$1;shift;if [ -f "$c" ];then cc -x c "$c" -o /tmp/ccdo "$@";else cc -x 
 # spaces (spce) {{{
 SPCE_PROJ=${SPCE_PROJ:-~/Documents/Projects}
 spce() {
-  [ -n "$1" ] && set -- $SPCE_PROJ/*${1%/}*/
+  [ -n "$1" ] && set -- $SPCE_PROJ/*${1%/}*
   case $# in
     0) cd $SPCE_PROJ;;
     1) cd $1;;

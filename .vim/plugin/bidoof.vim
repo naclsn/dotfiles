@@ -79,12 +79,19 @@ fu Curl(url, head={}, body={}, dry=v:null) abort " {{{1
   " head is a dict, body may be dict or list
   " only PUT/POST/PATCH do json stuff; disable by having body a blob
   " if dry not null then return that without doing the thing
+  " if dry is exactly '-v' then it'll verbose, not dry run
   let l:url = a:url
   let l:method = l:url->matchstr('^\u\+ ')
   let l:url = l:url[l:method->len():]
   if l:url !~ '^\l\+://' |let l:url = 'https://'..l:url |en
 
   let l:com = ['curl', '-so-', l:url]
+
+  let l:dry = a:dry
+  if '-v' == l:dry
+    cal add(l:com, '-v')
+    let l:dry = v:null
+  en
 
   let l:urlencode = v:false
   let l:jsonencode = v:false
@@ -121,7 +128,7 @@ fu Curl(url, head={}, body={}, dry=v:null) abort " {{{1
 
   let l:com = l:com->map('v:val->shellescape()')->join()
   echom l:com
-  retu v:null == a:dry ? l:com->system() : a:dry
+  retu v:null == l:dry ? l:com->system() : l:dry
 endf " }}}
 
 " PP {{{1
